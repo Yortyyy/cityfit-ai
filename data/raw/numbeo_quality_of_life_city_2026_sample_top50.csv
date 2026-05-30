@@ -1,0 +1,51 @@
+source_rank,city,state,country,numbeo_quality_of_life_index,purchasing_power_index,safety_index,healthcare_index,cost_of_living_index,property_price_to_income_ratio,traffic_commute_index,pollution_index,climate_index,is_required_city,source_period,source_url,source_note
+1.0,The Hague (Den Haag),,Netherlands,230.1,153.3,80.0,84.0,72.3,6.0,20.1,17.6,90.6,False,2026,https://www.numbeo.com/quality-of-life/rankings.jsp,2026 city ranking table
+2.0,Utrecht,,Netherlands,221.6,149.1,79.0,85.6,77.3,7.1,21.7,22.7,87.2,False,2026,https://www.numbeo.com/quality-of-life/rankings.jsp,2026 city ranking table
+3.0,Eindhoven,,Netherlands,219.4,144.6,79.1,80.2,71.7,7.0,22.6,19.6,85.4,False,2026,https://www.numbeo.com/quality-of-life/rankings.jsp,2026 city ranking table
+4.0,Groningen,,Netherlands,216.1,130.5,78.4,80.8,68.7,7.3,19.1,17.6,83.5,False,2026,https://www.numbeo.com/quality-of-life/rankings.jsp,2026 city ranking table
+5.0,Rotterdam,,Netherlands,213.1,130.9,74.0,84.3,74.6,6.5,21.0,22.2,87.9,False,2026,https://www.numbeo.com/quality-of-life/rankings.jsp,2026 city ranking table
+6.0,Luxembourg,,Luxembourg,210.1,153.3,72.1,75.0,80.8,10.2,25.9,20.4,82.6,False,2026,https://www.numbeo.com/quality-of-life/rankings.jsp,2026 city ranking table
+7.0,Vienna,,Austria,209.7,137.4,71.6,81.8,73.9,12.6,21.5,15.6,81.8,False,2026,https://www.numbeo.com/quality-of-life/rankings.jsp,2026 city ranking table
+8.0,Amsterdam,,Netherlands,209.4,135.6,74.3,81.5,82.6,9.3,22.1,22.6,87.5,True,2026,https://www.numbeo.com/quality-of-life/rankings.jsp,2026 city ranking table
+9.0,Gent,,Belgium,208.7,127.1,76.2,83.0,73.2,6.5,25.2,24.9,88.7,False,2026,https://www.numbeo.com/quality-of-life/rankings.jsp,2026 city ranking table
+10.0,Nuremberg,,Germany,208.2,151.3,70.0,72.7,69.0,7.7,25.9,22.1,77.5,False,2026,https://www.numbeo.com/quality-of-life/rankings.jsp,2026 city ranking table
+11.0,Copenhagen,,Denmark,207.1,141.9,74.3,78.0,85.7,8.9,26.9,22.5,83.7,False,2026,https://www.numbeo.com/quality-of-life/rankings.jsp,2026 city ranking table
+12.0,Munich,,Germany,206.4,148.2,78.9,79.5,76.1,11.9,28.4,23.7,76.0,True,2026,https://www.numbeo.com/quality-of-life/rankings.jsp,2026 city ranking table
+13.0,Valencia,,Spain,206.3,118.0,65.3,81.7,50.3,8.4,19.7,21.3,93.8,False,2026,https://www.numbeo.com/quality-of-life/rankings.jsp,2026 city ranking table
+14.0,Gothenburg,,Sweden,205.9,159.0,54.2,69.9,68.7,6.8,23.8,19.5,77.5,False,2026,https://www.numbeo.com/quality-of-life/rankings.jsp,2026 city ranking table
+15.0,Basel,,Switzerland,205.2,189.5,68.6,69.3,112.4,9.6,36.9,31.4,82.8,False,2026,https://www.numbeo.com/quality-of-life/rankings.jsp,2026 city ranking table
+16.0,Bergen,,Norway,204.4,130.2,76.2,75.3,85.6,7.3,26.2,19.8,78.8,False,2026,https://www.numbeo.com/quality-of-life/rankings.jsp,2026 city ranking table
+17.0,Frankfurt,,Germany,204.3,161.9,55.5,78.2,74.0,7.2,23.5,32.0,84.7,False,2026,https://www.numbeo.com/quality-of-life/rankings.jsp,2026 city ranking table
+18.0,Stavanger,,Norway,204.1,139.1,74.9,71.8,82.7,6.2,32.3,20.6,80.0,False,2026,https://www.numbeo.com/quality-of-life/rankings.jsp,2026 city ranking table
+19.0,Bern,,Switzerland,204.0,179.8,74.1,70.2,110.0,10.5,39.8,25.3,76.0,False,2026,https://www.numbeo.com/quality-of-life/rankings.jsp,2026 city ranking table
+20.0,Plzen,,Czech Republic,202.9,117.3,75.5,81.6,50.8,9.7,21.6,23.9,81.4,False,2026,https://www.numbeo.com/quality-of-life/rankings.jsp,2026 city ranking table
+21.0,Stuttgart,,Germany,202.8,148.6,70.0,80.2,71.5,7.6,25.9,34.5,81.1,False,2026,https://www.numbeo.com/quality-of-life/rankings.jsp,2026 city ranking table
+22.0,Dusseldorf,,Germany,202.8,148.1,67.3,73.4,73.9,9.2,26.2,27.8,86.4,False,2026,https://www.numbeo.com/quality-of-life/rankings.jsp,2026 city ranking table
+23.0,Helsinki,,Finland,202.5,127.1,74.6,80.3,74.3,10.7,24.5,12.5,62.8,False,2026,https://www.numbeo.com/quality-of-life/rankings.jsp,2026 city ranking table
+24.0,Zurich,,Switzerland,202.3,170.8,76.6,70.6,118.5,13.1,36.9,24.5,81.5,False,2026,https://www.numbeo.com/quality-of-life/rankings.jsp,2026 city ranking table
+25.0,Geneva,,Switzerland,200.4,164.4,70.6,72.6,116.5,13.0,32.6,24.4,82.6,False,2026,https://www.numbeo.com/quality-of-life/rankings.jsp,2026 city ranking table
+26.0,Trondheim,,Norway,200.0,131.0,78.9,75.8,84.9,6.6,31.0,20.7,66.7,False,2026,https://www.numbeo.com/quality-of-life/rankings.jsp,2026 city ranking table
+27.0,Lausanne,,Switzerland,198.6,169.2,71.9,70.9,111.5,12.1,33.3,26.9,73.3,False,2026,https://www.numbeo.com/quality-of-life/rankings.jsp,2026 city ranking table
+28.0,Ottawa,,Canada,198.1,162.4,69.0,68.7,61.7,5.1,32.7,24.1,44.5,False,2026,https://www.numbeo.com/quality-of-life/rankings.jsp,2026 city ranking table
+29.0,Hamburg,,Germany,197.6,146.9,60.3,76.4,71.9,9.2,30.5,26.7,82.8,False,2026,https://www.numbeo.com/quality-of-life/rankings.jsp,2026 city ranking table
+30.0,Edinburgh,,United Kingdom,197.2,122.8,69.6,77.7,73.0,8.2,26.3,25.9,84.0,True,2026,https://www.numbeo.com/quality-of-life/rankings.jsp,2026 city ranking table
+31.0,Newcastle upon Tyne,,United Kingdom,196.8,152.8,60.6,77.2,67.7,7.8,33.1,34.5,85.7,False,2026,https://www.numbeo.com/quality-of-life/rankings.jsp,2026 city ranking table
+32.0,Liverpool,,United Kingdom,196.5,131.0,51.5,80.7,66.1,5.1,27.8,28.0,90.9,False,2026,https://www.numbeo.com/quality-of-life/rankings.jsp,2026 city ranking table
+33.0,Reykjavik,,Iceland,195.6,112.8,76.0,70.0,98.9,8.0,20.5,15.4,68.8,False,2026,https://www.numbeo.com/quality-of-life/rankings.jsp,2026 city ranking table
+34.0,Brisbane,,Australia,195.3,151.0,61.8,71.2,64.8,7.4,42.7,32.9,98.1,False,2026,https://www.numbeo.com/quality-of-life/rankings.jsp,2026 city ranking table
+35.0,Hobart,,Australia,195.2,139.6,66.0,64.2,70.8,6.7,37.7,25.3,90.6,False,2026,https://www.numbeo.com/quality-of-life/rankings.jsp,2026 city ranking table
+36.0,Adelaide,,Australia,195.1,132.6,66.8,72.6,68.2,9.6,37.9,25.0,95.0,False,2026,https://www.numbeo.com/quality-of-life/rankings.jsp,2026 city ranking table
+45.0,Tampa,FL,United States,189.2,145.4,55.5,66.8,70.0,3.9,36.5,33.7,84.7,True,2026,https://www.numbeo.com/quality-of-life/rankings.jsp,2026 city ranking table
+59.0,Seattle,WA,United States,186.5,170.5,44.8,67.0,90.6,4.8,42.9,39.2,91.7,True,2026,https://www.numbeo.com/quality-of-life/rankings.jsp,2026 city ranking table
+,Osaka,,Japan,184.65,132.84,67.05,82.16,42.29,10.17,34.58,46.93,84.32,True,2026,https://www.numbeo.com/quality-of-life/in/Osaka,Individual city quality-of-life page; not found in the 2026 ranking table text
+85.0,Madrid,,Spain,181.5,108.1,71.3,79.9,60.0,12.7,27.9,37.7,85.5,True,2026,https://www.numbeo.com/quality-of-life/rankings.jsp,2026 city ranking table
+110.0,Tokyo,,Japan,175.4,121.7,74.9,78.7,54.2,15.2,42.7,43.0,85.3,True,2026,https://www.numbeo.com/quality-of-life/rankings.jsp,2026 city ranking table
+137.0,San Francisco,CA,United States,167.3,158.2,39.4,64.9,97.6,7.1,49.0,49.0,97.3,True,2026,https://www.numbeo.com/quality-of-life/rankings.jsp,2026 city ranking table
+143.0,Toronto,,Canada,164.5,125.9,56.5,74.1,67.5,11.4,44.6,37.5,65.3,True,2026,https://www.numbeo.com/quality-of-life/rankings.jsp,2026 city ranking table
+158.0,Miami,FL,United States,159.4,110.7,46.7,63.0,79.5,6.3,42.9,39.4,85.7,True,2026,https://www.numbeo.com/quality-of-life/rankings.jsp,2026 city ranking table
+184.0,Barcelona,,Spain,151.0,98.8,48.1,76.7,59.2,12.2,30.0,63.0,95.7,True,2026,https://www.numbeo.com/quality-of-life/rankings.jsp,2026 city ranking table
+192.0,Rome,,Italy,147.6,87.4,52.7,65.0,63.4,14.3,35.3,48.8,93.7,True,2026,https://www.numbeo.com/quality-of-life/rankings.jsp,2026 city ranking table
+200.0,Paris,,France,143.6,122.3,42.0,77.0,78.6,15.9,41.2,63.4,88.4,True,2026,https://www.numbeo.com/quality-of-life/rankings.jsp,2026 city ranking table
+203.0,London,,United Kingdom,143.4,123.1,44.4,69.5,87.5,15.4,44.8,58.1,88.3,True,2026,https://www.numbeo.com/quality-of-life/rankings.jsp,2026 city ranking table
+230.0,New York,NY,United States,134.4,105.4,48.9,62.8,100.0,13.5,43.5,57.9,79.7,True,2026,https://www.numbeo.com/quality-of-life/rankings.jsp,2026 city ranking table
+238.0,Milan,,Italy,129.4,86.6,46.5,70.3,73.1,15.4,36.1,67.9,88.1,True,2026,https://www.numbeo.com/quality-of-life/rankings.jsp,2026 city ranking table

@@ -1,0 +1,16 @@
+REQUIRED_CITY_COLUMNS = [
+    "source_rank",
+    "city",
+    "country",
+    "numbeo_quality_of_life_index",
+    "purchasing_power_index",
+    "safety_index",
+    "healthcare_index",
+    "cost_of_living_index",
+    "property_price_to_income_ratio",
+    "traffic_commute_index",
+    "pollution_index",
+    "climate_index",
+    "source_url",
+    "source_note",
+]

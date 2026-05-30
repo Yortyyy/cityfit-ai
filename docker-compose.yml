@@ -1,0 +1,7 @@
+services:
+  cityfit:
+    build: .
+    container_name: cityfit-ai
+    volumes:
+      - .:/app
+    command: python -m scripts.run_cityfit_ranking

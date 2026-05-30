@@ -1,0 +1,14 @@
+from pathlib import Path
+
+PROJECT_ROOT = Path(__file__).resolve().parents[2]
+
+DATA_DIR = PROJECT_ROOT / "data"
+RAW_DATA_DIR = DATA_DIR / "raw"
+INTERIM_DATA_DIR = DATA_DIR / "interim"
+PROCESSED_DATA_DIR = DATA_DIR / "processed"
+
+CITY_METRICS_RAW_PATH = RAW_DATA_DIR / "numbeo_quality_of_life_city_2026_sample_top50.csv"
+
+CITY_METRICS_CLEAN_PATH = INTERIM_DATA_DIR / "cleaned_city_metrics.csv"
+CITY_FEATURES_PATH = PROCESSED_DATA_DIR / "city_features.csv"
+CITYFIT_SCORES_PATH = PROCESSED_DATA_DIR / "cityfit_scores.csv"
