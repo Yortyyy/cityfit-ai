@@ -5,3 +5,12 @@ services:
     volumes:
       - .:/app
     command: python -m scripts.run_cityfit_ranking
+
+  streamlit:
+    build: .
+    container_name: cityfit-streamlit
+    volumes:
+      - .:/app
+    ports:
+      - "8501:8501"
+    command: streamlit run app/streamlit_app.py --server.address=0.0.0.0
