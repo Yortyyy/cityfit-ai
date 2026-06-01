@@ -4,8 +4,11 @@ import streamlit as st
 from cityfit.config import CITYFIT_SCORES_PATH, CITY_FEATURES_PATH
 from cityfit.data.load_data import load_city_metrics
 from cityfit.data.validation import validate_city_metrics
+from cityfit.features.explanations import explain_city_rank
 from cityfit.features.scoring import calculate_cityfit_score, add_cityfit_rank
 from cityfit.features.transformations import add_affordability_features
+
+import plotly.express as px
 
 
 st.set_page_config(
@@ -89,6 +92,8 @@ st.dataframe(
 
 st.subheader("Rank movement")
 
+moved_ranks_n = 10
+
 st.write(
     "Positive rank difference means the city ranks better in your personalized "
     "CityFit score than in Numbeo's baseline Quality of Life ranking."
@@ -97,10 +102,52 @@ st.write(
 rank_movers = (
     df[display_cols]
     .sort_values("rank_difference", ascending=False)
-    .head(10)
+    .head(moved_ranks_n)
 )
 
 st.dataframe(rank_movers, use_container_width=True)
+
+st.subheader("Biggest ranking changes")
+
+movement_chart_df = (
+    df[["city", "rank_difference"]]
+    .sort_values("rank_difference", ascending=False)
+    .head(moved_ranks_n)
+)
+
+min_rank_val = movement_chart_df["rank_difference"].min()
+max_rank_val = movement_chart_df["rank_difference"].max()
+padding = 1
+
+fig = px.bar(
+    movement_chart_df,
+    x="city",
+    y="rank_difference",
+    title="Cities that moved up most after personalization",
+    color="rank_difference",
+    color_continuous_scale="speed",
+    range_color=[min_rank_val - padding, max_rank_val + padding],
+)
+
+fig.update_traces(
+    hovertemplate=(
+        "<b>%{x}</b><br>"
+        "Rank movement: %{y:+.0f}<br>"
+        "<extra></extra>"
+    )
+)
+
+fig.update_layout(
+    xaxis_title="City",
+    yaxis_title="Rank Difference",
+)
+
+fig.update_xaxes(
+    categoryorder="array",
+    categoryarray=movement_chart_df["city"].tolist(),
+)
+
+st.plotly_chart(fig, use_container_width=True)
 
 st.subheader("Compare specific cities")
 
@@ -114,6 +161,12 @@ selected_cities = st.multiselect(
 if selected_cities:
     comparison_df = df[df["city"].isin(selected_cities)][display_cols].sort_values("cityfit_rank")
     st.dataframe(comparison_df, use_container_width=True)
+
+st.subheader("City explanations")
+
+for _, row in comparison_df.iterrows():
+    st.write(f"**{row['city']}**")
+    st.write(explain_city_rank(row))
 
 st.caption(
     "Data note: This app uses a small educational sample derived from Numbeo city ranking pages. "
