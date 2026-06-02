@@ -1,15 +1,12 @@
 import pandas as pd
 import streamlit as st
 
-from cityfit.config import CITYFIT_SCORES_PATH, CITY_FEATURES_PATH
-from cityfit.data.load_data import load_city_metrics
-from cityfit.data.validation import validate_city_metrics
-from cityfit.features.explanations import explain_city_rank
-from cityfit.features.scoring import calculate_cityfit_score, add_cityfit_rank
-from cityfit.features.transformations import add_affordability_features
-
 import plotly.express as px
 
+import requests
+
+
+API_URL = "http://api:8000"
 
 st.set_page_config(
     page_title="CityFit AI",
@@ -36,38 +33,33 @@ priority_low_pollution = st.sidebar.slider("Low pollution", 0.0, 2.0, 0.7, 0.1)
 
 remote_worker = st.sidebar.checkbox("I work remotely", value=True)
 
-traffic_weight = 0.03 if remote_worker else 0.10
-
-weights = {
-    "numbeo_quality_of_life": 0.15,
-    "purchasing_power": 0.20 * priority_purchasing_power,
-    "safety": 0.20 * priority_safety,
-    "healthcare": 0.10 * priority_healthcare,
-    "climate": 0.10 * priority_climate,
-    "cost_penalty": 0.20 * priority_low_cost,
-    "housing_penalty": 0.15 * priority_housing,
-    "pollution_penalty": 0.07 * priority_low_pollution,
-    "traffic_penalty": traffic_weight,
-}
-
-
-@st.cache_data
-def load_and_score_data(weights: dict) -> pd.DataFrame:
-    raw_df = load_city_metrics()
-    validate_city_metrics(raw_df)
-
-    features_df = add_affordability_features(raw_df)
-    scored_df = calculate_cityfit_score(features_df, weights)
-    ranked_df = add_cityfit_rank(scored_df)
-
-    return ranked_df
-
-
-df = load_and_score_data(weights)
-
 st.subheader("Top CityFit recommendations")
 
 top_n = st.slider("Number of cities to show", 5, 50, 15)
+
+def get_recommendations_from_api(payload: dict) -> list[dict]:
+    response = requests.post(f"{API_URL}/recommend", json=payload, timeout=10)
+    response.raise_for_status()
+    return response.json()["recommendations"]
+
+payload = {
+    "priority_safety": priority_safety,
+    "priority_healthcare": priority_healthcare,
+    "priority_climate": priority_climate,
+    "priority_purchasing_power": priority_purchasing_power,
+    "priority_low_cost": priority_low_cost,
+    "priority_housing": priority_housing,
+    "priority_low_pollution": priority_low_pollution,
+    "remote_worker": remote_worker,
+    "top_n": 50,
+}
+
+try:
+    recommendations = get_recommendations_from_api(payload)
+    df = pd.DataFrame(recommendations)
+except requests.RequestException as exc:
+    st.error(f"Could not reach CityFit API: {exc}")
+    st.stop()
 
 display_cols = [
     "city",
@@ -87,7 +79,7 @@ display_cols = [
 
 st.dataframe(
     df[display_cols].head(top_n),
-    use_container_width=True,
+    width="stretch"
 )
 
 st.subheader("Rank movement")
@@ -105,7 +97,7 @@ rank_movers = (
     .head(moved_ranks_n)
 )
 
-st.dataframe(rank_movers, use_container_width=True)
+st.dataframe(rank_movers, width="stretch")
 
 st.subheader("Biggest ranking changes")
 
@@ -147,7 +139,7 @@ fig.update_xaxes(
     categoryarray=movement_chart_df["city"].tolist(),
 )
 
-st.plotly_chart(fig, use_container_width=True)
+st.plotly_chart(fig, width="stretch")
 
 st.subheader("Compare specific cities")
 
@@ -159,14 +151,25 @@ selected_cities = st.multiselect(
 )
 
 if selected_cities:
-    comparison_df = df[df["city"].isin(selected_cities)][display_cols].sort_values("cityfit_rank")
-    st.dataframe(comparison_df, use_container_width=True)
+    comparison_cols = display_cols + ["explanation"]
+
+    comparison_df = (
+        df[df["city"].isin(selected_cities)][comparison_cols]
+        .sort_values("cityfit_rank")
+    )
+
+    st.dataframe(
+        comparison_df[display_cols],
+        width="stretch",
+    )
+
+    st.subheader("City explanations")
+
+    for _, row in comparison_df.iterrows():
+        st.write(f"**{row['city']}**")
+        st.write(row["explanation"])
 
 st.subheader("City explanations")
-
-for _, row in comparison_df.iterrows():
-    st.write(f"**{row['city']}**")
-    st.write(explain_city_rank(row))
 
 st.caption(
     "Data note: This app uses a small educational sample derived from Numbeo city ranking pages. "
