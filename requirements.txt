@@ -11,3 +11,4 @@ pydantic
 pytest
 python-dotenv
 plotly
+httpx

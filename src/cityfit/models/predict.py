@@ -11,8 +11,7 @@ def add_model_predictions(df: pd.DataFrame) -> pd.DataFrame:
     """
     Train the current CityFit ranker and add model predictions.
 
-    Note: This retrains the model locally each time. Later, this can be changed
-    to load a saved MLflow model artifact instead.
+    TODO: Load model instead of train
     """
     model = train_cityfit_ranker(df)
 

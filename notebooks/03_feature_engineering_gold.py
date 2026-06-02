@@ -45,10 +45,6 @@ feature_df = (
         F.col("purchasing_power_index") / F.col("cost_of_living_index")
     )
     .withColumn(
-        "safety_healthcare_avg",
-        (F.col("safety_index") + F.col("healthcare_index")) / F.lit(2)
-    )
-    .withColumn(
         "low_pollution_score",
         F.lit(100) - F.col("pollution_index")
     )
@@ -117,8 +113,6 @@ gold_df = ranked_df.select(
     "pollution_index",
     "climate_index",
     "quality_per_cost",
-    "purchasing_power_per_cost",
-    "safety_healthcare_avg",
     "low_pollution_score",
     "low_traffic_score",
     "source_url",

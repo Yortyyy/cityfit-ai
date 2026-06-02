@@ -19,7 +19,6 @@ FEATURE_COLUMNS = [
     "pollution_index",
     "climate_index",
     "quality_per_cost",
-    "safety_healthcare_avg",
     "low_pollution_score",
     "low_traffic_score",
 ]
