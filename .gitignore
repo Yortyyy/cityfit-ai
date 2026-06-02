@@ -1,0 +1,45 @@
+# Python cache
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+
+# Virtual environments
+.venv/
+venv/
+env/
+
+# Environment variables / secrets
+.env
+.env.local
+
+# Jupyter / notebook cache
+.ipynb_checkpoints/
+
+# Databricks local config
+.databricks/
+
+# Generated data outputs
+data/interim/
+data/processed/
+
+# MLflow tracking outputs
+mlruns/
+
+# Root-level model/artifact outputs only
+/models/
+/artifacts/
+
+# Logs
+*.log
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# IDE/editor files
+.vscode/
+.idea/
