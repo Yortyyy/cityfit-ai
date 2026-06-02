@@ -28,6 +28,7 @@ data/processed/
 
 # MLflow tracking outputs
 mlruns/
+mlflow.db
 
 # Root-level model/artifact outputs only
 /models/
