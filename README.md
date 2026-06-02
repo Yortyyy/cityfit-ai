@@ -18,6 +18,7 @@ The current version:
 ```bash
 docker compose build
 docker compose run --rm cityfit python -m scripts.run_cityfit_ranking
+```
 
 ## Databricks Lakehouse Pipeline
 
