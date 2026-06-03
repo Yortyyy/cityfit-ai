@@ -26,6 +26,9 @@ env/
 data/interim/
 data/processed/
 
+# Local vector database
+data/vector_store/
+
 # MLflow tracking outputs
 mlruns/
 mlflow.db

@@ -13,3 +13,5 @@ python-dotenv
 plotly
 httpx2
 requests
+chromadb
+sentence-transformers
