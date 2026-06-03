@@ -22,14 +22,14 @@ st.write(
 
 st.sidebar.header("Your priorities")
 
-priority_safety = st.sidebar.slider("Safety", 0.0, 2.0, 1.0, 0.1)
-priority_healthcare = st.sidebar.slider("Healthcare", 0.0, 2.0, 1.0, 0.1)
-priority_climate = st.sidebar.slider("Climate", 0.0, 2.0, 0.8, 0.1)
-priority_purchasing_power = st.sidebar.slider("Purchasing power", 0.0, 2.0, 1.0, 0.1)
+priority_safety_ui = st.sidebar.slider("Safety", 0, 10, 5)
+priority_healthcare_ui = st.sidebar.slider("Healthcare", 0, 10, 5)
+priority_climate_ui = st.sidebar.slider("Climate", 0, 10, 5)
+priority_purchasing_power_ui = st.sidebar.slider("Purchasing power", 0, 10, 5)
 
-priority_low_cost = st.sidebar.slider("Low cost of living", 0.0, 2.0, 1.0, 0.1)
-priority_housing = st.sidebar.slider("Housing affordability", 0.0, 2.0, 1.0, 0.1)
-priority_low_pollution = st.sidebar.slider("Low pollution", 0.0, 2.0, 0.7, 0.1)
+priority_low_cost_ui = st.sidebar.slider("Low cost of living", 0, 10, 5)
+priority_housing_ui = st.sidebar.slider("Housing affordability", 0, 10, 5)
+priority_low_pollution_ui = st.sidebar.slider("Low pollution", 0, 10, 5)
 
 remote_worker = st.sidebar.checkbox("I work remotely", value=True)
 
@@ -42,16 +42,24 @@ def get_recommendations_from_api(payload: dict) -> list[dict]:
     response.raise_for_status()
     return response.json()["recommendations"]
 
+def query_agent_from_api(payload: dict) -> dict:
+    response = requests.post(f"{API_URL}/agent/query", json=payload, timeout=20)
+    response.raise_for_status()
+    return response.json()
+
+def normalize_priority(value: int) -> float:
+    return value / 5
+
 payload = {
-    "priority_safety": priority_safety,
-    "priority_healthcare": priority_healthcare,
-    "priority_climate": priority_climate,
-    "priority_purchasing_power": priority_purchasing_power,
-    "priority_low_cost": priority_low_cost,
-    "priority_housing": priority_housing,
-    "priority_low_pollution": priority_low_pollution,
+    "priority_safety": normalize_priority(priority_safety_ui),
+    "priority_healthcare": normalize_priority(priority_healthcare_ui),
+    "priority_climate": normalize_priority(priority_climate_ui),
+    "priority_purchasing_power": normalize_priority(priority_purchasing_power_ui),
+    "priority_low_cost": normalize_priority(priority_low_cost_ui),
+    "priority_housing": normalize_priority(priority_housing_ui),
+    "priority_low_pollution": normalize_priority(priority_low_pollution_ui),
     "remote_worker": remote_worker,
-    "top_n": 50,
+    "top_n": top_n,
 }
 
 try:
@@ -175,3 +183,75 @@ st.caption(
     "Data note: This app uses a small educational sample derived from Numbeo city ranking pages. "
     "Numbeo data is credited to Numbeo.com and is not covered by this repository's code license."
 )
+
+st.subheader("Ask CityFit AI")
+
+if "messages" not in st.session_state:
+    st.session_state.messages = []
+
+# Display prior chat messages
+for message in st.session_state.messages:
+    with st.chat_message(message["role"]):
+        st.markdown(message["content"])
+
+# Chat input stays at the bottom of the app, similar to ChatGPT
+question = st.chat_input(
+    "Ask about city rankings, tradeoffs, methodology, or limitations..."
+)
+
+if question:
+    st.session_state.messages.append(
+        {"role": "user", "content": question}
+    )
+
+    with st.chat_message("user"):
+        st.markdown(question)
+
+    payload = {
+        "question": question,
+        "priority_safety": priority_safety,
+        "priority_healthcare": priority_healthcare,
+        "priority_climate": priority_climate,
+        "priority_purchasing_power": priority_purchasing_power,
+        "priority_low_cost": priority_low_cost,
+        "priority_housing": priority_housing,
+        "priority_low_pollution": priority_low_pollution,
+        "remote_worker": remote_worker,
+        "top_n": top_n,
+        "top_k_context": 4,
+    }
+
+    try:
+        agent_response = query_agent_from_api(payload)
+
+        assistant_response = agent_response["answer"]
+
+        st.session_state.messages.append(
+            {"role": "assistant", "content": assistant_response}
+        )
+
+        with st.chat_message("assistant"):
+            st.markdown(assistant_response)
+
+            # with st.expander("Sources"):
+            #     st.write(", ".join(agent_response["sources"]))
+
+            # with st.expander("Governance metadata"):
+            #     st.json(agent_response["metadata"])
+
+            # with st.expander("Retrieved context"):
+            #     for chunk in agent_response["retrieved_context"]:
+            #         st.markdown(
+            #             f"**{chunk['source']} — chunk {chunk['chunk_index']}**"
+            #         )
+            #         st.write(chunk["text"])
+
+    except requests.RequestException as exc:
+        error_message = f"Could not reach CityFit Agent API: {exc}"
+
+        st.session_state.messages.append(
+            {"role": "assistant", "content": error_message}
+        )
+
+        with st.chat_message("assistant"):
+            st.error(error_message)
