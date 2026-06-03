@@ -1,0 +1,180 @@
+from cityfit.agent.prompts import AGENT_PROMPT_VERSION
+from cityfit.agent.tools import (
+    compare_cities,
+    extract_city_names,
+    get_available_cities,
+    rank_city_recommendations,
+)
+from cityfit.api.schemas import UserProfile
+from cityfit.rag.retriever import retrieve_context
+
+
+DATA_VERSION = "numbeo_2026_sample_v1"
+
+
+def build_agent_answer(
+    question: str,
+    profile: UserProfile,
+    top_k_context: int = 4,
+) -> dict:
+    """
+    Build an auditable CityFit agent response.
+
+    This version uses deterministic orchestration instead of an LLM:
+    - retrieve RAG context
+    - detect requested cities
+    - call structured CityFit tools
+    - return answer, sources, and governance metadata
+    """
+    retrieved_chunks = retrieve_context(question, top_k=top_k_context)
+
+    available_cities = get_available_cities()
+    requested_cities = extract_city_names(question, available_cities)
+
+    tools_used = ["retrieve_context"]
+
+    if requested_cities:
+        city_results = compare_cities(requested_cities, profile)
+        tools_used.append("compare_cities")
+        answer = _build_comparison_answer(question, city_results)
+    else:
+        city_results = rank_city_recommendations(profile, top_n=profile.top_n)
+        tools_used.append("rank_city_recommendations")
+        answer = _build_ranking_answer(question, city_results)
+
+    sources = sorted({chunk.source for chunk in retrieved_chunks})
+
+    return {
+        "answer": answer,
+        "cities_compared": requested_cities,
+        "city_results": _clean_city_results(city_results),
+        "sources": sources,
+        "retrieved_context": [
+            {
+                "source": chunk.source,
+                "chunk_index": chunk.chunk_index,
+                "text": chunk.text,
+                "distance": chunk.distance,
+            }
+            for chunk in retrieved_chunks
+        ],
+        "metadata": {
+            "prompt_version": AGENT_PROMPT_VERSION,
+            "data_version": DATA_VERSION,
+            "tools_used": tools_used,
+            "model_provider": "deterministic_template",
+            "model_name": "no_llm_v1",
+            "limitations": [
+                "Uses a small educational city dataset.",
+                "CityFit scoring is heuristic and user-priority based.",
+                "The ML model currently uses synthetic labels.",
+                "Recommendations are informational and should be verified with current official sources.",
+            ],
+        },
+    }
+
+
+def _build_comparison_answer(question: str, city_results: list[dict]) -> str:
+    if not city_results:
+        return (
+            "I could not find matching cities in the CityFit dataset. "
+            "Try asking about cities included in the current sample dataset."
+        )
+
+    best_city = city_results[0]
+
+    lines = [
+        f"I compared {len(city_results)} requested cities using the current CityFit profile.",
+        "",
+        f"Best match among the requested cities: {best_city['city']}, {best_city['country']}.",
+        f"It has a CityFit rank of {int(best_city['cityfit_rank'])} and a CityFit score of {best_city['cityfit_score']:.2f}.",
+        "",
+        "City tradeoffs:",
+    ]
+
+    for city in city_results:
+        lines.append(
+            f"- {city['city']}: CityFit rank {int(city['cityfit_rank'])}, "
+            f"Numbeo QoL rank {int(city['numbeo_qol_rank'])}, "
+            f"cost index {city['cost_of_living_index']:.1f}, "
+            f"safety {city['safety_index']:.1f}, "
+            f"healthcare {city['healthcare_index']:.1f}. "
+            f"{city.get('explanation', '')}"
+        )
+
+    lines.extend(
+        [
+            "",
+            "This recommendation is informational and should be checked against current local data before making relocation decisions.",
+        ]
+    )
+
+    return "\n".join(lines)
+
+
+def _build_ranking_answer(question: str, city_results: list[dict]) -> str:
+    if not city_results:
+        return "I could not generate city recommendations from the current dataset."
+
+    top_city = city_results[0]
+
+    lines = [
+        "I ranked cities using the current CityFit profile and available city metrics.",
+        "",
+        f"Top recommendation: {top_city['city']}, {top_city['country']}.",
+        f"It has a CityFit rank of {int(top_city['cityfit_rank'])} and a CityFit score of {top_city['cityfit_score']:.2f}.",
+        "",
+        "Top cities:",
+    ]
+
+    for city in city_results[:5]:
+        lines.append(
+            f"- {city['city']}: CityFit rank {int(city['cityfit_rank'])}, "
+            f"score {city['cityfit_score']:.2f}, "
+            f"cost index {city['cost_of_living_index']:.1f}, "
+            f"safety {city['safety_index']:.1f}."
+        )
+
+    lines.extend(
+        [
+            "",
+            "These results are based on a small educational dataset and should be treated as decision support, not final relocation advice.",
+        ]
+    )
+
+    return "\n".join(lines)
+
+
+def _clean_city_results(city_results: list[dict]) -> list[dict]:
+    """
+    Keep API response compact and JSON-safe.
+    """
+    output_columns = [
+        "city",
+        "country",
+        "numbeo_qol_rank",
+        "cityfit_rank",
+        "rank_difference",
+        "numbeo_quality_of_life_index",
+        "cityfit_score",
+        "cost_of_living_index",
+        "purchasing_power_index",
+        "safety_index",
+        "healthcare_index",
+        "pollution_index",
+        "climate_index",
+        "explanation",
+    ]
+
+    cleaned = []
+
+    for row in city_results:
+        cleaned.append(
+            {
+                key: row[key]
+                for key in output_columns
+                if key in row
+            }
+        )
+
+    return cleaned
