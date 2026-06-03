@@ -59,7 +59,7 @@ payload = {
     "priority_housing": normalize_priority(priority_housing_ui),
     "priority_low_pollution": normalize_priority(priority_low_pollution_ui),
     "remote_worker": remote_worker,
-    "top_n": top_n,
+    "top_n": 50,
 }
 
 try:
