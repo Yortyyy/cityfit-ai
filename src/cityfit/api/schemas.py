@@ -32,3 +32,33 @@ class CityRecommendation(BaseModel):
 
 class RecommendationResponse(BaseModel):
     recommendations: list[CityRecommendation]
+
+
+class AgentQueryRequest(UserProfile):
+    question: str
+    top_k_context: int = Field(default=4, ge=1, le=10)
+
+
+class RetrievedContextChunk(BaseModel):
+    source: str
+    chunk_index: int
+    text: str
+    distance: float
+
+
+class AgentMetadata(BaseModel):
+    prompt_version: str
+    data_version: str
+    tools_used: list[str]
+    model_provider: str
+    model_name: str
+    limitations: list[str]
+
+
+class AgentQueryResponse(BaseModel):
+    answer: str
+    cities_compared: list[str]
+    city_results: list[dict]
+    sources: list[str]
+    retrieved_context: list[RetrievedContextChunk]
+    metadata: AgentMetadata

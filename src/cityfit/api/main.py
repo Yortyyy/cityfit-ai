@@ -1,11 +1,18 @@
 from fastapi import FastAPI
 
-from cityfit.api.schemas import RecommendationResponse, UserProfile
+from cityfit.agent.service import build_agent_answer
+from cityfit.api.schemas import (
+    AgentQueryRequest,
+    AgentQueryResponse,
+    RecommendationResponse,
+    UserProfile,
+)
 from cityfit.data.load_data import load_city_metrics
 from cityfit.data.validation import validate_city_metrics
 from cityfit.features.explanations import explain_city_rank
 from cityfit.features.scoring import add_cityfit_rank, calculate_cityfit_score, rank_cities
 from cityfit.features.transformations import add_affordability_features
+from cityfit.features.weights import build_weights
 
 
 app = FastAPI(
@@ -13,23 +20,6 @@ app = FastAPI(
     description="Personalized city recommendations using quality-of-life and cost-of-living metrics.",
     version="0.1.0",
 )
-
-
-def build_weights(profile: UserProfile) -> dict:
-    traffic_weight = 0.03 if profile.remote_worker else 0.10
-
-    return {
-        "numbeo_quality_of_life": 0.15,
-        "purchasing_power": 0.20 * profile.priority_purchasing_power,
-        "safety": 0.20 * profile.priority_safety,
-        "healthcare": 0.10 * profile.priority_healthcare,
-        "climate": 0.10 * profile.priority_climate,
-        "cost_penalty": 0.20 * profile.priority_low_cost,
-        "housing_penalty": 0.15 * profile.priority_housing,
-        "pollution_penalty": 0.07 * profile.priority_low_pollution,
-        "traffic_penalty": traffic_weight,
-    }
-
 
 def get_ranked_cities(profile: UserProfile):
     raw_df = load_city_metrics()
@@ -74,3 +64,23 @@ def recommend_cities(profile: UserProfile):
     recommendations = top_df[response_columns].to_dict(orient="records")
 
     return {"recommendations": recommendations}
+
+@app.post("/agent/query", response_model=AgentQueryResponse)
+def query_agent(request: AgentQueryRequest):
+    profile = UserProfile(
+        priority_safety=request.priority_safety,
+        priority_healthcare=request.priority_healthcare,
+        priority_climate=request.priority_climate,
+        priority_purchasing_power=request.priority_purchasing_power,
+        priority_low_cost=request.priority_low_cost,
+        priority_housing=request.priority_housing,
+        priority_low_pollution=request.priority_low_pollution,
+        remote_worker=request.remote_worker,
+        top_n=request.top_n,
+    )
+
+    return build_agent_answer(
+        question=request.question,
+        profile=profile,
+        top_k_context=request.top_k_context,
+    )

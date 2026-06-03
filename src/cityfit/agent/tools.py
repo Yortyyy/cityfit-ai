@@ -3,12 +3,12 @@ import re
 import pandas as pd
 
 from cityfit.api.schemas import UserProfile
-from cityfit.api.main import build_weights
 from cityfit.data.load_data import load_city_metrics
 from cityfit.data.validation import validate_city_metrics
 from cityfit.features.explanations import explain_city_rank
 from cityfit.features.scoring import add_cityfit_rank, calculate_cityfit_score, rank_cities
 from cityfit.features.transformations import add_affordability_features
+from cityfit.features.weights import build_weights
 
 
 def get_ranked_city_data(profile: UserProfile) -> pd.DataFrame:
