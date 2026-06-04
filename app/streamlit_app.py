@@ -31,7 +31,7 @@ priority_low_cost_ui = st.sidebar.slider("Low cost of living", 0, 10, 5)
 priority_housing_ui = st.sidebar.slider("Housing affordability", 0, 10, 5)
 priority_low_pollution_ui = st.sidebar.slider("Low pollution", 0, 10, 5)
 
-remote_worker = st.sidebar.checkbox("I work remotely", value=True)
+remote_worker = st.sidebar.checkbox("I work remotely", value=False)
 
 st.subheader("Top CityFit recommendations")
 
@@ -191,20 +191,14 @@ st.subheader("Ask CityFit AI")
 if "messages" not in st.session_state:
     st.session_state.messages = []
 
-# Display prior chat messages
 for message in st.session_state.messages:
-    with st.chat_message(message["role"]):
+    avatar = "🧑" if message["role"] == "user" else "🌎"
+
+    with st.chat_message(message["role"], avatar=avatar):
         st.markdown(message["content"])
 
-# Chat input stays at the bottom of the app, similar to ChatGPT
 question = st.chat_input(
     "Ask about city rankings, tradeoffs, methodology, or limitations..."
-)
-
-response_mode = st.sidebar.radio(
-    "Answer style",
-    ["template", "llm"],
-    index=0,
 )
 
 if question:
@@ -212,7 +206,7 @@ if question:
         {"role": "user", "content": question}
     )
 
-    with st.chat_message("user"):
+    with st.chat_message("user", avatar="🧑"):
         st.markdown(question)
 
     agent_payload = {
@@ -220,33 +214,18 @@ if question:
         "question": question,
         "top_n": top_n,
         "top_k_context": 4,
-        "response_mode": response_mode,
     }
 
     try:
         agent_response = query_agent_from_api(agent_payload)
-
         assistant_response = agent_response["answer"]
 
         st.session_state.messages.append(
             {"role": "assistant", "content": assistant_response}
         )
 
-        with st.chat_message("assistant"):
+        with st.chat_message("assistant", avatar="🌎"):
             st.markdown(assistant_response)
-
-            # with st.expander("Sources"):
-            #     st.write(", ".join(agent_response["sources"]))
-
-            # with st.expander("Governance metadata"):
-            #     st.json(agent_response["metadata"])
-
-            # with st.expander("Retrieved context"):
-            #     for chunk in agent_response["retrieved_context"]:
-            #         st.markdown(
-            #             f"**{chunk['source']} — chunk {chunk['chunk_index']}**"
-            #         )
-            #         st.write(chunk["text"])
 
     except requests.RequestException as exc:
         error_message = f"Could not reach CityFit Agent API: {exc}"
@@ -255,7 +234,7 @@ if question:
             {"role": "assistant", "content": error_message}
         )
 
-        with st.chat_message("assistant"):
+        with st.chat_message("assistant", avatar="🌎"):
             st.error(error_message)
 
 st.caption(
