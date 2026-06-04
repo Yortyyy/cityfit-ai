@@ -5,7 +5,6 @@ from dataclasses import dataclass
 @dataclass
 class LLMResponse:
     """Standard response returned by all LLM providers."""
-
     text: str
     provider: str
     model: str

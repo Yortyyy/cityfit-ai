@@ -17,28 +17,37 @@ class RetrievedChunk:
     distance: float
 
 
-def get_collection():
+def get_collection(
+    embedding_function=None,
+    collection_name: str = COLLECTION_NAME,
+):
     """Load the existing Chroma knowledge-base collection."""
-    embedding_function = SentenceTransformerEmbeddingFunction(
-        model_name=EMBEDDING_MODEL_NAME
-    )
+    if embedding_function is None:
+        embedding_function = SentenceTransformerEmbeddingFunction(
+            model_name=EMBEDDING_MODEL_NAME
+        )
 
     client = chromadb.PersistentClient(path=str(VECTOR_STORE_DIR))
 
     return client.get_collection(
-        name=COLLECTION_NAME,
+        name=collection_name,
         embedding_function=embedding_function,
     )
 
 
-def retrieve_context(query: str, top_k: int = 4) -> list[RetrievedChunk]:
-    """
-    Retrieve relevant knowledge-base chunks for a query.
-    """
+def retrieve_context(
+    query: str,
+    top_k: int = 4,
+    embedding_function=None,
+    collection_name: str = COLLECTION_NAME,
+) -> list[RetrievedChunk]:
     if not query.strip():
         raise ValueError("Query cannot be empty.")
 
-    collection = get_collection()
+    collection = get_collection(
+        embedding_function=embedding_function,
+        collection_name=collection_name,
+    )
 
     results = collection.query(
         query_texts=[query],

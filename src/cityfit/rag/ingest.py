@@ -84,7 +84,11 @@ def build_documents(markdown_files: Iterable[Path]) -> tuple[list[str], list[str
     return ids, documents, metadatas
 
 
-def get_chroma_collection(reset: bool = False, embedding_function=None):
+def get_chroma_collection(
+    reset: bool = False,
+    embedding_function=None,
+    collection_name: str = COLLECTION_NAME,
+):
     """Create or load the local Chroma collection."""
     VECTOR_STORE_DIR.mkdir(parents=True, exist_ok=True)
 
@@ -97,29 +101,28 @@ def get_chroma_collection(reset: bool = False, embedding_function=None):
 
     if reset:
         existing_collections = [collection.name for collection in client.list_collections()]
-        if COLLECTION_NAME in existing_collections:
-            client.delete_collection(COLLECTION_NAME)
+        if collection_name in existing_collections:
+            client.delete_collection(collection_name)
 
     return client.get_or_create_collection(
-        name=COLLECTION_NAME,
+        name=collection_name,
         embedding_function=embedding_function,
         metadata={"description": "CityFit AI knowledge base"},
     )
 
 
-def ingest_knowledge_base(reset: bool = True, embedding_function=None) -> int:
-    """
-    Ingest markdown knowledge base files into Chroma.
-
-    Returns:
-        Number of chunks ingested.
-    """
+def ingest_knowledge_base(
+    reset: bool = True,
+    embedding_function=None,
+    collection_name: str = COLLECTION_NAME,
+) -> int:
     markdown_files = read_markdown_files()
     ids, documents, metadatas = build_documents(markdown_files)
 
     collection = get_chroma_collection(
         reset=reset,
         embedding_function=embedding_function,
+        collection_name=collection_name,
     )
 
     collection.add(
