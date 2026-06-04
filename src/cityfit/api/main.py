@@ -83,4 +83,5 @@ def query_agent(request: AgentQueryRequest):
         question=request.question,
         profile=profile,
         top_k_context=request.top_k_context,
+        response_mode=request.response_mode,
     )

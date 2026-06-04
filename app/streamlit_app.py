@@ -43,7 +43,7 @@ def get_recommendations_from_api(payload: dict) -> list[dict]:
     return response.json()["recommendations"]
 
 def query_agent_from_api(payload: dict) -> dict:
-    response = requests.post(f"{API_URL}/agent/query", json=payload, timeout=20)
+    response = requests.post(f"{API_URL}/agent/query", json=payload, timeout=120)
     response.raise_for_status()
     return response.json()
 
@@ -201,6 +201,12 @@ question = st.chat_input(
     "Ask about city rankings, tradeoffs, methodology, or limitations..."
 )
 
+response_mode = st.sidebar.radio(
+    "Answer style",
+    ["template", "llm"],
+    index=0,
+)
+
 if question:
     st.session_state.messages.append(
         {"role": "user", "content": question}
@@ -214,6 +220,7 @@ if question:
         "question": question,
         "top_n": top_n,
         "top_k_context": 4,
+        "response_mode": response_mode,
     }
 
     try:

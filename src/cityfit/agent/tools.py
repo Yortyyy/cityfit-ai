@@ -46,36 +46,37 @@ def get_city_metrics(city: str, profile: UserProfile) -> dict | None:
 
 
 def compare_cities(cities: list[str], profile: UserProfile) -> list[dict]:
-    """Return scored metrics for selected cities."""
+    """Return scored metrics for selected cities in the same order requested."""
     ranked_df = get_ranked_city_data(profile)
 
-    normalized_cities = {city.lower() for city in cities}
+    requested_order = {city.lower(): index for index, city in enumerate(cities)}
 
     comparison_df = ranked_df[
-        ranked_df["city"].str.lower().isin(normalized_cities)
-    ].sort_values("cityfit_rank")
+        ranked_df["city"].str.lower().isin(requested_order.keys())
+    ].copy()
 
-    return comparison_df.to_dict(orient="records")
+    comparison_df["requested_order"] = (
+        comparison_df["city"].str.lower().map(requested_order)
+    )
+
+    comparison_df = comparison_df.sort_values("requested_order")
+
+    return comparison_df.drop(columns=["requested_order"]).to_dict(orient="records")
 
 
 def extract_city_names(question: str, available_cities: list[str]) -> list[str]:
-    """
-    Simple city extraction from the user's question.
-
-    This is intentionally deterministic for now. Later, an LLM or structured parser
-    can replace this.
-    """
-    found_cities = []
-
+    """Extract city names in the order they appear in the question."""
+    matches = []
     question_lower = question.lower()
 
     for city in available_cities:
         pattern = r"\b" + re.escape(city.lower()) + r"\b"
+        match = re.search(pattern, question_lower)
 
-        if re.search(pattern, question_lower):
-            found_cities.append(city)
+        if match:
+            matches.append((match.start(), city))
 
-    return found_cities
+    return [city for _, city in sorted(matches)]
 
 
 def get_available_cities() -> list[str]:

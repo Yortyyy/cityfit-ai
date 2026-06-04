@@ -37,6 +37,7 @@ class RecommendationResponse(BaseModel):
 class AgentQueryRequest(UserProfile):
     question: str
     top_k_context: int = Field(default=4, ge=1, le=10)
+    response_mode: str = Field(default="template", pattern="^(template|llm)$")
 
 
 class RetrievedContextChunk(BaseModel):

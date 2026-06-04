@@ -6,16 +6,60 @@ from cityfit.agent.tools import (
     rank_city_recommendations,
 )
 from cityfit.api.schemas import UserProfile
+from cityfit.llm.provider import get_llm_provider
 from cityfit.rag.retriever import retrieve_context
 
 
 DATA_VERSION = "numbeo_2026_sample_v1"
 
 
+def _build_llm_prompt(
+    question: str,
+    draft_answer: str,
+    sources: list[str],
+    city_results: list[dict],
+) -> str:
+    city_summary = "\n".join(
+        [
+            f"- {city['city']}, {city['country']}: "
+            f"CityFit rank {int(city['cityfit_rank'])}, "
+            f"score {city['cityfit_score']:.2f}, "
+            f"cost {city['cost_of_living_index']:.1f}, "
+            f"safety {city['safety_index']:.1f}, "
+            f"healthcare {city['healthcare_index']:.1f}"
+            for city in city_results[:10]
+        ]
+    )
+
+    return f"""
+You are CityFit AI, a grounded city recommendation assistant.
+
+Answer the user's question using only the provided CityFit metrics and retrieved project context.
+
+User question:
+{question}
+
+Draft structured answer:
+{draft_answer}
+
+City metrics:
+{city_summary}
+
+Retrieved sources:
+{", ".join(sources)}
+
+Rules:
+- Do not invent lifestyle, visa, neighborhood, job market, or current-event details.
+- Clearly explain tradeoffs.
+- Mention limitations if the available data is incomplete.
+- Keep the answer concise and practical.
+"""
+
 def build_agent_answer(
     question: str,
     profile: UserProfile,
     top_k_context: int = 4,
+    response_mode: str = "template",
 ) -> dict:
     """
     Build an auditable CityFit agent response.
@@ -44,8 +88,23 @@ def build_agent_answer(
 
     sources = sorted({chunk.source for chunk in retrieved_chunks})
 
+    provider = get_llm_provider(response_mode)
+
+    if response_mode == "llm":
+        llm_prompt = _build_llm_prompt(
+            question=question,
+            draft_answer=answer,
+            sources=sources,
+            city_results=city_results,
+        )
+        llm_response = provider.generate(llm_prompt)
+        final_answer = llm_response.text
+    else:
+        llm_response = provider.generate(answer)
+        final_answer = llm_response.text
+
     return {
-        "answer": answer,
+        "answer": final_answer,
         "cities_compared": requested_cities,
         "city_results": _clean_city_results(city_results),
         "sources": sources,
@@ -62,8 +121,8 @@ def build_agent_answer(
             "prompt_version": AGENT_PROMPT_VERSION,
             "data_version": DATA_VERSION,
             "tools_used": tools_used,
-            "model_provider": "deterministic_template",
-            "model_name": "no_llm_v1",
+            "model_provider": llm_response.provider,
+            "model_name": llm_response.model,
             "limitations": [
                 "Uses a small educational city dataset.",
                 "CityFit scoring is heuristic and user-priority based.",
@@ -81,7 +140,7 @@ def _build_comparison_answer(question: str, city_results: list[dict]) -> str:
             "Try asking about cities included in the current sample dataset."
         )
 
-    best_city = city_results[0]
+    best_city = min(city_results, key=lambda city: city["cityfit_rank"])
 
     lines = [
         f"I compared {len(city_results)} requested cities using the current CityFit profile.",
@@ -93,14 +152,22 @@ def _build_comparison_answer(question: str, city_results: list[dict]) -> str:
     ]
 
     for city in city_results:
-        lines.append(
-            f"- {city['city']}: CityFit rank {int(city['cityfit_rank'])}, "
-            f"Numbeo QoL rank {int(city['numbeo_qol_rank'])}, "
-            f"cost index {city['cost_of_living_index']:.1f}, "
-            f"safety {city['safety_index']:.1f}, "
-            f"healthcare {city['healthcare_index']:.1f}. "
-            f"{city.get('explanation', '')}"
-        )
+        lines.extend(
+        [
+            f"### {city['city']}, {city['country']}",
+            f"- **CityFit rank:** {int(city['cityfit_rank'])}",
+            f"- **Numbeo QoL rank:** {int(city['numbeo_qol_rank'])}",
+            f"- **CityFit score:** {city['cityfit_score']:.2f}",
+            f"- **Cost of living:** {city['cost_of_living_index']:.1f}",
+            f"- **Safety:** {city['safety_index']:.1f}",
+            f"- **Healthcare:** {city['healthcare_index']:.1f}",
+            f"- **Climate:** {city['climate_index']:.1f}",
+            f"- **Pollution:** {city['pollution_index']:.1f}",
+            "",
+            f"**Takeaway:** {city.get('explanation', '')}",
+            "",
+        ]
+    )
 
     lines.extend(
         [
