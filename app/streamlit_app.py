@@ -50,7 +50,7 @@ def query_agent_from_api(payload: dict) -> dict:
 def normalize_priority(value: int) -> float:
     return value / 5
 
-payload = {
+base_payload = {
     "priority_safety": normalize_priority(priority_safety_ui),
     "priority_healthcare": normalize_priority(priority_healthcare_ui),
     "priority_climate": normalize_priority(priority_climate_ui),
@@ -59,11 +59,16 @@ payload = {
     "priority_housing": normalize_priority(priority_housing_ui),
     "priority_low_pollution": normalize_priority(priority_low_pollution_ui),
     "remote_worker": remote_worker,
+}
+
+recommendation_payload = {
+    **base_payload,
     "top_n": 50,
 }
 
+
 try:
-    recommendations = get_recommendations_from_api(payload)
+    recommendations = get_recommendations_from_api(recommendation_payload)
     df = pd.DataFrame(recommendations)
 except requests.RequestException as exc:
     st.error(f"Could not reach CityFit API: {exc}")
@@ -87,7 +92,8 @@ display_cols = [
 
 st.dataframe(
     df[display_cols].head(top_n),
-    width="stretch"
+    width="stretch",
+    hide_index=True,
 )
 
 st.subheader("Rank movement")
@@ -105,7 +111,7 @@ rank_movers = (
     .head(moved_ranks_n)
 )
 
-st.dataframe(rank_movers, width="stretch")
+st.dataframe(rank_movers, width="stretch", hide_index=True)
 
 st.subheader("Biggest ranking changes")
 
@@ -140,6 +146,7 @@ fig.update_traces(
 fig.update_layout(
     xaxis_title="City",
     yaxis_title="Rank Difference",
+    coloraxis_showscale=False,
 )
 
 fig.update_xaxes(
@@ -169,6 +176,7 @@ if selected_cities:
     st.dataframe(
         comparison_df[display_cols],
         width="stretch",
+        hide_index=True,
     )
 
     st.subheader("City explanations")
@@ -177,12 +185,6 @@ if selected_cities:
         st.write(f"**{row['city']}**")
         st.write(row["explanation"])
 
-st.subheader("City explanations")
-
-st.caption(
-    "Data note: This app uses a small educational sample derived from Numbeo city ranking pages. "
-    "Numbeo data is credited to Numbeo.com and is not covered by this repository's code license."
-)
 
 st.subheader("Ask CityFit AI")
 
@@ -207,22 +209,15 @@ if question:
     with st.chat_message("user"):
         st.markdown(question)
 
-    payload = {
+    agent_payload = {
+        **base_payload,
         "question": question,
-        "priority_safety": priority_safety,
-        "priority_healthcare": priority_healthcare,
-        "priority_climate": priority_climate,
-        "priority_purchasing_power": priority_purchasing_power,
-        "priority_low_cost": priority_low_cost,
-        "priority_housing": priority_housing,
-        "priority_low_pollution": priority_low_pollution,
-        "remote_worker": remote_worker,
         "top_n": top_n,
         "top_k_context": 4,
     }
 
     try:
-        agent_response = query_agent_from_api(payload)
+        agent_response = query_agent_from_api(agent_payload)
 
         assistant_response = agent_response["answer"]
 
@@ -255,3 +250,8 @@ if question:
 
         with st.chat_message("assistant"):
             st.error(error_message)
+
+st.caption(
+    "Data note: This app uses a small educational sample derived from Numbeo city ranking pages. "
+    "Numbeo data is credited to Numbeo.com and is not covered by this repository's code license."
+)
