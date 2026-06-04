@@ -2,6 +2,10 @@ from cityfit.rag.ingest import ingest_knowledge_base
 from cityfit.rag.retriever import retrieve_context
 
 
+class FakeEmbeddingFunction:
+    def __call__(self, input):
+        return [[0.1, 0.2, 0.3] for _ in input]
+
 def test_retrieve_context_returns_chunks():
     ingest_knowledge_base(reset=True)
 

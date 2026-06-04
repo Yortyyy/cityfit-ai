@@ -84,13 +84,14 @@ def build_documents(markdown_files: Iterable[Path]) -> tuple[list[str], list[str
     return ids, documents, metadatas
 
 
-def get_chroma_collection(reset: bool = False):
+def get_chroma_collection(reset: bool = False, embedding_function=None):
     """Create or load the local Chroma collection."""
     VECTOR_STORE_DIR.mkdir(parents=True, exist_ok=True)
 
-    embedding_function = SentenceTransformerEmbeddingFunction(
-        model_name=EMBEDDING_MODEL_NAME
-    )
+    if embedding_function is None:
+        embedding_function = SentenceTransformerEmbeddingFunction(
+            model_name=EMBEDDING_MODEL_NAME
+        )
 
     client = chromadb.PersistentClient(path=str(VECTOR_STORE_DIR))
 
@@ -106,7 +107,7 @@ def get_chroma_collection(reset: bool = False):
     )
 
 
-def ingest_knowledge_base(reset: bool = True) -> int:
+def ingest_knowledge_base(reset: bool = True, embedding_function=None) -> int:
     """
     Ingest markdown knowledge base files into Chroma.
 
@@ -116,7 +117,10 @@ def ingest_knowledge_base(reset: bool = True) -> int:
     markdown_files = read_markdown_files()
     ids, documents, metadatas = build_documents(markdown_files)
 
-    collection = get_chroma_collection(reset=reset)
+    collection = get_chroma_collection(
+        reset=reset,
+        embedding_function=embedding_function,
+    )
 
     collection.add(
         ids=ids,
