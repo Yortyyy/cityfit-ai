@@ -143,36 +143,59 @@ def _build_comparison_answer(question: str, city_results: list[dict]) -> str:
     best_city = min(city_results, key=lambda city: city["cityfit_rank"])
 
     lines = [
-        f"I compared {len(city_results)} requested cities using the current CityFit profile.",
+        "## Summary",
         "",
-        f"Best match among the requested cities: {best_city['city']}, {best_city['country']}.",
-        f"It has a CityFit rank of {int(best_city['cityfit_rank'])} and a CityFit score of {best_city['cityfit_score']:.2f}.",
+        (
+            f"Among the requested cities, **{best_city['city']}, {best_city['country']}** "
+            f"is the strongest CityFit match with a score of **{best_city['cityfit_score']:.2f}**."
+        ),
         "",
-        "City tradeoffs:",
+        "## City comparison",
+        "",
     ]
 
     for city in city_results:
+        rank_gap = int(city["numbeo_qol_rank"] - city["cityfit_rank"])
+
+        if rank_gap > 0:
+            rank_note = f"moves up {rank_gap} spots versus the Numbeo baseline"
+        elif rank_gap < 0:
+            rank_note = f"moves down {abs(rank_gap)} spots versus the Numbeo baseline"
+        else:
+            rank_note = "stays aligned with its Numbeo baseline rank"
+
         lines.extend(
-        [
-            f"### {city['city']}, {city['country']}",
-            f"- **CityFit rank:** {int(city['cityfit_rank'])}",
-            f"- **Numbeo QoL rank:** {int(city['numbeo_qol_rank'])}",
-            f"- **CityFit score:** {city['cityfit_score']:.2f}",
-            f"- **Cost of living:** {city['cost_of_living_index']:.1f}",
-            f"- **Safety:** {city['safety_index']:.1f}",
-            f"- **Healthcare:** {city['healthcare_index']:.1f}",
-            f"- **Climate:** {city['climate_index']:.1f}",
-            f"- **Pollution:** {city['pollution_index']:.1f}",
-            "",
-            f"**Takeaway:** {city.get('explanation', '')}",
-            "",
-        ]
-    )
+            [
+                f"### {city['city']}, {city['country']}",
+                "",
+                "**Ranking**",
+                f"- CityFit rank: **{int(city['cityfit_rank'])}**",
+                f"- Numbeo QoL rank: **{int(city['numbeo_qol_rank'])}**",
+                f"- Rank movement: **{rank_note}**",
+                "",
+                "**Key metrics**",
+                f"- CityFit score: **{city['cityfit_score']:.2f}**",
+                f"- Cost of living: **{city['cost_of_living_index']:.1f}**",
+                f"- Purchasing power: **{city['purchasing_power_index']:.1f}**",
+                f"- Safety: **{city['safety_index']:.1f}**",
+                f"- Healthcare: **{city['healthcare_index']:.1f}**",
+                f"- Climate: **{city['climate_index']:.1f}**",
+                f"- Pollution: **{city['pollution_index']:.1f}**",
+                "",
+                "**Takeaway**",
+                city.get("explanation", "No explanation available."),
+                "",
+            ]
+        )
 
     lines.extend(
         [
+            "## Limitation",
             "",
-            "This recommendation is informational and should be checked against current local data before making relocation decisions.",
+            (
+                "This comparison is based only on the current CityFit metrics. It does not include "
+                "neighborhood-level lifestyle, job market, visa, tax, housing availability, or real-time local data."
+            ),
         ]
     )
 
@@ -186,26 +209,41 @@ def _build_ranking_answer(question: str, city_results: list[dict]) -> str:
     top_city = city_results[0]
 
     lines = [
-        "I ranked cities using the current CityFit profile and available city metrics.",
+        "## Summary",
         "",
-        f"Top recommendation: {top_city['city']}, {top_city['country']}.",
-        f"It has a CityFit rank of {int(top_city['cityfit_rank'])} and a CityFit score of {top_city['cityfit_score']:.2f}.",
+        (
+            f"Based on the current CityFit profile, **{top_city['city']}, {top_city['country']}** "
+            "is the top recommendation."
+        ),
         "",
-        "Top cities:",
+        "## Top recommendations",
+        "",
     ]
 
     for city in city_results[:5]:
-        lines.append(
-            f"- {city['city']}: CityFit rank {int(city['cityfit_rank'])}, "
-            f"score {city['cityfit_score']:.2f}, "
-            f"cost index {city['cost_of_living_index']:.1f}, "
-            f"safety {city['safety_index']:.1f}."
+        lines.extend(
+            [
+                f"### {city['city']}, {city['country']}",
+                f"- CityFit rank: **{int(city['cityfit_rank'])}**",
+                f"- CityFit score: **{city['cityfit_score']:.2f}**",
+                f"- Purchasing power: **{city['purchasing_power_index']:.1f}**",
+                f"- Cost of living: **{city['cost_of_living_index']:.1f}**",
+                f"- Safety: **{city['safety_index']:.1f}**",
+                f"- Healthcare: **{city['healthcare_index']:.1f}**",
+                "",
+                f"**Takeaway:** {city.get('explanation', 'No explanation available.')}",
+                "",
+            ]
         )
 
     lines.extend(
         [
+            "## Limitation",
             "",
-            "These results are based on a small educational dataset and should be treated as decision support, not final relocation advice.",
+            (
+                "These results are based on a small educational dataset and should be treated as "
+                "decision support, not final relocation advice."
+            ),
         ]
     )
 

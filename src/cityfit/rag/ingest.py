@@ -1,8 +1,8 @@
 from pathlib import Path
 from typing import Iterable
 
-import chromadb
-from chromadb.utils.embedding_functions import SentenceTransformerEmbeddingFunction
+import chromadb # type: ignore
+from chromadb.utils.embedding_functions import SentenceTransformerEmbeddingFunction # type: ignore
 
 from cityfit.config import DATA_DIR, COLLECTION_NAME, EMBEDDING_MODEL_NAME, VECTOR_STORE_DIR
 

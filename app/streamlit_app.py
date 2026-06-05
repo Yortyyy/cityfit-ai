@@ -14,6 +14,28 @@ st.set_page_config(
     layout="wide",
 )
 
+# Chat emoji align with headers
+st.markdown(
+    """
+    <style>
+    div[data-testid="stChatMessage"] {
+        align-items: flex-start;
+    }
+
+    div[data-testid="stChatMessage"] div[data-testid="stAvatar"] {
+        margin-top: 0.55rem;
+    }
+
+    div[data-testid="stChatMessage"] h2 {
+        margin-top: 0;
+        padding-top: 0;
+        line-height: 1.15;
+    }
+    </style>
+    """,
+    unsafe_allow_html=True,
+)
+
 st.title("🌎 CityFit AI")
 st.write(
     "Compare Numbeo's baseline Quality of Life ranking against a personalized "
