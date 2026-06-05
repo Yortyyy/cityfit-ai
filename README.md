@@ -58,6 +58,10 @@ CityFit agent tools:
     - compare_cities
     - get_city_metrics
   ↓
+Response provider:
+    - template provider for deterministic responses
+    - optional Ollama provider for local LLM-generated responses
+  ↓
 Structured response:
     - answer
     - compared cities
@@ -92,6 +96,22 @@ Streamlit app:
 
 `http://localhost:8501`
 
+Run the full app with deterministic/template responses:
+
+`docker compose up api streamlit`
+
+Run the full app with local Ollama available:
+
+`docker compose up api streamlit ollama`
+
+If using Ollama for the first time, pull a model:
+
+`docker exec -it cityfit-ollama ollama pull llama3.1:8b`
+
+For faster local testing, use a smaller model:
+
+`docker exec -it cityfit-ollama ollama pull llama3.2:3b`
+
 ## RAG Knowledge Base
 
 The RAG system retrieves from markdown documents in:
@@ -119,6 +139,24 @@ Generated vector database files are stored locally in:
 `data/vector_store/`
 
 This folder is ignored by Git because it is a generated artifact.
+
+## LLM Providers
+
+CityFit supports provider-swappable response generation.
+
+Current providers:
+
+- `template`: deterministic response generation with no LLM required
+- `llm`: local Ollama response generation
+
+The default mode is `template` because it is reproducible, fast, and free.
+
+The Ollama provider can be enabled for more natural language responses while still using the same retrieved context, city metrics, and agent tools.
+
+Supported local models can be configured through Docker environment variables:
+
+- `OLLAMA_BASE_URL`
+- `OLLAMA_MODEL`
 
 ## API Endpoints
 
@@ -216,14 +254,15 @@ This project does not redistribute a full Numbeo dataset or use automated scrapi
 - The current dataset is small and intended for educational/portfolio use.
 - CityFit scoring is heuristic and based on configurable weights.
 - The ML model currently uses synthetic labels derived from the CityFit Score.
-- The agent is currently deterministic and tool-orchestrated; it does not yet call a hosted LLM.
+- The agent supports deterministic template responses and optional local Ollama responses. Hosted LLM providers such as OpenAI, Anthropic, Gemini, or Bedrock are not yet implemented.
 - Recommendations are informational and should not be treated as financial, legal, immigration, medical, or relocation advice.
 
 ## Roadmap
 
 Planned improvements:
 
-- Add optional LLM provider abstraction
+- Add hosted LLM providers such as OpenAI, Anthropic, Gemini, or Bedrock
+- Add response-mode evaluation for template vs Ollama outputs
 - Add richer city/country/region filtering
 - Expand the city dataset
 - Add more knowledge-base documents
