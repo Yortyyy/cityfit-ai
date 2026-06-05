@@ -55,6 +55,8 @@ priority_low_pollution_ui = st.sidebar.slider("Low pollution", 0, 10, 5)
 
 remote_worker = st.sidebar.checkbox("I work remotely", value=False)
 
+show_dev_details = st.sidebar.checkbox("Show developer details", value=False)
+
 st.subheader("Top CityFit recommendations")
 
 top_n = st.slider("Number of cities to show", 5, 50, 15)
@@ -248,6 +250,20 @@ if question:
 
         with st.chat_message("assistant", avatar="🌎"):
             st.markdown(assistant_response)
+
+            if show_dev_details:
+                with st.expander("Sources"):
+                    st.write(", ".join(agent_response["sources"]))
+
+                with st.expander("Governance metadata"):
+                    st.json(agent_response["metadata"])
+
+                with st.expander("Retrieved context"):
+                    for chunk in agent_response["retrieved_context"]:
+                        st.markdown(
+                            f"**{chunk['source']} — chunk {chunk['chunk_index']}**"
+                        )
+                        st.write(chunk["text"])
 
     except requests.RequestException as exc:
         error_message = f"Could not reach CityFit Agent API: {exc}"
