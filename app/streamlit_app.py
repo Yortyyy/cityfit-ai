@@ -212,6 +212,10 @@ if selected_cities:
 
 st.subheader("Ask CityFit AI")
 
+if st.button("Clear chat"):
+    st.session_state.messages = []
+    st.rerun()
+
 if "messages" not in st.session_state:
     st.session_state.messages = []
 
