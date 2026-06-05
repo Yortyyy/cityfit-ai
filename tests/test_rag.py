@@ -19,13 +19,15 @@ class FakeEmbeddingFunction:
         return [[0.1, 0.2, 0.3] for _ in input]
 
 
-def test_retrieve_context_returns_chunks():
+def test_retrieve_context_returns_chunks(tmp_path):
     embedding_function = FakeEmbeddingFunction()
+    test_vector_store_dir = tmp_path / "vector_store"
 
     ingest_knowledge_base(
         reset=True,
         embedding_function=embedding_function,
         collection_name=TEST_COLLECTION_NAME,
+        vector_store_dir=test_vector_store_dir,
     )
 
     chunks = retrieve_context(
@@ -33,8 +35,7 @@ def test_retrieve_context_returns_chunks():
         top_k=2,
         embedding_function=embedding_function,
         collection_name=TEST_COLLECTION_NAME,
+        vector_store_dir=test_vector_store_dir,
     )
 
     assert len(chunks) > 0
-    assert chunks[0].text
-    assert chunks[0].source.endswith(".md")

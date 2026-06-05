@@ -4,7 +4,7 @@ from typing import Iterable
 import chromadb
 from chromadb.utils.embedding_functions import SentenceTransformerEmbeddingFunction
 
-from cityfit.config import DATA_DIR
+from cityfit.config import DATA_DIR, COLLECTION_NAME, EMBEDDING_MODEL_NAME, VECTOR_STORE_DIR
 
 
 KNOWLEDGE_BASE_DIR = DATA_DIR / "knowledge_base"
@@ -88,21 +88,25 @@ def get_chroma_collection(
     reset: bool = False,
     embedding_function=None,
     collection_name: str = COLLECTION_NAME,
+    vector_store_dir: Path = VECTOR_STORE_DIR,
 ):
     """Create or load the local Chroma collection."""
-    VECTOR_STORE_DIR.mkdir(parents=True, exist_ok=True)
+    vector_store_dir.mkdir(parents=True, exist_ok=True)
 
     if embedding_function is None:
         embedding_function = SentenceTransformerEmbeddingFunction(
             model_name=EMBEDDING_MODEL_NAME
         )
 
-    client = chromadb.PersistentClient(path=str(VECTOR_STORE_DIR))
+    client = chromadb.PersistentClient(path=str(vector_store_dir))
 
     if reset:
-        existing_collections = [collection.name for collection in client.list_collections()]
+        existing_collections = [
+            collection.name for collection in client.list_collections()
+        ]
+
         if collection_name in existing_collections:
-            client.delete_collection(collection_name)
+            client.delete_collection(name=collection_name)
 
     return client.get_or_create_collection(
         name=collection_name,
@@ -115,7 +119,14 @@ def ingest_knowledge_base(
     reset: bool = True,
     embedding_function=None,
     collection_name: str = COLLECTION_NAME,
+    vector_store_dir: Path = VECTOR_STORE_DIR,
 ) -> int:
+    """
+    Ingest markdown knowledge base files into Chroma.
+
+    Returns:
+        Number of chunks ingested.
+    """
     markdown_files = read_markdown_files()
     ids, documents, metadatas = build_documents(markdown_files)
 
@@ -123,6 +134,7 @@ def ingest_knowledge_base(
         reset=reset,
         embedding_function=embedding_function,
         collection_name=collection_name,
+        vector_store_dir=vector_store_dir,
     )
 
     collection.add(

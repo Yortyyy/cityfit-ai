@@ -1,9 +1,10 @@
 from dataclasses import dataclass
-
-from cityfit.rag.ingest import COLLECTION_NAME, EMBEDDING_MODEL_NAME, VECTOR_STORE_DIR
+from pathlib import Path
 
 import chromadb
 from chromadb.utils.embedding_functions import SentenceTransformerEmbeddingFunction
+
+from cityfit.config import COLLECTION_NAME, EMBEDDING_MODEL_NAME, VECTOR_STORE_DIR
 
 
 @dataclass
@@ -20,6 +21,7 @@ class RetrievedChunk:
 def get_collection(
     embedding_function=None,
     collection_name: str = COLLECTION_NAME,
+    vector_store_dir: Path = VECTOR_STORE_DIR,
 ):
     """Load the existing Chroma knowledge-base collection."""
     if embedding_function is None:
@@ -27,7 +29,7 @@ def get_collection(
             model_name=EMBEDDING_MODEL_NAME
         )
 
-    client = chromadb.PersistentClient(path=str(VECTOR_STORE_DIR))
+    client = chromadb.PersistentClient(path=str(vector_store_dir))
 
     return client.get_collection(
         name=collection_name,
@@ -40,6 +42,7 @@ def retrieve_context(
     top_k: int = 4,
     embedding_function=None,
     collection_name: str = COLLECTION_NAME,
+    vector_store_dir: Path = VECTOR_STORE_DIR,
 ) -> list[RetrievedChunk]:
     if not query.strip():
         raise ValueError("Query cannot be empty.")
@@ -47,6 +50,7 @@ def retrieve_context(
     collection = get_collection(
         embedding_function=embedding_function,
         collection_name=collection_name,
+        vector_store_dir=vector_store_dir,
     )
 
     results = collection.query(
