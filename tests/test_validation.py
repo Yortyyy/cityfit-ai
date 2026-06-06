@@ -9,6 +9,7 @@ def make_valid_city_metrics_df() -> pd.DataFrame:
         {
             "source_rank": [1, 2],
             "city": ["Tampa", "Madrid"],
+            "state": ["Florida", None],
             "country": ["United States", "Spain"],
             "numbeo_quality_of_life_index": [175.0, 180.0],
             "purchasing_power_index": [105.0, 72.0],

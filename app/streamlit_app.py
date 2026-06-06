@@ -29,7 +29,7 @@ st.markdown(
     div[data-testid="stChatMessage"] h2 {
         margin-top: 0;
         padding-top: 0;
-        line-height: 1.15;
+        line-height: 1;
     }
     </style>
     """,
@@ -87,7 +87,7 @@ base_payload = {
 
 recommendation_payload = {
     **base_payload,
-    "top_n": 50,
+    "top_n": 500,
 }
 
 
@@ -212,10 +212,6 @@ if selected_cities:
 
 st.subheader("Ask CityFit AI")
 
-if st.button("Clear chat"):
-    st.session_state.messages = []
-    st.rerun()
-
 if "messages" not in st.session_state:
     st.session_state.messages = []
 
@@ -278,6 +274,10 @@ if question:
 
         with st.chat_message("assistant", avatar="🌎"):
             st.error(error_message)
+
+if st.button("Clear chat"):
+    st.session_state.messages = []
+    st.rerun()
 
 st.caption(
     "Data note: This app uses a small educational sample derived from Numbeo city ranking pages. "

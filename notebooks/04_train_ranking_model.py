@@ -41,7 +41,6 @@ FEATURE_COLUMNS = [
     "traffic_commute_index",
     "pollution_index",
     "climate_index",
-    "quality_per_cost",
     "low_pollution_score",
     "low_traffic_score",
 ]

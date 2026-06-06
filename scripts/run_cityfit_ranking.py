@@ -23,10 +23,11 @@ def main() -> None:
     raw_df = load_city_metrics()
     validate_city_metrics(raw_df)
 
-    features_df = add_affordability_features(raw_df)
+    scored_df = calculate_cityfit_score(raw_df, REMOTE_WORKER_WEIGHTS)
+
+    features_df = scored_df.drop(columns=["cityfit_score"], errors="ignore")
     features_df.to_csv(CITY_FEATURES_PATH, index=False)
 
-    scored_df = calculate_cityfit_score(features_df, REMOTE_WORKER_WEIGHTS)
     ranked_df = add_cityfit_rank(scored_df)
     ranked_df.to_csv(CITYFIT_SCORES_PATH, index=False)
 

@@ -37,10 +37,6 @@ weights = {
 feature_df = (
     silver_df
     .withColumn(
-        "quality_per_cost",
-        F.col("numbeo_quality_of_life_index") / F.col("cost_of_living_index")
-    )
-    .withColumn(
         "purchasing_power_per_cost",
         F.col("purchasing_power_index") / F.col("cost_of_living_index")
     )
@@ -112,7 +108,6 @@ gold_df = ranked_df.select(
     "traffic_commute_index",
     "pollution_index",
     "climate_index",
-    "quality_per_cost",
     "low_pollution_score",
     "low_traffic_score",
     "source_url",

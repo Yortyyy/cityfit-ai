@@ -1,6 +1,7 @@
 REQUIRED_CITY_COLUMNS = [
     "source_rank",
     "city",
+    "state",
     "country",
     "numbeo_quality_of_life_index",
     "purchasing_power_index",

@@ -10,7 +10,7 @@ class UserProfile(BaseModel):
     priority_housing: float = Field(default=1.0, ge=0.0, le=2.0)
     priority_low_pollution: float = Field(default=0.7, ge=0.0, le=2.0)
     remote_worker: bool = True
-    top_n: int = Field(default=10, ge=1, le=50)
+    top_n: int = Field(default=10, ge=1, le=500)
 
 
 class CityRecommendation(BaseModel):

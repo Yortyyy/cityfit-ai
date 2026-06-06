@@ -1,31 +1,33 @@
 import pandas as pd
 
+from cityfit.features.transformations import add_affordability_features
+
 
 def calculate_cityfit_score(df: pd.DataFrame, weights: dict) -> pd.DataFrame:
     """
     Calculate a personalized CityFit score.
 
-    Numbeo's Quality of Life Index is treated as the baseline.
-    CityFit adjusts that score based on personalized priorities.
+    Uses transformed 0-100 feature scores so user priorities can meaningfully
+    shift city rankings.
     """
-    scored = df.copy()
+    scored = add_affordability_features(df.copy())
 
     positive_score = (
-        scored["numbeo_quality_of_life_index"] * weights["numbeo_quality_of_life"]
-        + scored["purchasing_power_index"] * weights["purchasing_power"]
-        + scored["safety_index"] * weights["safety"]
-        + scored["healthcare_index"] * weights["healthcare"]
-        + scored["climate_index"] * weights["climate"]
+        scored["qol_score"] * weights["numbeo_quality_of_life"]
+        + scored["purchasing_power_score"] * weights["purchasing_power"]
+        + scored["safety_score"] * weights["safety"]
+        + scored["healthcare_score"] * weights["healthcare"]
+        + scored["climate_score"] * weights["climate"]
     )
 
     negative_score = (
-        scored["cost_of_living_index"] * weights["cost_penalty"]
-        + scored["property_price_to_income_ratio"] * weights["housing_penalty"]
-        + scored["pollution_index"] * weights["pollution_penalty"]
-        + scored["traffic_commute_index"] * weights["traffic_penalty"]
+        scored["affordability_score"] * weights["cost_penalty"]
+        + scored["housing_affordability_score"] * weights["housing_penalty"]
+        + scored["low_pollution_score"] * weights["pollution_penalty"]
+        + scored["low_traffic_score"] * weights["traffic_penalty"]
     )
 
-    scored["cityfit_score"] = positive_score - negative_score
+    scored["cityfit_score"] = positive_score + negative_score
 
     return scored
 
