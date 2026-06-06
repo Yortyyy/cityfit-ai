@@ -11,7 +11,6 @@ from cityfit.data.load_data import load_city_metrics
 from cityfit.data.validation import validate_city_metrics
 from cityfit.features.explanations import explain_city_rank
 from cityfit.features.scoring import add_cityfit_rank, calculate_cityfit_score, rank_cities
-from cityfit.features.transformations import add_affordability_features
 from cityfit.features.weights import build_weights
 
 
@@ -25,8 +24,7 @@ def get_ranked_cities(profile: UserProfile):
     raw_df = load_city_metrics()
     validate_city_metrics(raw_df)
 
-    features_df = add_affordability_features(raw_df)
-    scored_df = calculate_cityfit_score(features_df, build_weights(profile))
+    scored_df = calculate_cityfit_score(raw_df, build_weights(profile))
     ranked_df = add_cityfit_rank(scored_df)
 
     top_df = rank_cities(ranked_df, top_n=profile.top_n).copy()

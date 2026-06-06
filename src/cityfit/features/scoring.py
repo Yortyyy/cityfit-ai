@@ -1,39 +1,46 @@
 import pandas as pd
 
-from cityfit.features.transformations import add_affordability_features
+from cityfit.features.transformations import add_cityfit_features
 
 
-def calculate_cityfit_score(df: pd.DataFrame, weights: dict) -> pd.DataFrame:
+def calculate_cityfit_score(
+    df: pd.DataFrame,
+    weights: dict,
+    personalization_strength: float = 0.20,
+) -> pd.DataFrame:
     """
-    Calculate a personalized CityFit score.
+    Calculate personalized CityFit score.
 
-    Uses transformed 0-100 feature scores so user priorities can meaningfully
-    shift city rankings.
+    Numbeo's Quality of Life Index is the baseline.
+    CityFit adds a small user-priority adjustment.
     """
-    scored = add_affordability_features(df.copy())
+    scored = add_cityfit_features(df.copy())
 
-    positive_score = (
-        scored["qol_score"] * weights["numbeo_quality_of_life"]
-        + scored["purchasing_power_score"] * weights["purchasing_power"]
+    # TODO - weights[cost of living] or weights [cost penalty]?
+    personalization_adjustment = (
+        scored["purchasing_power_score"] * weights["purchasing_power"]
         + scored["safety_score"] * weights["safety"]
         + scored["healthcare_score"] * weights["healthcare"]
         + scored["climate_score"] * weights["climate"]
+        + scored["affordability_score"] * weights["affordability"]
+        + scored["housing_affordability_score"] * weights["housing_affordability"]
+        + scored["low_pollution_score"] * weights["low_pollution"]
+        + scored["low_traffic_score"] * weights["low_traffic"]
     )
 
-    negative_score = (
-        scored["affordability_score"] * weights["cost_penalty"]
-        + scored["housing_affordability_score"] * weights["housing_penalty"]
-        + scored["low_pollution_score"] * weights["pollution_penalty"]
-        + scored["low_traffic_score"] * weights["traffic_penalty"]
+    scored["personalization_adjustment"] = (
+        personalization_adjustment * personalization_strength
     )
 
-    scored["cityfit_score"] = positive_score + negative_score
+    scored["cityfit_score"] = (
+        scored["numbeo_quality_of_life_index"]
+        + scored["personalization_adjustment"]
+    )
 
     return scored
 
 
 def add_cityfit_rank(df: pd.DataFrame) -> pd.DataFrame:
-    """Add rank columns for Numbeo baseline and personalized CityFit score."""
     ranked = df.copy()
 
     ranked["numbeo_qol_rank"] = ranked["numbeo_quality_of_life_index"].rank(
@@ -46,13 +53,14 @@ def add_cityfit_rank(df: pd.DataFrame) -> pd.DataFrame:
         method="min",
     )
 
-    ranked["rank_difference"] = ranked["numbeo_qol_rank"] - ranked["cityfit_rank"]
+    ranked["rank_difference"] = (
+        ranked["numbeo_qol_rank"] - ranked["cityfit_rank"]
+    )
 
-    return ranked.sort_values("cityfit_rank").reset_index(drop=True)
+    return ranked
 
 
-def rank_cities(df: pd.DataFrame, top_n: int = 20) -> pd.DataFrame:
-    """Return the top N cities by CityFit score."""
+def rank_cities(df: pd.DataFrame, top_n: int = 10) -> pd.DataFrame:
     return (
         df.sort_values("cityfit_score", ascending=False)
         .head(top_n)

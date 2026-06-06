@@ -5,7 +5,18 @@ from cityfit.features.scoring import (
     calculate_cityfit_score,
     rank_cities,
 )
-from cityfit.features.user_profiles import REMOTE_WORKER_WEIGHTS
+
+
+TEST_WEIGHTS = {
+    "purchasing_power": 0.15,
+    "safety": 0.20,
+    "healthcare": 0.10,
+    "climate": 0.15,
+    "affordability": 0.10,
+    "housing_affordability": 0.15,
+    "low_pollution": 0.10,
+    "low_traffic": 0.03,
+}
 
 
 def make_scoring_df() -> pd.DataFrame:
@@ -29,15 +40,26 @@ def make_scoring_df() -> pd.DataFrame:
 def test_calculate_cityfit_score_adds_score_column():
     df = make_scoring_df()
 
-    scored = calculate_cityfit_score(df, REMOTE_WORKER_WEIGHTS)
+    scored = calculate_cityfit_score(df, TEST_WEIGHTS)
 
     assert "cityfit_score" in scored.columns
+    assert "personalization_adjustment" in scored.columns
     assert scored["cityfit_score"].notna().all()
+
+
+def test_calculate_cityfit_score_uses_numbeo_qol_as_baseline():
+    df = make_scoring_df()
+
+    scored = calculate_cityfit_score(df, TEST_WEIGHTS)
+
+    assert (
+        scored["cityfit_score"] >= scored["numbeo_quality_of_life_index"]
+    ).all()
 
 
 def test_add_cityfit_rank_adds_rank_columns():
     df = make_scoring_df()
-    scored = calculate_cityfit_score(df, REMOTE_WORKER_WEIGHTS)
+    scored = calculate_cityfit_score(df, TEST_WEIGHTS)
 
     ranked = add_cityfit_rank(scored)
 
@@ -48,7 +70,7 @@ def test_add_cityfit_rank_adds_rank_columns():
 
 def test_rank_cities_returns_top_n_sorted_by_cityfit_score():
     df = make_scoring_df()
-    scored = calculate_cityfit_score(df, REMOTE_WORKER_WEIGHTS)
+    scored = calculate_cityfit_score(df, TEST_WEIGHTS)
 
     top = rank_cities(scored, top_n=2)
 

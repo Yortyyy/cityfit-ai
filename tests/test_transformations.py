@@ -1,12 +1,11 @@
 import pandas as pd
 
-from cityfit.features.transformations import add_affordability_features
+from cityfit.features.transformations import add_cityfit_features
 
 
-def test_add_affordability_features_adds_expected_columns():
+def test_add_cityfit_features_adds_expected_columns():
     df = pd.DataFrame(
         {
-            "numbeo_quality_of_life_index": [180.0],
             "cost_of_living_index": [60.0],
             "purchasing_power_index": [100.0],
             "property_price_to_income_ratio": [8.0],
@@ -18,10 +17,9 @@ def test_add_affordability_features_adds_expected_columns():
         }
     )
 
-    result = add_affordability_features(df)
+    result = add_cityfit_features(df)
 
     expected_columns = {
-        "qol_score",
         "purchasing_power_score",
         "safety_score",
         "healthcare_score",
@@ -33,12 +31,13 @@ def test_add_affordability_features_adds_expected_columns():
     }
 
     assert expected_columns.issubset(result.columns)
+    assert "qol_score" not in result.columns
+    assert "cityfit_score" not in result.columns
 
 
-def test_add_affordability_features_calculates_values_correctly():
+def test_add_cityfit_features_calculates_values_correctly():
     df = pd.DataFrame(
         {
-            "numbeo_quality_of_life_index": [180.0, 120.0],
             "cost_of_living_index": [60.0, 90.0],
             "purchasing_power_index": [100.0, 50.0],
             "property_price_to_income_ratio": [8.0, 16.0],
@@ -50,10 +49,7 @@ def test_add_affordability_features_calculates_values_correctly():
         }
     )
 
-    result = add_affordability_features(df)
-
-    assert result.loc[0, "qol_score"] == 100
-    assert result.loc[1, "qol_score"] == 0
+    result = add_cityfit_features(df)
 
     assert result.loc[0, "purchasing_power_score"] == 100
     assert result.loc[1, "purchasing_power_score"] == 0
