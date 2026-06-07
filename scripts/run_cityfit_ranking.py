@@ -11,7 +11,6 @@ from cityfit.features.scoring import (
     calculate_cityfit_score,
     rank_cities,
 )
-from cityfit.features.transformations import add_affordability_features
 from cityfit.features.user_profiles import REMOTE_WORKER_WEIGHTS
 
 

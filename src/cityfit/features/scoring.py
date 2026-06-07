@@ -16,7 +16,6 @@ def calculate_cityfit_score(
     """
     scored = add_cityfit_features(df.copy())
 
-    # TODO - weights[cost of living] or weights [cost penalty]?
     personalization_adjustment = (
         scored["purchasing_power_score"] * weights["purchasing_power"]
         + scored["safety_score"] * weights["safety"]
