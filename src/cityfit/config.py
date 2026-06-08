@@ -7,7 +7,7 @@ RAW_DATA_DIR = DATA_DIR / "raw"
 INTERIM_DATA_DIR = DATA_DIR / "interim"
 PROCESSED_DATA_DIR = DATA_DIR / "processed"
 
-CITY_METRICS_RAW_PATH = RAW_DATA_DIR / "numbeo_quality_of_life_city_current_dataset_2.csv"
+CITY_METRICS_RAW_PATH = RAW_DATA_DIR / "numbeo_quality_of_life_city_current_dataset_2_with_region.csv"
 
 CITY_METRICS_CLEAN_PATH = INTERIM_DATA_DIR / "cleaned_city_metrics.csv"
 CITY_FEATURES_PATH = PROCESSED_DATA_DIR / "city_features.csv"
