@@ -53,6 +53,19 @@ priority_low_cost_ui = st.sidebar.slider("Low cost of living", 0, 10, 5)
 priority_housing_ui = st.sidebar.slider("Housing affordability", 0, 10, 5)
 priority_low_pollution_ui = st.sidebar.slider("Low pollution", 0, 10, 5)
 
+region = st.sidebar.selectbox(
+    "Region",
+    [
+        "All",
+        "Asia",
+        "Africa",
+        "Europe",
+        "North America",
+        "South America",
+        "Oceania",
+    ],
+)
+
 remote_worker = st.sidebar.checkbox("I work remotely", value=False)
 
 show_dev_details = st.sidebar.checkbox("Show developer details", value=False)
@@ -97,6 +110,13 @@ try:
 except requests.RequestException as exc:
     st.error(f"Could not reach CityFit API: {exc}")
     st.stop()
+
+filtered_df = df.copy()
+
+if region != "All":
+    filtered_df = filtered_df[filtered_df["region"] == region]
+
+df = filtered_df
 
 display_cols = [
     "city",
