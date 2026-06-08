@@ -27,6 +27,11 @@ def get_ranked_cities(profile: UserProfile):
     scored_df = calculate_cityfit_score(raw_df, build_weights(profile))
     ranked_df = add_cityfit_rank(scored_df)
 
+    if profile.region:
+        ranked_df = ranked_df[
+            ranked_df["region"].str.lower() == profile.region.lower()
+        ]
+
     top_df = rank_cities(ranked_df, top_n=profile.top_n).copy()
     top_df["explanation"] = top_df.apply(explain_city_rank, axis=1)
 
@@ -45,6 +50,7 @@ def recommend_cities(profile: UserProfile):
     response_columns = [
         "city",
         "country",
+        "region",
         "numbeo_qol_rank",
         "cityfit_rank",
         "rank_difference",
@@ -75,6 +81,7 @@ def query_agent(request: AgentQueryRequest):
         priority_low_pollution=request.priority_low_pollution,
         remote_worker=request.remote_worker,
         top_n=request.top_n,
+        region=request.region,
     )
 
     return build_agent_answer(

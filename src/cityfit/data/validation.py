@@ -10,8 +10,8 @@ def validate_city_metrics(df: pd.DataFrame) -> None:
     if missing_columns:
         raise ValueError(f"Missing required columns: {missing_columns}")
 
-    if df[["city", "country"]].isna().any().any():
-        raise ValueError("City and country cannot contain null values.")
+    if df[["city", "country", "region"]].isna().any().any():
+        raise ValueError("City, country, and region cannot contain null values.")
 
     numeric_columns = [
         "numbeo_quality_of_life_index",

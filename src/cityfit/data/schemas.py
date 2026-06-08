@@ -3,6 +3,7 @@ REQUIRED_CITY_COLUMNS = [
     "city",
     "state",
     "country",
+    "region",
     "numbeo_quality_of_life_index",
     "purchasing_power_index",
     "safety_index",

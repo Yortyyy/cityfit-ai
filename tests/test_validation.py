@@ -11,6 +11,7 @@ def make_valid_city_metrics_df() -> pd.DataFrame:
             "city": ["Tampa", "Madrid"],
             "state": ["Florida", None],
             "country": ["United States", "Spain"],
+            "region": ["North America", "Europe"],
             "numbeo_quality_of_life_index": [175.0, 180.0],
             "purchasing_power_index": [105.0, 72.0],
             "safety_index": [60.0, 72.0],
@@ -45,7 +46,15 @@ def test_validate_city_metrics_rejects_null_city_or_country():
     df = make_valid_city_metrics_df()
     df.loc[0, "city"] = None
 
-    with pytest.raises(ValueError, match="City and country cannot contain null values"):
+    with pytest.raises(ValueError, match="City, country, and region cannot contain null values"):
+        validate_city_metrics(df)
+
+# Region added afterwards
+def test_validate_city_metrics_rejects_null_region():
+    df = make_valid_city_metrics_df()
+    df.loc[0, "region"] = None
+
+    with pytest.raises(ValueError, match="City, country, and region cannot contain null values"):
         validate_city_metrics(df)
 
 

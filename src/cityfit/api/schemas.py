@@ -12,10 +12,14 @@ class UserProfile(BaseModel):
     remote_worker: bool = True
     top_n: int = Field(default=10, ge=1, le=500)
 
+    region: str | None = Field(default=None)
+
 
 class CityRecommendation(BaseModel):
     city: str
     country: str
+    region: str
+    
     numbeo_qol_rank: float
     cityfit_rank: float
     rank_difference: float
@@ -27,6 +31,7 @@ class CityRecommendation(BaseModel):
     healthcare_index: float
     pollution_index: float
     climate_index: float
+
     explanation: str
 
 
