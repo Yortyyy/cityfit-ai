@@ -257,6 +257,7 @@ def _clean_city_results(city_results: list[dict]) -> list[dict]:
     output_columns = [
         "city",
         "country",
+        "region",
         "numbeo_qol_rank",
         "cityfit_rank",
         "rank_difference",

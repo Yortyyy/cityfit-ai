@@ -36,3 +36,18 @@ def test_agent_response_compares_requested_cities():
     assert "Tampa" in response["cities_compared"]
     assert "Madrid" in response["cities_compared"]
     assert len(response["city_results"]) >= 2
+
+def test_agent_respects_region_filter_for_recommendations():
+    profile = UserProfile(
+        region="Europe",
+        top_n=5,
+    )
+
+    response = build_agent_answer(
+        question="What are the best cities for me?",
+        profile=profile,
+        response_mode="template",
+    )
+
+    assert len(response["city_results"]) > 0
+    assert all(city["region"] == "Europe" for city in response["city_results"])
