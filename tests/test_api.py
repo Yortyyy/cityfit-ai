@@ -105,3 +105,38 @@ def test_user_profile_region_defaults_to_none():
     profile = UserProfile()
 
     assert profile.region is None
+
+def test_recommend_endpoint_filters_by_country():
+    payload = {
+        "priority_safety": 1.0,
+        "priority_healthcare": 1.0,
+        "priority_climate": 1.0,
+        "priority_purchasing_power": 1.0,
+        "priority_low_cost": 1.0,
+        "priority_housing": 1.0,
+        "priority_low_pollution": 1.0,
+        "remote_worker": True,
+        "top_n": 10,
+        "country": "Japan",
+    }
+
+    response = client.post("/recommend", json=payload)
+
+    assert response.status_code == 200
+
+    data = response.json()
+    recommendations = data["recommendations"]
+
+    assert len(recommendations) > 0
+    assert all(city["country"] == "Japan" for city in recommendations)
+
+def test_user_profile_allows_optional_country():
+    profile = UserProfile(country="United States")
+
+    assert profile.country == "United States"
+
+
+def test_user_profile_country_defaults_to_none():
+    profile = UserProfile()
+
+    assert profile.country is None

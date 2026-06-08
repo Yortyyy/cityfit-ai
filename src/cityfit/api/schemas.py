@@ -13,13 +13,14 @@ class UserProfile(BaseModel):
     top_n: int = Field(default=10, ge=1, le=500)
 
     region: str | None = Field(default=None)
+    country: str | None = Field(default=None)
 
 
 class CityRecommendation(BaseModel):
     city: str
     country: str
     region: str
-    
+
     numbeo_qol_rank: float
     cityfit_rank: float
     rank_difference: float

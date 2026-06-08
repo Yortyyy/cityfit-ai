@@ -10,6 +10,7 @@ from cityfit.api.schemas import (
 from cityfit.data.load_data import load_city_metrics
 from cityfit.data.validation import validate_city_metrics
 from cityfit.features.explanations import explain_city_rank
+from cityfit.features.filters import filter_by_country, filter_by_region
 from cityfit.features.scoring import add_cityfit_rank, calculate_cityfit_score, rank_cities
 from cityfit.features.weights import build_weights
 
@@ -27,10 +28,8 @@ def get_ranked_cities(profile: UserProfile):
     scored_df = calculate_cityfit_score(raw_df, build_weights(profile))
     ranked_df = add_cityfit_rank(scored_df)
 
-    if profile.region:
-        ranked_df = ranked_df[
-            ranked_df["region"].str.lower() == profile.region.lower()
-        ]
+    ranked_df = filter_by_region(ranked_df, profile.region)
+    ranked_df = filter_by_country(ranked_df, profile.country)
 
     top_df = rank_cities(ranked_df, top_n=profile.top_n).copy()
     top_df["explanation"] = top_df.apply(explain_city_rank, axis=1)
@@ -82,6 +81,7 @@ def query_agent(request: AgentQueryRequest):
         remote_worker=request.remote_worker,
         top_n=request.top_n,
         region=request.region,
+        country=request.country,
     )
 
     return build_agent_answer(
