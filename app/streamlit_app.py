@@ -130,7 +130,7 @@ show_dev_details = st.sidebar.checkbox("Show developer details", value=False)
 
 st.subheader("Top CityFit recommendations")
 
-top_n = st.slider("Number of cities to show", 5, 50, 15)
+top_n = st.slider("Number of cities to show", 5, 100, 15)
 
 recommendation_payload = {
     **base_payload,
