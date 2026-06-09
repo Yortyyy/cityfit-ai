@@ -146,6 +146,10 @@ except requests.RequestException as exc:
     st.error(f"Could not reach CityFit API: {exc}")
     st.stop()
 
+if recommendations_df.empty:
+    st.warning("No cities match the selected filters. Try a broader region or country.")
+    st.stop()
+
 display_cols = [
     "city",
     "country",

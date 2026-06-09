@@ -1,6 +1,6 @@
 # CityFit AI
 
-CityFit AI is a city recommendation and GenAI advisory platform that ranks cities using Numbeo-style quality-of-life metrics, a personalized CityFit Score, and a RAG-powered agent workflow.
+CityFit AI is a city recommendation and GenAI decision-support platform that ranks cities using Numbeo-style quality-of-life metrics, a personalized CityFit Score, and a RAG-powered agent workflow.
 
 The project is designed to demonstrate applied AI engineering patterns:
 
@@ -19,10 +19,10 @@ The project is designed to demonstrate applied AI engineering patterns:
 
 The current version:
 
-- Loads a 50-city Numbeo-derived sample dataset
-- Validates the expected schema
-- Engineers affordability and quality features
-- Calculates a personalized CityFit Score
+- Loads a 300+ city Numbeo-derived educational dataset
+- Validates the expected city schema, including country and region metadata
+- Calculates a personalized CityFit Score from quality-of-life, cost, safety, healthcare, climate, traffic, and pollution metrics
+- Supports region and country scoped recommendations
 - Compares CityFit ranking against Numbeo's baseline Quality of Life ranking
 - Serves recommendations through a FastAPI backend
 - Displays rankings and explanations in a Streamlit frontend
@@ -30,6 +30,7 @@ The current version:
 - Retrieves methodology and limitation context from a local RAG knowledge base
 - Returns governance metadata, sources, tools used, and limitations
 - Runs inside Docker
+- Uses a shared recommendation service so the API and agent apply the same scoring and filtering logic
 
 ## Architecture
 
@@ -38,6 +39,8 @@ Raw city metrics CSV
 Local validation + feature engineering
   ↓
 CityFit scoring logic
+  ↓
+Region/country filtering
   ↓
 FastAPI recommendation endpoints
   ↓
@@ -57,6 +60,7 @@ CityFit agent tools:
     - rank_city_recommendations
     - compare_cities
     - get_city_metrics
+    - shared region/country scoped recommendation service
   ↓
 Response provider:
     - template provider for deterministic responses
@@ -69,6 +73,21 @@ Structured response:
     - retrieved sources
     - governance metadata
     - limitations
+
+## Recommendation Service
+
+CityFit uses a shared recommendation service so the FastAPI endpoints and agent tools rely on the same ranking pipeline.
+
+The shared service handles:
+
+- loading raw city metrics
+- validating required schema fields
+- calculating CityFit scores
+- adding CityFit and Numbeo baseline ranks
+- applying optional region and country filters
+- adding human-readable city explanations where needed
+
+This avoids separate API and agent ranking logic drifting out of sync.
 
 ## Run with Docker
 
@@ -168,7 +187,7 @@ Supported local models can be configured through Docker environment variables:
 
 `POST /recommend`
 
-Returns ranked city recommendations based on user priorities.
+Returns ranked city recommendations based on user priorities, with optional region and country filters.
 
 ### Agent Query
 
@@ -186,13 +205,15 @@ Returns an auditable agent-style response with:
 - tools used
 - limitations
 
+The agent respects the same region and country filters as the recommendation endpoint.
+
 ## Databricks Lakehouse Pipeline
 
 The Databricks notebooks implement a medallion architecture:
 
 - `01_ingest_bronze.py`: reads the raw CSV and writes a Bronze Delta table
 - `02_clean_silver.py`: validates schema, casts types, removes duplicates, and writes a Silver Delta table
-- `03_feature_engineering_gold.py`: creates affordability features, calculates CityFit Score, and writes a Gold recommendation table
+- `03_feature_engineering_gold.py`: calculates CityFit Score, adds ranking fields, and writes a Gold recommendation table
 - `04_train_ranking_model.py`: trains an XGBoost ranking model and logs the experiment with MLflow
 
 Tables:
@@ -237,21 +258,23 @@ Run all tests:
 The test suite covers:
 
 - schema validation
-- feature transformations
 - CityFit scoring
+- reusable recommendation filtering
 - FastAPI endpoints
+- region and country scoped recommendations
 - RAG retrieval
 - agent response structure and governance metadata
+- API/agent consistency for filtered recommendations
 
 ## Data Notice
 
-This project uses a small educational sample derived from publicly available Numbeo city ranking pages. Numbeo data is credited to Numbeo.com and is not covered by this repository's code license.
+This project uses an educational city dataset derived from publicly available Numbeo city ranking pages. Numbeo data is credited to Numbeo.com and is not covered by this repository's code license.
 
 This project does not redistribute a full Numbeo dataset or use automated scraping.
 
 ## Limitations
 
-- The current dataset is small and intended for educational/portfolio use.
+- The current dataset is intended for educational/portfolio use and may not reflect every city or the latest real-world conditions.
 - CityFit scoring is heuristic and based on configurable weights.
 - The ML model currently uses synthetic labels derived from the CityFit Score.
 - The agent supports deterministic template responses and optional local Ollama responses. Hosted LLM providers such as OpenAI, Anthropic, Gemini, or Bedrock are not yet implemented.
@@ -263,9 +286,9 @@ Planned improvements:
 
 - Add hosted LLM providers such as OpenAI, Anthropic, Gemini, or Bedrock
 - Add response-mode evaluation for template vs Ollama outputs
-- Add richer city/country/region filtering
 - Expand the city dataset
 - Add more knowledge-base documents
+- Add richer city detail pages and comparison views
 - Add model/provider evaluation harness
 - Add optional AWS storage or deployment proof of concept
 - Add screenshots and UI polish
