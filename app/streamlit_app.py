@@ -57,14 +57,14 @@ def normalize_priority(value: int) -> float:
 
 st.sidebar.header("Your priorities")
 
-priority_safety_ui = st.sidebar.slider("Safety", 0, 10, 5)
+priority_safety_ui = st.sidebar.slider("Safety", 0, 10, 8)
 priority_healthcare_ui = st.sidebar.slider("Healthcare", 0, 10, 5)
-priority_climate_ui = st.sidebar.slider("Climate", 0, 10, 5)
-priority_purchasing_power_ui = st.sidebar.slider("Purchasing power", 0, 10, 5)
+priority_climate_ui = st.sidebar.slider("Climate", 0, 10, 8)
+priority_purchasing_power_ui = st.sidebar.slider("Purchasing power", 0, 10, 7)
 
-priority_low_cost_ui = st.sidebar.slider("Low cost of living", 0, 10, 5)
+priority_low_cost_ui = st.sidebar.slider("Low cost of living", 0, 10, 3)
 priority_housing_ui = st.sidebar.slider("Housing affordability", 0, 10, 5)
-priority_low_pollution_ui = st.sidebar.slider("Low pollution", 0, 10, 5)
+priority_low_pollution_ui = st.sidebar.slider("Low pollution", 0, 10, 7)
 
 metadata_payload = {
     "priority_safety": normalize_priority(priority_safety_ui),
@@ -173,6 +173,55 @@ st.dataframe(
     hide_index=True,
 )
 
+# TODO: If keeping both charts, make function
+#       Also, should scale color by overall cityfit_score?
+#       Not comparitive to filtered region.
+cityfit_score_bar_n = 10
+
+recommendations_bar_df = recommendations_df.head(cityfit_score_bar_n)
+
+min_score_val = all_df["cityfit_score"].min()
+max_score_val = all_df["cityfit_score"].max()
+min_score_val_2 = recommendations_bar_df["cityfit_score"].min()
+max_score_val_2 = recommendations_bar_df["cityfit_score"].max()
+
+min_scores_avg = (min_score_val + min_score_val_2) / 2
+max_scores_avg = (max_score_val + max_score_val_2) / 2
+
+padding = 1
+cityscore_color_range = [min_scores_avg - padding, max_scores_avg + padding]
+
+fig = px.bar(
+    recommendations_bar_df,
+    x="city",
+    y="cityfit_score",
+    title="Top CityFit Scorers",
+    color="cityfit_score",
+    color_continuous_scale="speed",
+    range_color=cityscore_color_range,
+)
+
+fig.update_traces(
+    hovertemplate=(
+        "<b>%{x}</b><br>"
+        "Rank movement: %{y:+.0f}<br>"
+        "<extra></extra>"
+    )
+)
+
+fig.update_layout(
+    xaxis_title="City",
+    yaxis_title="CityFit  Score",
+    coloraxis_showscale=False,
+)
+
+fig.update_xaxes(
+    categoryorder="array",
+    categoryarray=recommendations_bar_df["city"].tolist(),
+)
+
+st.plotly_chart(fig, width="stretch")
+
 st.subheader("Rank movement")
 
 moved_ranks_n = 10
@@ -198,9 +247,16 @@ movement_chart_df = (
     .head(moved_ranks_n)
 )
 
-min_rank_val = movement_chart_df["rank_difference"].min()
-max_rank_val = movement_chart_df["rank_difference"].max()
+min_rank_val = all_df["rank_difference"].min()
+max_rank_val = all_df["rank_difference"].max()
+min_rank_val_2 = movement_chart_df["rank_difference"].min()
+max_rank_val_2 = movement_chart_df["rank_difference"].max()
+
+min_ranks_avg = (min_rank_val + min_rank_val_2) / 2
+max_ranks_avg = (max_rank_val + max_rank_val_2) / 2
+
 padding = 1
+cityrank_color_range = [min_ranks_avg - padding, max_ranks_avg + padding]
 
 fig = px.bar(
     movement_chart_df,
@@ -209,7 +265,7 @@ fig = px.bar(
     title="Cities that moved up most after personalization",
     color="rank_difference",
     color_continuous_scale="speed",
-    range_color=[min_rank_val - padding, max_rank_val + padding],
+    range_color=cityrank_color_range,
 )
 
 fig.update_traces(

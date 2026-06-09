@@ -47,13 +47,23 @@ def test_calculate_cityfit_score_adds_score_column():
     assert scored["cityfit_score"].notna().all()
 
 
-def test_calculate_cityfit_score_uses_numbeo_qol_as_baseline():
+def test_calculate_cityfit_score_uses_priority_weights():
     df = make_scoring_df()
 
-    scored = calculate_cityfit_score(df, TEST_WEIGHTS)
+    low_cost_priority_weights = TEST_WEIGHTS | {
+        "cost_penalty": 0.01,
+    }
+
+    high_cost_priority_weights = TEST_WEIGHTS | {
+        "cost_penalty": 1.0,
+    }
+
+    low_penalty_scores = calculate_cityfit_score(df, low_cost_priority_weights)
+    high_penalty_scores = calculate_cityfit_score(df, high_cost_priority_weights)
 
     assert (
-        scored["cityfit_score"] >= scored["numbeo_quality_of_life_index"]
+        high_penalty_scores["cityfit_score"]
+        <= low_penalty_scores["cityfit_score"]
     ).all()
 
 
