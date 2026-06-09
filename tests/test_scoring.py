@@ -51,11 +51,11 @@ def test_calculate_cityfit_score_uses_priority_weights():
     df = make_scoring_df()
 
     low_cost_priority_weights = TEST_WEIGHTS | {
-        "cost_penalty": 0.01,
+        "affordability": 0.01,
     }
 
     high_cost_priority_weights = TEST_WEIGHTS | {
-        "cost_penalty": 1.0,
+        "affordability": 1.0,
     }
 
     low_penalty_scores = calculate_cityfit_score(df, low_cost_priority_weights)
