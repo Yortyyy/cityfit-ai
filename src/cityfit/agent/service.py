@@ -27,6 +27,8 @@ def _build_llm_prompt(
             f"cost {city['cost_of_living_index']:.1f}, "
             f"safety {city['safety_index']:.1f}, "
             f"healthcare {city['healthcare_index']:.1f}"
+            f"climate {city['climate_index']:.1f}"
+            f"pollution {city['pollution_index']:.1f}"
             for city in city_results[:10]
         ]
     )
@@ -170,7 +172,6 @@ def _build_comparison_answer(question: str, city_results: list[dict]) -> str:
                 "",
                 "**Ranking**",
                 f"- CityFit rank: **{int(city['cityfit_rank'])}**",
-                f"- Numbeo QoL rank: **{int(city['numbeo_qol_rank'])}**",
                 f"- Rank movement: **{rank_note}**",
                 "",
                 "**Key metrics**",
@@ -230,6 +231,8 @@ def _build_ranking_answer(question: str, city_results: list[dict]) -> str:
                 f"- Cost of living: **{city['cost_of_living_index']:.1f}**",
                 f"- Safety: **{city['safety_index']:.1f}**",
                 f"- Healthcare: **{city['healthcare_index']:.1f}**",
+                f"- Climate: **{city['climate_index']:.1f}**",
+                f"- Pollution: **{city['pollution_index']:.1f}**",
                 "",
                 f"**Takeaway:** {city.get('explanation', 'No explanation available.')}",
                 "",
