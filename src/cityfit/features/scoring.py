@@ -33,8 +33,9 @@ def calculate_cityfit_score(
 
     scored["cityfit_score"] = (
         scored["numbeo_quality_of_life_index"]
-        + scored["personalization_adjustment"]
-    )
+        * (scored["personalization_adjustment"])
+        / 20
+    ).round(1)
 
     return scored
 
