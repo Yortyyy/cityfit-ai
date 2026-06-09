@@ -50,20 +50,20 @@ def test_calculate_cityfit_score_adds_score_column():
 def test_calculate_cityfit_score_uses_priority_weights():
     df = make_scoring_df()
 
-    low_cost_priority_weights = TEST_WEIGHTS | {
+    low_affordability_weights = TEST_WEIGHTS | {
         "affordability": 0.01,
     }
 
-    high_cost_priority_weights = TEST_WEIGHTS | {
+    high_affordability_weights = TEST_WEIGHTS | {
         "affordability": 1.0,
     }
 
-    low_penalty_scores = calculate_cityfit_score(df, low_cost_priority_weights)
-    high_penalty_scores = calculate_cityfit_score(df, high_cost_priority_weights)
+    low_affordability_scores = calculate_cityfit_score(df, low_affordability_weights)
+    high_affordability_scores = calculate_cityfit_score(df, high_affordability_weights)
 
     assert (
-        high_penalty_scores["cityfit_score"]
-        <= low_penalty_scores["cityfit_score"]
+        high_affordability_scores["cityfit_score"]
+        >= low_affordability_scores["cityfit_score"]
     ).all()
 
 
