@@ -72,7 +72,7 @@ def build_agent_answer(
     """
     retrieved_chunks = retrieve_context(question, top_k=top_k_context)
 
-    available_cities = get_available_cities()
+    available_cities = get_available_cities(profile)
     requested_cities = extract_city_names(question, available_cities)
 
     tools_used = ["retrieve_context"]

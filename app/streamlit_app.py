@@ -42,38 +42,6 @@ st.write(
     "CityFit ranking based on your priorities."
 )
 
-st.sidebar.header("Your priorities")
-
-priority_safety_ui = st.sidebar.slider("Safety", 0, 10, 5)
-priority_healthcare_ui = st.sidebar.slider("Healthcare", 0, 10, 5)
-priority_climate_ui = st.sidebar.slider("Climate", 0, 10, 5)
-priority_purchasing_power_ui = st.sidebar.slider("Purchasing power", 0, 10, 5)
-
-priority_low_cost_ui = st.sidebar.slider("Low cost of living", 0, 10, 5)
-priority_housing_ui = st.sidebar.slider("Housing affordability", 0, 10, 5)
-priority_low_pollution_ui = st.sidebar.slider("Low pollution", 0, 10, 5)
-
-region = st.sidebar.selectbox(
-    "Region",
-    [
-        "All",
-        "Asia",
-        "Africa",
-        "Europe",
-        "North America",
-        "South America",
-        "Oceania",
-    ],
-)
-
-remote_worker = st.sidebar.checkbox("I work remotely", value=False)
-
-show_dev_details = st.sidebar.checkbox("Show developer details", value=False)
-
-st.subheader("Top CityFit recommendations")
-
-top_n = st.slider("Number of cities to show", 5, 50, 15)
-
 def get_recommendations_from_api(payload: dict) -> list[dict]:
     response = requests.post(f"{API_URL}/recommend", json=payload, timeout=10)
     response.raise_for_status()
@@ -87,6 +55,66 @@ def query_agent_from_api(payload: dict) -> dict:
 def normalize_priority(value: int) -> float:
     return value / 5
 
+st.sidebar.header("Your priorities")
+
+priority_safety_ui = st.sidebar.slider("Safety", 0, 10, 5)
+priority_healthcare_ui = st.sidebar.slider("Healthcare", 0, 10, 5)
+priority_climate_ui = st.sidebar.slider("Climate", 0, 10, 5)
+priority_purchasing_power_ui = st.sidebar.slider("Purchasing power", 0, 10, 5)
+
+priority_low_cost_ui = st.sidebar.slider("Low cost of living", 0, 10, 5)
+priority_housing_ui = st.sidebar.slider("Housing affordability", 0, 10, 5)
+priority_low_pollution_ui = st.sidebar.slider("Low pollution", 0, 10, 5)
+
+metadata_payload = {
+    "priority_safety": normalize_priority(priority_safety_ui),
+    "priority_healthcare": normalize_priority(priority_healthcare_ui),
+    "priority_climate": normalize_priority(priority_climate_ui),
+    "priority_purchasing_power": normalize_priority(priority_purchasing_power_ui),
+    "priority_low_cost": normalize_priority(priority_low_cost_ui),
+    "priority_housing": normalize_priority(priority_housing_ui),
+    "priority_low_pollution": normalize_priority(priority_low_pollution_ui),
+    "remote_worker": False,
+    "top_n": 500,
+}
+
+try:
+    all_recommendations = get_recommendations_from_api(
+        {
+            **metadata_payload,
+            "top_n": 500,
+        }
+    )
+    all_df = pd.DataFrame(all_recommendations)
+except requests.RequestException as exc:
+    st.error(f"Could not reach CityFit API: {exc}")
+    st.stop()
+
+st.sidebar.header("Filters")
+
+region_options = ["All"] + sorted(all_df["region"].dropna().unique())
+
+selected_region = st.sidebar.selectbox(
+    "Region",
+    region_options,
+)
+
+country_options_df = all_df.copy()
+
+if selected_region != "All":
+    country_options_df = country_options_df[
+        country_options_df["region"] == selected_region
+    ]
+
+country_options = ["All"] + sorted(country_options_df["country"].dropna().unique())
+
+selected_country = st.sidebar.selectbox(
+    "Country",
+    country_options,
+)
+
+remote_worker = st.sidebar.checkbox("I work remotely", value=False)
+
 base_payload = {
     "priority_safety": normalize_priority(priority_safety_ui),
     "priority_healthcare": normalize_priority(priority_healthcare_ui),
@@ -98,29 +126,30 @@ base_payload = {
     "remote_worker": remote_worker,
 }
 
+show_dev_details = st.sidebar.checkbox("Show developer details", value=False)
+
+st.subheader("Top CityFit recommendations")
+
+top_n = st.slider("Number of cities to show", 5, 50, 15)
+
 recommendation_payload = {
     **base_payload,
     "top_n": 500,
+    "region": None if selected_region == "All" else selected_region,
+    "country": None if selected_country == "All" else selected_country,
 }
-
 
 try:
     recommendations = get_recommendations_from_api(recommendation_payload)
-    df = pd.DataFrame(recommendations)
+    recommendations_df = pd.DataFrame(recommendations)
 except requests.RequestException as exc:
     st.error(f"Could not reach CityFit API: {exc}")
     st.stop()
 
-filtered_df = df.copy()
-
-if region != "All":
-    filtered_df = filtered_df[filtered_df["region"] == region]
-
-df = filtered_df
-
 display_cols = [
     "city",
     "country",
+    "region",
     "numbeo_qol_rank",
     "cityfit_rank",
     "rank_difference",
@@ -135,7 +164,7 @@ display_cols = [
 ]
 
 st.dataframe(
-    df[display_cols].head(top_n),
+    recommendations_df[display_cols].head(top_n),
     width="stretch",
     hide_index=True,
 )
@@ -150,7 +179,7 @@ st.write(
 )
 
 rank_movers = (
-    df[display_cols]
+    recommendations_df[display_cols]
     .sort_values("rank_difference", ascending=False)
     .head(moved_ranks_n)
 )
@@ -160,7 +189,7 @@ st.dataframe(rank_movers, width="stretch", hide_index=True)
 st.subheader("Biggest ranking changes")
 
 movement_chart_df = (
-    df[["city", "rank_difference"]]
+    recommendations_df[["city", "rank_difference"]]
     .sort_values("rank_difference", ascending=False)
     .head(moved_ranks_n)
 )
@@ -202,7 +231,7 @@ st.plotly_chart(fig, width="stretch")
 
 st.subheader("Compare specific cities")
 
-city_options = sorted(df["city"].unique())
+city_options = sorted(recommendations_df["city"].unique())
 selected_cities = st.multiselect(
     "Choose cities to compare",
     options=city_options,
@@ -213,7 +242,7 @@ if selected_cities:
     comparison_cols = display_cols + ["explanation"]
 
     comparison_df = (
-        df[df["city"].isin(selected_cities)][comparison_cols]
+        recommendations_df[recommendations_df["city"].isin(selected_cities)][comparison_cols]
         .sort_values("cityfit_rank")
     )
 
@@ -254,13 +283,15 @@ if question:
         st.markdown(question)
 
     agent_payload = {
-        **base_payload,
+        **recommendation_payload,
         "question": question,
         "top_n": top_n,
         "top_k_context": 4,
     }
 
     try:
+        if show_dev_details:
+            st.write("Agent payload", agent_payload)
         agent_response = query_agent_from_api(agent_payload)
         assistant_response = agent_response["answer"]
 

@@ -5,24 +5,16 @@ import pandas as pd
 from cityfit.api.schemas import UserProfile
 from cityfit.data.load_data import load_city_metrics
 from cityfit.data.validation import validate_city_metrics
-from cityfit.features.explanations import explain_city_rank
-from cityfit.features.scoring import add_cityfit_rank, calculate_cityfit_score, rank_cities
-from cityfit.features.transformations import add_cityfit_features
-from cityfit.features.weights import build_weights
+from cityfit.features.filters import filter_by_country, filter_by_region
+from cityfit.features.scoring import rank_cities
+from cityfit.recommendations.service import add_city_explanations, get_ranked_cities
 
 
 def get_ranked_city_data(profile: UserProfile) -> pd.DataFrame:
-    """Load, validate, score, and rank city data for a user profile."""
-    raw_df = load_city_metrics()
-    validate_city_metrics(raw_df)
+    """Return ranked city data with explanations for a user profile."""
+    ranked_df = get_ranked_cities(profile)
 
-    features_df = add_cityfit_features(raw_df)
-    scored_df = calculate_cityfit_score(features_df, build_weights(profile))
-    ranked_df = add_cityfit_rank(scored_df)
-
-    ranked_df["explanation"] = ranked_df.apply(explain_city_rank, axis=1)
-
-    return ranked_df
+    return add_city_explanations(ranked_df)
 
 
 def rank_city_recommendations(profile: UserProfile, top_n: int = 10) -> list[dict]:
@@ -79,9 +71,13 @@ def extract_city_names(question: str, available_cities: list[str]) -> list[str]:
     return [city for _, city in sorted(matches)]
 
 
-def get_available_cities() -> list[str]:
-    """Return all available city names."""
+def get_available_cities(profile: UserProfile | None = None) -> list[str]:
+    """Return available city names, optionally filtered by profile."""
     raw_df = load_city_metrics()
     validate_city_metrics(raw_df)
+
+    if profile:
+        raw_df = filter_by_region(raw_df, profile.region)
+        raw_df = filter_by_country(raw_df, profile.country)
 
     return sorted(raw_df["city"].dropna().unique().tolist())

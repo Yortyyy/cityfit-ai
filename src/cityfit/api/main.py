@@ -7,12 +7,8 @@ from cityfit.api.schemas import (
     RecommendationResponse,
     UserProfile,
 )
-from cityfit.data.load_data import load_city_metrics
-from cityfit.data.validation import validate_city_metrics
-from cityfit.features.explanations import explain_city_rank
-from cityfit.features.filters import filter_by_country, filter_by_region
-from cityfit.features.scoring import add_cityfit_rank, calculate_cityfit_score, rank_cities
-from cityfit.features.weights import build_weights
+
+from cityfit.recommendations.service import get_top_city_recommendations
 
 
 app = FastAPI(
@@ -20,21 +16,6 @@ app = FastAPI(
     description="Personalized city recommendations using quality-of-life and cost-of-living metrics.",
     version="0.1.0",
 )
-
-def get_ranked_cities(profile: UserProfile):
-    raw_df = load_city_metrics()
-    validate_city_metrics(raw_df)
-
-    scored_df = calculate_cityfit_score(raw_df, build_weights(profile))
-    ranked_df = add_cityfit_rank(scored_df)
-
-    ranked_df = filter_by_region(ranked_df, profile.region)
-    ranked_df = filter_by_country(ranked_df, profile.country)
-
-    top_df = rank_cities(ranked_df, top_n=profile.top_n).copy()
-    top_df["explanation"] = top_df.apply(explain_city_rank, axis=1)
-
-    return top_df
 
 
 @app.get("/health")
@@ -44,7 +25,7 @@ def health_check():
 
 @app.post("/recommend", response_model=RecommendationResponse)
 def recommend_cities(profile: UserProfile):
-    top_df = get_ranked_cities(profile)
+    top_df = get_top_city_recommendations(profile)
 
     response_columns = [
         "city",
