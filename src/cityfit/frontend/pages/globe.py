@@ -87,56 +87,24 @@ def get_recommendations_from_api(payload: dict) -> list[dict]:
     response.raise_for_status()
     return response.json()["recommendations"]
 
-
-def render_globe_page(payload: dict, all_df: pd.DataFrame) -> None:
-    render_css()
-
-    st.markdown(
-        """
-        <div class="hero-title">
-            <span class="eyebrow">CITYFIT AI / WORLD INDEX</span>
-            <h1>🌎 CityFit Globe</h1>
-            <p>Explore personalized city matches across a soft digital world map.</p>
-        </div>
-        """,
-        unsafe_allow_html=True,
+def load_globe_data(payload: dict) -> pd.DataFrame:
+    recommendations = get_recommendations_from_api(
+        {
+            **payload,
+            "top_n": 500,
+        }
     )
 
-    try:
-        recommendations = get_recommendations_from_api(
-            {
-                **payload,
-                "top_n": 500,
-            }
-        )
-        df = pd.DataFrame(recommendations)
-    except requests.RequestException as exc:
-        st.error(f"Could not reach CityFit API: {exc}")
-        st.stop()
+    df = pd.DataFrame(recommendations)
 
-    required_cols = {
-        "city",
-        "country",
-        "region",
-        "latitude",
-        "longitude",
-        "cityfit_score",
-    }
+    return df.dropna(subset=["latitude", "longitude"])
 
-    missing_cols = required_cols - set(df.columns)
-
-    if missing_cols:
-        st.error(f"Missing columns for globe: {missing_cols}")
-        st.stop()
-
-    globe_df = df.dropna(subset=["latitude", "longitude"]).copy()
-
+def build_globe_figure(globe_df: pd.DataFrame, all_df: pd.DataFrame):
     global_min_score = all_df["cityfit_score"].min()
     global_max_score = all_df["cityfit_score"].max()
 
-    max_marker_size = 12
-
-    sizeref = 2.0 * global_max_score / (max_marker_size ** 2)
+    max_marker_size = 10
+    sizeref = 2.0 * global_max_score / (max_marker_size**2)
 
     fig = px.scatter_geo(
         globe_df,
@@ -144,6 +112,7 @@ def render_globe_page(payload: dict, all_df: pd.DataFrame) -> None:
         lon="longitude",
         hover_name="city",
         custom_data=[
+            "city",
             "country",
             "region",
             "cityfit_score",
@@ -151,7 +120,7 @@ def render_globe_page(payload: dict, all_df: pd.DataFrame) -> None:
             "numbeo_qol_rank",
         ],
         size="cityfit_score",
-        size_max=max_marker_size ,
+        size_max=max_marker_size,
         color="cityfit_score",
         range_color=(global_min_score, global_max_score),
         color_continuous_scale=[
@@ -161,6 +130,23 @@ def render_globe_page(payload: dict, all_df: pd.DataFrame) -> None:
         ],
         projection="orthographic",
         title="CityFit Globe",
+    )
+
+    fig.update_traces(
+        hovertemplate=(
+            "<b>%{customdata[0]}</b><br>"
+            "%{customdata[1]} · %{customdata[2]}<br><br>"
+            "CityFit score: %{customdata[3]:.1f}<br>"
+            "CityFit rank: #%{customdata[4]:.0f}<br>"
+            "Numbeo rank: #%{customdata[5]:.0f}"
+            "<extra></extra>"
+        ),
+        marker=dict(
+            sizeref=sizeref,
+            sizemode="area",
+            line=dict(width=1, color="white"),
+            opacity=0.90,
+        ),
     )
 
     fig.update_geos(
@@ -184,22 +170,90 @@ def render_globe_page(payload: dict, all_df: pd.DataFrame) -> None:
         plot_bgcolor="rgba(0,0,0,0)",
     )
 
-    fig.update_traces(
-        hovertemplate=(
-            "<b>%{hovertext}</b><br>"
-            "%{customdata[0]} · %{customdata[1]}<br><br>"
-            "CityFit score: %{customdata[2]}<br>"
-            "CityFit rank: #%{customdata[3]}<br>"
-            "<extra></extra>"
-        ),
-        marker=dict(
-            sizeref=sizeref,
-            sizemode="area",
-            line=dict(width=1, color="white"),
-            opacity=0.90,
-        ),
+    return fig
+
+def render_selectable_globe(fig) -> tuple[str | None, str | None]:
+    st.markdown('<div class="globe-panel">', unsafe_allow_html=True)
+
+    selected_event = st.plotly_chart(
+        fig,
+        width="stretch",
+        key="cityfit_globe_chart",
+        on_select="rerun",
+        selection_mode="points",
     )
 
-    st.markdown('<div class="globe-panel">', unsafe_allow_html=True)
-    st.plotly_chart(fig, width="stretch")
     st.markdown("</div>", unsafe_allow_html=True)
+
+    selected_points = selected_event.get("selection", {}).get("points", [])
+
+    if not selected_points:
+        return None, None
+
+    selected_custom_data = selected_points[0].get("customdata", [])
+
+    if len(selected_custom_data) < 2:
+        return None, None
+
+    return selected_custom_data[0], selected_custom_data[1]
+
+def render_city_profile(
+    globe_df: pd.DataFrame,
+    selected_city: str | None,
+    selected_country: str | None,
+) -> None:
+    st.divider()
+    st.subheader("City profile")
+
+    if selected_city is None or selected_country is None:
+        st.info("Select a city dot on the globe to view its profile.")
+        return
+
+    city_matches = globe_df[
+        (globe_df["city"] == selected_city)
+        & (globe_df["country"] == selected_country)
+    ]
+
+    if city_matches.empty:
+        st.warning("Selected city was not found in the filtered data.")
+        return
+
+    city = city_matches.iloc[0]
+
+    st.markdown(f"### {city['city']}, {city['country']}")
+
+    col1, col2, col3 = st.columns(3)
+
+    col1.metric("CityFit Score", round(city["cityfit_score"], 1))
+    col2.metric("CityFit Rank", f"#{int(city['cityfit_rank'])}")
+    col3.metric("Numbeo Rank", f"#{int(city['numbeo_qol_rank'])}")
+
+    st.write(f"**Region:** {city['region']}")
+
+def render_globe_page(payload: dict, all_df: pd.DataFrame) -> None:
+    render_css()
+
+    st.markdown(
+        """
+        <div class="hero-title">
+            <div class="eyebrow">CITYFIT AI</div>
+            <h1>Explore your best-fit cities</h1>
+            <p>Filter cities by region and country, then select a globe marker to inspect a city.</p>
+        </div>
+        """,
+        unsafe_allow_html=True,
+    )
+
+    try:
+        globe_df = load_globe_data(payload)
+    except requests.RequestException as exc:
+        st.error(f"Could not reach CityFit API: {exc}")
+        st.stop()
+
+    if globe_df.empty:
+        st.warning("No cities found for the selected filters.")
+        return
+
+    fig = build_globe_figure(globe_df, all_df)
+    selected_city, selected_country = render_selectable_globe(fig)
+    render_city_profile(globe_df, selected_city, selected_country)
