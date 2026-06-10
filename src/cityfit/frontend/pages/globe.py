@@ -20,17 +20,39 @@ def render_css() -> None:
 
         section[data-testid="stSidebar"] {
             background:
-                linear-gradient(180deg, rgba(28, 31, 68, 0.96), rgba(53, 55, 105, 0.94));
-            border-right: 1px solid rgba(255, 255, 255, 0.18);
+                radial-gradient(circle at 20% 10%, rgba(255,255,255,0.16), transparent 28%),
+                linear-gradient(180deg, rgba(105, 108, 176, 0.94), rgba(64, 68, 132, 0.94)) !important;
+            border-right: 1px solid rgba(255, 255, 255, 0.28) !important;
         }
 
-        section[data-testid="stSidebar"] * {
-            color: rgba(245, 246, 255, 0.96);
-        }
-
-        section[data-testid="stSidebar"] label {
+        section[data-testid="stSidebar"] h1,
+        section[data-testid="stSidebar"] h2,
+        section[data-testid="stSidebar"] h3,
+        section[data-testid="stSidebar"] p,
+        section[data-testid="stSidebar"] label,
+        section[data-testid="stSidebar"] span {
             color: rgba(245, 246, 255, 0.96) !important;
-            font-weight: 600;
+        }
+
+        section[data-testid="stSidebar"] div[data-testid="stSelectbox"] div[data-baseweb="select"] > div {
+            background: rgba(245, 246, 255, 0.18) !important;
+            border: 1px solid rgba(255, 255, 255, 0.38) !important;
+            border-radius: 12px !important;
+            box-shadow: none !important;
+        }
+
+        section[data-testid="stSidebar"] div[data-testid="stSelectbox"] div[data-baseweb="select"] div {
+            color: rgba(245, 246, 255, 0.96) !important;
+            background-color: transparent !important;
+        }
+
+        section[data-testid="stSidebar"] div[data-testid="stSelectbox"] span {
+            color: rgba(245, 246, 255, 0.96) !important;
+        }
+
+        section[data-testid="stSidebar"] div[data-testid="stSelectbox"] svg {
+            fill: rgba(245, 246, 255, 0.96) !important;
+            color: rgba(245, 246, 255, 0.96) !important;
         }
 
         .block-container {
@@ -76,6 +98,80 @@ def render_css() -> None:
             mix-blend-mode: soft-light;
             opacity: 0.35;
             z-index: 999999;
+        }
+
+        .metric-table-card {
+            margin-top: 1rem !important;
+            border-radius: 18px !important;
+            overflow: hidden !important;
+            background: rgba(245, 246, 255, 0.45) !important;
+            border: 1px solid rgba(255, 255, 255, 0.65) !important;
+            box-shadow: 0 18px 45px rgba(40, 40, 90, 0.18) !important;
+            backdrop-filter: blur(8px) !important;
+        }
+
+        .metric-table-card table,
+        .metric-table {
+            width: 100% !important;
+            border-collapse: collapse !important;
+            background: transparent !important;
+            color: #1f254f !important;
+        }
+
+        .metric-table-card thead,
+        .metric-table thead {
+            background: rgba(255, 255, 255, 0.45) !important;
+        }
+
+        .metric-table-card th,
+        .metric-table th {
+            text-align: left !important;
+            padding: 0.9rem 1rem !important;
+            font-weight: 800 !important;
+            color: rgba(31, 37, 79, 0.82) !important;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.65) !important;
+            background: rgba(255, 255, 255, 0.35) !important;
+        }
+
+        .metric-table-card td,
+        .metric-table td {
+            padding: 0.85rem 1rem !important;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.38) !important;
+            font-weight: 650 !important;
+            color: #1f254f !important;
+            background: rgba(245, 246, 255, 0.20) !important;
+        }
+
+        .metric-table-card td:last-child,
+        .metric-table-card th:last-child,
+        .metric-table td:last-child,
+        .metric-table th:last-child {
+            text-align: right !important;
+        }
+
+        .metric-table-card tbody tr:last-child td,
+        .metric-table tbody tr:last-child td {
+            border-bottom: none !important;
+        }
+
+        .metric-table-card tbody tr:hover td,
+        .metric-table tbody tr:hover td {
+            background: rgba(255, 255, 255, 0.35) !important;
+        }
+
+        .hero-title,
+        [data-testid="stMarkdownContainer"],
+        [data-testid="stMetric"],
+        [data-testid="stMetric"] * {
+            color: #1f254f !important;
+        }
+
+        [data-testid="stMetricLabel"] {
+            color: rgba(31, 37, 79, 0.72) !important;
+        }
+
+        [data-testid="stMetricValue"] {
+            color: #1f254f !important;
         }
         </style>
         """,
@@ -164,10 +260,24 @@ def build_globe_figure(globe_df: pd.DataFrame, all_df: pd.DataFrame):
 
     fig.update_layout(
         height=700,
-        margin=dict(l=0, r=0, t=40, b=0),
+        margin=dict(l=0, r=0, t=50, b=0),
         coloraxis_showscale=False,
         paper_bgcolor="rgba(0,0,0,0)",
         plot_bgcolor="rgba(0,0,0,0)",
+        title=dict(
+            text="CityFit Globe",
+            font=dict(
+                color="#1f254f",
+                size=18,
+            ),
+            x=0.01,
+            xanchor="left",
+        ),
+        hoverlabel=dict(
+            bgcolor="rgba(245, 246, 255, 0.95)",
+            bordercolor="rgba(31, 37, 79, 0.35)",
+            font=dict(color="#1f254f"),
+        ),
     )
 
     return fig
@@ -223,6 +333,32 @@ def build_city_metric_table(city: pd.Series) -> pd.DataFrame:
 
     return pd.DataFrame(rows)
 
+def render_metric_table(metric_df: pd.DataFrame) -> None:
+    rows_html = "".join(
+        [
+            f"<tr><td>{row['Metric']}</td><td>{row['Value']}</td></tr>"
+            for _, row in metric_df.iterrows()
+        ]
+    )
+
+    table_html = f"""
+<div class="metric-table-card">
+<table class="metric-table">
+<thead>
+<tr>
+<th>Metric</th>
+<th>Value</th>
+</tr>
+</thead>
+<tbody>
+{rows_html}
+</tbody>
+</table>
+</div>
+"""
+
+    st.markdown(table_html, unsafe_allow_html=True)
+
 def render_city_profile(
     globe_df: pd.DataFrame,
     selected_city: str | None,
@@ -248,7 +384,7 @@ def render_city_profile(
 
     st.markdown(f"### {city['city']}, {city['country']}")
 
-    col1, col2, col3 = st.columns(3)
+    col1, col2 = st.columns(2)
 
     col1.metric("CityFit Score", round(city["cityfit_score"], 1))
     col2.metric("CityFit Rank", f"#{int(city['cityfit_rank'])}")
@@ -259,11 +395,7 @@ def render_city_profile(
 
     metric_df = build_city_metric_table(city)
 
-    st.dataframe(
-        metric_df,
-        width="stretch",
-        hide_index=True,
-    )
+    render_metric_table(metric_df)
 
 def render_globe_page(payload: dict, all_df: pd.DataFrame) -> None:
     render_css()
