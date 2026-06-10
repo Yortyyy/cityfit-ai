@@ -197,6 +197,32 @@ def render_selectable_globe(fig) -> tuple[str | None, str | None]:
 
     return selected_custom_data[0], selected_custom_data[1]
 
+def build_city_metric_table(city: pd.Series) -> pd.DataFrame:
+    metric_labels = {
+        "numbeo_quality_of_life_index": "Quality of life",
+        "purchasing_power_index": "Purchasing power",
+        "safety_index": "Safety",
+        "healthcare_index": "Healthcare",
+        "cost_of_living_index": "Cost of living",
+        "property_price_to_income_ratio": "Housing price to income",
+        "traffic_commute_index": "Traffic commute",
+        "pollution_index": "Pollution",
+        "climate_index": "Climate",
+    }
+
+    rows = []
+
+    for column, label in metric_labels.items():
+        if column in city.index and pd.notna(city[column]):
+            rows.append(
+                {
+                    "Metric": label,
+                    "Value": round(float(city[column]), 1),
+                }
+            )
+
+    return pd.DataFrame(rows)
+
 def render_city_profile(
     globe_df: pd.DataFrame,
     selected_city: str | None,
@@ -229,6 +255,16 @@ def render_city_profile(
     col3.metric("Numbeo Rank", f"#{int(city['numbeo_qol_rank'])}")
 
     st.write(f"**Region:** {city['region']}")
+
+    st.markdown("#### Metric breakdown")
+
+    metric_df = build_city_metric_table(city)
+
+    st.dataframe(
+        metric_df,
+        width="stretch",
+        hide_index=True,
+    )
 
 def render_globe_page(payload: dict, all_df: pd.DataFrame) -> None:
     render_css()
