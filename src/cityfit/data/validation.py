@@ -15,6 +15,8 @@ def validate_city_metrics(df: pd.DataFrame) -> None:
 
     numeric_columns = [
         "numbeo_quality_of_life_index",
+        "latitude",
+        "longitude",
         "purchasing_power_index",
         "safety_index",
         "healthcare_index",

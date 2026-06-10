@@ -128,7 +128,7 @@ base_payload = {
 
 show_dev_details = st.sidebar.checkbox("Show developer details", value=False)
 
-st.subheader("Top CityFit recommendations")
+st.subheader("Top CityFit Recommendations")
 
 top_n = st.slider("Number of cities to show", 5, 100, 15)
 
@@ -204,7 +204,7 @@ fig = px.bar(
 fig.update_traces(
     hovertemplate=(
         "<b>%{x}</b><br>"
-        "Rank movement: %{y:+.0f}<br>"
+        "CityFit Score: %{y:+.0f}<br>"
         "<extra></extra>"
     )
 )
