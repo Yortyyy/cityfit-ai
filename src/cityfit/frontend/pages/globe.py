@@ -199,7 +199,7 @@ def render_selectable_globe(fig) -> tuple[str | None, str | None]:
 
 def build_city_metric_table(city: pd.Series) -> pd.DataFrame:
     metric_labels = {
-        "numbeo_quality_of_life_index": "Quality of life",
+        "cityfit_score": "City Score",
         "purchasing_power_index": "Purchasing power",
         "safety_index": "Safety",
         "healthcare_index": "Healthcare",
@@ -252,7 +252,6 @@ def render_city_profile(
 
     col1.metric("CityFit Score", round(city["cityfit_score"], 1))
     col2.metric("CityFit Rank", f"#{int(city['cityfit_rank'])}")
-    col3.metric("Numbeo Rank", f"#{int(city['numbeo_qol_rank'])}")
 
     st.write(f"**Region:** {city['region']}")
 
