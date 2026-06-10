@@ -12,6 +12,8 @@ def make_valid_city_metrics_df() -> pd.DataFrame:
             "state": ["Florida", None],
             "country": ["United States", "Spain"],
             "region": ["North America", "Europe"],
+            "latitude": [27.95, 40.4],
+            "longitude": [-82.45, -3.6833],
             "numbeo_quality_of_life_index": [175.0, 180.0],
             "purchasing_power_index": [105.0, 72.0],
             "safety_index": [60.0, 72.0],
