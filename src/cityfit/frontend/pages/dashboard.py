@@ -1,0 +1,332 @@
+import pandas as pd
+import plotly.express as px
+import requests
+import streamlit as st
+
+
+API_URL = "http://api:8000"
+
+
+def get_recommendations_from_api(payload: dict) -> list[dict]:
+    response = requests.post(f"{API_URL}/recommend", json=payload, timeout=10)
+    response.raise_for_status()
+    return response.json()["recommendations"]
+
+
+def query_agent_from_api(payload: dict) -> dict:
+    response = requests.post(f"{API_URL}/agent/query", json=payload, timeout=120)
+    response.raise_for_status()
+    return response.json()
+
+
+def render_dashboard_page(base_payload: dict) -> None:
+    st.title("📊 CityFit Dashboard")
+    st.write(
+        "Compare Numbeo's baseline Quality of Life ranking against a personalized "
+        "CityFit ranking based on your priorities."
+    )
+
+    metadata_payload = {
+        **base_payload,
+        "top_n": 500,
+    }
+
+    try:
+        all_recommendations = get_recommendations_from_api(metadata_payload)
+        all_df = pd.DataFrame(all_recommendations)
+    except requests.RequestException as exc:
+        st.error(f"Could not reach CityFit API: {exc}")
+        st.stop()
+
+    st.sidebar.header("Filters")
+
+    region_options = ["All"] + sorted(all_df["region"].dropna().unique())
+
+    selected_region = st.sidebar.selectbox(
+        "Region",
+        region_options,
+    )
+
+    country_options_df = all_df.copy()
+
+    if selected_region != "All":
+        country_options_df = country_options_df[
+            country_options_df["region"] == selected_region
+        ]
+
+    country_options = ["All"] + sorted(country_options_df["country"].dropna().unique())
+
+    selected_country = st.sidebar.selectbox(
+        "Country",
+        country_options,
+    )
+
+    show_dev_details = st.sidebar.checkbox("Show developer details", value=False)
+
+    st.subheader("Top CityFit Recommendations")
+
+    top_n = st.slider("Number of cities to show", 5, 100, 15)
+
+    recommendation_payload = {
+        **base_payload,
+        "top_n": 500,
+        "region": None if selected_region == "All" else selected_region,
+        "country": None if selected_country == "All" else selected_country,
+    }
+
+    try:
+        recommendations = get_recommendations_from_api(recommendation_payload)
+        recommendations_df = pd.DataFrame(recommendations)
+    except requests.RequestException as exc:
+        st.error(f"Could not reach CityFit API: {exc}")
+        st.stop()
+
+    if recommendations_df.empty:
+        st.warning("No cities match the selected filters. Try a broader region or country.")
+        st.stop()
+
+    display_cols = [
+        "city",
+        "country",
+        "region",
+        "numbeo_qol_rank",
+        "cityfit_rank",
+        "rank_difference",
+        "numbeo_quality_of_life_index",
+        "cityfit_score",
+        "cost_of_living_index",
+        "purchasing_power_index",
+        "safety_index",
+        "healthcare_index",
+        "pollution_index",
+        "climate_index",
+    ]
+
+    st.dataframe(
+        recommendations_df[display_cols].head(top_n),
+        width="stretch",
+        hide_index=True,
+    )
+
+    cityfit_score_bar_n = 10
+    recommendations_bar_df = recommendations_df.head(cityfit_score_bar_n)
+
+    min_score_val = all_df["cityfit_score"].min()
+    max_score_val = all_df["cityfit_score"].max()
+    min_score_val_2 = recommendations_bar_df["cityfit_score"].min()
+    max_score_val_2 = recommendations_bar_df["cityfit_score"].max()
+
+    min_scores_avg = (min_score_val + min_score_val_2) / 2
+    max_scores_avg = (max_score_val + max_score_val_2) / 2
+
+    padding = 1
+    cityscore_color_range = [min_scores_avg - padding, max_scores_avg + padding]
+
+    fig = px.bar(
+        recommendations_bar_df,
+        x="city",
+        y="cityfit_score",
+        title="Top CityFit Scorers",
+        color="cityfit_score",
+        color_continuous_scale="speed",
+        range_color=cityscore_color_range,
+    )
+
+    fig.update_traces(
+        hovertemplate=(
+            "<b>%{x}</b><br>"
+            "CityFit Score: %{y:+.0f}<br>"
+            "<extra></extra>"
+        )
+    )
+
+    fig.update_layout(
+        xaxis_title="City",
+        yaxis_title="CityFit Score",
+        coloraxis_showscale=False,
+    )
+
+    fig.update_xaxes(
+        categoryorder="array",
+        categoryarray=recommendations_bar_df["city"].tolist(),
+    )
+
+    st.plotly_chart(fig, width="stretch")
+
+    st.subheader("Rank movement")
+
+    moved_ranks_n = 10
+
+    st.write(
+        "Positive rank difference means the city ranks better in your personalized "
+        "CityFit score than in Numbeo's baseline Quality of Life ranking."
+    )
+
+    rank_movers = (
+        recommendations_df[display_cols]
+        .sort_values("rank_difference", ascending=False)
+        .head(moved_ranks_n)
+    )
+
+    st.dataframe(rank_movers, width="stretch", hide_index=True)
+
+    st.subheader("Biggest ranking changes")
+
+    movement_chart_df = (
+        recommendations_df[["city", "rank_difference"]]
+        .sort_values("rank_difference", ascending=False)
+        .head(moved_ranks_n)
+    )
+
+    min_rank_val = all_df["rank_difference"].min()
+    max_rank_val = all_df["rank_difference"].max()
+    min_rank_val_2 = movement_chart_df["rank_difference"].min()
+    max_rank_val_2 = movement_chart_df["rank_difference"].max()
+
+    min_ranks_avg = (min_rank_val + min_rank_val_2) / 2
+    max_ranks_avg = (max_rank_val + max_rank_val_2) / 2
+
+    cityrank_color_range = [min_ranks_avg - padding, max_ranks_avg + padding]
+
+    fig = px.bar(
+        movement_chart_df,
+        x="city",
+        y="rank_difference",
+        title="Cities that moved up most after personalization",
+        color="rank_difference",
+        color_continuous_scale="speed",
+        range_color=cityrank_color_range,
+    )
+
+    fig.update_traces(
+        hovertemplate=(
+            "<b>%{x}</b><br>"
+            "Rank movement: %{y:+.0f}<br>"
+            "<extra></extra>"
+        )
+    )
+
+    fig.update_layout(
+        xaxis_title="City",
+        yaxis_title="Rank Difference",
+        coloraxis_showscale=False,
+    )
+
+    fig.update_xaxes(
+        categoryorder="array",
+        categoryarray=movement_chart_df["city"].tolist(),
+    )
+
+    st.plotly_chart(fig, width="stretch")
+
+    st.subheader("Compare specific cities")
+
+    city_options = sorted(recommendations_df["city"].unique())
+    selected_cities = st.multiselect(
+        "Choose cities to compare",
+        options=city_options,
+        default=[
+            city
+            for city in ["Tampa", "Miami", "New York", "Tokyo", "Madrid"]
+            if city in city_options
+        ],
+    )
+
+    if selected_cities:
+        comparison_cols = display_cols + ["explanation"]
+
+        comparison_df = (
+            recommendations_df[recommendations_df["city"].isin(selected_cities)][
+                comparison_cols
+            ]
+            .sort_values("cityfit_rank")
+        )
+
+        st.dataframe(
+            comparison_df[display_cols],
+            width="stretch",
+            hide_index=True,
+        )
+
+        st.subheader("City explanations")
+
+        for _, row in comparison_df.iterrows():
+            st.write(f"**{row['city']}**")
+            st.write(row["explanation"])
+
+    st.subheader("Ask CityFit AI")
+
+    if "messages" not in st.session_state:
+        st.session_state.messages = []
+
+    for message in st.session_state.messages:
+        avatar = "🧑" if message["role"] == "user" else "🌎"
+
+        with st.chat_message(message["role"], avatar=avatar):
+            st.markdown(message["content"])
+
+    question = st.chat_input(
+        "Ask about city rankings, tradeoffs, methodology, or limitations..."
+    )
+
+    if question:
+        st.session_state.messages.append(
+            {"role": "user", "content": question}
+        )
+
+        with st.chat_message("user", avatar="🧑"):
+            st.markdown(question)
+
+        agent_payload = {
+            **recommendation_payload,
+            "question": question,
+            "top_n": top_n,
+            "top_k_context": 4,
+        }
+
+        try:
+            if show_dev_details:
+                st.write("Agent payload", agent_payload)
+
+            agent_response = query_agent_from_api(agent_payload)
+            assistant_response = agent_response["answer"]
+
+            st.session_state.messages.append(
+                {"role": "assistant", "content": assistant_response}
+            )
+
+            with st.chat_message("assistant", avatar="🌎"):
+                st.markdown(assistant_response)
+
+                if show_dev_details:
+                    with st.expander("Sources"):
+                        st.write(", ".join(agent_response["sources"]))
+
+                    with st.expander("Governance metadata"):
+                        st.json(agent_response["metadata"])
+
+                    with st.expander("Retrieved context"):
+                        for chunk in agent_response["retrieved_context"]:
+                            st.markdown(
+                                f"**{chunk['source']} — chunk {chunk['chunk_index']}**"
+                            )
+                            st.write(chunk["text"])
+
+        except requests.RequestException as exc:
+            error_message = f"Could not reach CityFit Agent API: {exc}"
+
+            st.session_state.messages.append(
+                {"role": "assistant", "content": error_message}
+            )
+
+            with st.chat_message("assistant", avatar="🌎"):
+                st.error(error_message)
+
+    if st.button("Clear chat"):
+        st.session_state.messages = []
+        st.rerun()
+
+    st.caption(
+        "Data note: This app uses a small educational sample derived from Numbeo city ranking pages. "
+        "Numbeo data is credited to Numbeo.com and is not covered by this repository's code license."
+    )

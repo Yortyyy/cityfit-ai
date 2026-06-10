@@ -31,6 +31,8 @@ def recommend_cities(profile: UserProfile):
         "city",
         "country",
         "region",
+        "latitude",
+        "longitude",
         "numbeo_qol_rank",
         "cityfit_rank",
         "rank_difference",

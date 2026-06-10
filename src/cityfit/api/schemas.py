@@ -21,6 +21,9 @@ class CityRecommendation(BaseModel):
     country: str
     region: str
 
+    latitude: float
+    longitude: float
+
     numbeo_qol_rank: float
     cityfit_rank: float
     rank_difference: float
