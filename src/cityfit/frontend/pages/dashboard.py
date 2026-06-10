@@ -38,29 +38,6 @@ def render_dashboard_page(base_payload: dict, all_df: pd.DataFrame) -> None:
         st.error(f"Could not reach CityFit API: {exc}")
         st.stop()
 
-    st.sidebar.header("Filters")
-
-    region_options = ["All"] + sorted(all_df["region"].dropna().unique())
-
-    selected_region = st.sidebar.selectbox(
-        "Region",
-        region_options,
-    )
-
-    country_options_df = all_df.copy()
-
-    if selected_region != "All":
-        country_options_df = country_options_df[
-            country_options_df["region"] == selected_region
-        ]
-
-    country_options = ["All"] + sorted(country_options_df["country"].dropna().unique())
-
-    selected_country = st.sidebar.selectbox(
-        "Country",
-        country_options,
-    )
-
     show_dev_details = st.sidebar.checkbox("Show developer details", value=False)
 
     st.subheader("Top CityFit Recommendations")
@@ -70,8 +47,6 @@ def render_dashboard_page(base_payload: dict, all_df: pd.DataFrame) -> None:
     recommendation_payload = {
         **base_payload,
         "top_n": 500,
-        "region": None if selected_region == "All" else selected_region,
-        "country": None if selected_country == "All" else selected_country,
     }
 
     try:
