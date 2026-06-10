@@ -5,3 +5,7 @@ backgroundColor = "#0B1411"
 secondaryBackgroundColor = "#17211C"
 textColor = "#F2F0E6"
 font = "sans serif"
+
+[server]
+runOnSave = true
+fileWatcherType = "poll"
