@@ -268,7 +268,6 @@ def build_globe_figure(globe_df: pd.DataFrame, all_df: pd.DataFrame):
             "region",
             "cityfit_score",
             "cityfit_rank",
-            "numbeo_qol_rank",
         ],
         size="cityfit_score",
         size_max=max_marker_size,
@@ -289,7 +288,6 @@ def build_globe_figure(globe_df: pd.DataFrame, all_df: pd.DataFrame):
             "%{customdata[1]} · %{customdata[2]}<br><br>"
             "CityFit score: %{customdata[3]:.1f}<br>"
             "CityFit rank: #%{customdata[4]:.0f}<br>"
-            "Numbeo rank: #%{customdata[5]:.0f}"
             "<extra></extra>"
         ),
         marker=dict(
@@ -449,8 +447,6 @@ def render_city_profile(
     render_metric_table(metric_df)
 
 def render_globe_page(payload: dict, all_df: pd.DataFrame) -> None:
-    st.caption("DEBUG VERSION 999")
-
     render_css()
 
     st.markdown(
