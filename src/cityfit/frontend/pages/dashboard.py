@@ -19,7 +19,7 @@ def query_agent_from_api(payload: dict) -> dict:
     return response.json()
 
 
-def render_dashboard_page(base_payload: dict) -> None:
+def render_dashboard_page(base_payload: dict, all_df: pd.DataFrame) -> None:
     st.title("📊 CityFit Dashboard")
     st.write(
         "Compare Numbeo's baseline Quality of Life ranking against a personalized "
