@@ -18,6 +18,23 @@ def render_css() -> None:
                 linear-gradient(135deg, #eef0fa 0%, #c8c6eb 45%, #9ea4d9 100%);
         }
 
+        .block-container {
+            padding-top: 2rem;
+        }
+
+        .stApp::before {
+            content: "";
+            position: fixed;
+            inset: 0;
+            pointer-events: none;
+            background-image:
+                linear-gradient(rgba(255,255,255,0.08) 50%, rgba(0,0,0,0.035) 50%);
+            background-size: 100% 4px;
+            mix-blend-mode: soft-light;
+            opacity: 0.35;
+            z-index: 999999;
+        }
+
         section[data-testid="stSidebar"] {
             background:
                 radial-gradient(circle at 20% 10%, rgba(255,255,255,0.16), transparent 28%),
@@ -55,17 +72,39 @@ def render_css() -> None:
             color: rgba(245, 246, 255, 0.96) !important;
         }
 
-        .block-container {
-            padding-top: 2rem;
+        div[data-testid="stAppViewContainer"] main div[data-testid="stSelectbox"] div[data-baseweb="select"] > div {
+            min-height: 3rem !important;
+            border-radius: 999px !important;
+            background:
+                linear-gradient(
+                    180deg,
+                    rgba(255, 255, 255, 0.78) 0%,
+                    rgba(245, 246, 255, 0.58) 48%,
+                    rgba(225, 228, 248, 0.46) 100%
+                ) !important;
+            border: 1px solid rgba(255, 255, 255, 0.86) !important;
+            box-shadow:
+                inset 0 1px 0 rgba(255, 255, 255, 0.90),
+                inset 0 -10px 18px rgba(120, 130, 190, 0.12),
+                0 10px 24px rgba(40, 40, 90, 0.14) !important;
+            backdrop-filter: blur(10px) !important;
+            -webkit-backdrop-filter: blur(10px) !important;
+            padding-left: 0.35rem !important;
         }
 
-        .globe-panel {
-            border: 1px solid rgba(255, 255, 255, 0.45);
-            border-radius: 18px;
-            padding: 0.75rem;
-            background: rgba(245, 246, 255, 0.30);
-            box-shadow: 0 20px 60px rgba(40, 40, 90, 0.22);
-            backdrop-filter: blur(8px);
+        div[data-testid="stAppViewContainer"] main div[data-testid="stSelectbox"] div[data-baseweb="select"] div {
+            background-color: transparent !important;
+            color: #1f254f !important;
+            font-weight: 500 !important;
+        }
+
+        div[data-testid="stAppViewContainer"] main div[data-testid="stSelectbox"] span {
+            color: #1f254f !important;
+        }
+
+        div[data-testid="stAppViewContainer"] main div[data-testid="stSelectbox"] svg {
+            color: #1f254f !important;
+            fill: #1f254f !important;
         }
 
         .hero-title .eyebrow {
@@ -85,19 +124,6 @@ def render_css() -> None:
         .hero-title p {
             color: rgba(20, 25, 55, 0.75);
             font-size: 1.05rem;
-        }
-
-        .stApp::before {
-            content: "";
-            position: fixed;
-            inset: 0;
-            pointer-events: none;
-            background-image:
-                linear-gradient(rgba(255,255,255,0.08) 50%, rgba(0,0,0,0.035) 50%);
-            background-size: 100% 4px;
-            mix-blend-mode: soft-light;
-            opacity: 0.35;
-            z-index: 999999;
         }
 
         .metric-table-card {
@@ -182,6 +208,35 @@ def get_recommendations_from_api(payload: dict) -> list[dict]:
     response = requests.post(f"{API_URL}/recommend", json=payload, timeout=10)
     response.raise_for_status()
     return response.json()["recommendations"]
+
+def render_city_search(globe_df: pd.DataFrame) -> tuple[str | None, str | None]:
+    city_options_df = (
+        globe_df[["city", "country"]]
+        .dropna()
+        .drop_duplicates()
+        .sort_values(["city", "country"])
+    )
+
+    city_options = [""] + [
+        f"{row.city}, {row.country}"
+        for row in city_options_df.itertuples(index=False)
+    ]
+
+    selected_city_label = st.selectbox(
+        "Search for a city",
+        city_options,
+        index=0,
+        placeholder="Search for a city...",
+        key="city_search_selectbox",
+        label_visibility="collapsed",
+    )
+
+    if selected_city_label == "":
+        return None, None
+
+    selected_city, selected_country = selected_city_label.rsplit(", ", 1)
+
+    return selected_city, selected_country
 
 def load_globe_data(payload: dict) -> pd.DataFrame:
     recommendations = get_recommendations_from_api(
@@ -283,8 +338,6 @@ def build_globe_figure(globe_df: pd.DataFrame, all_df: pd.DataFrame):
     return fig
 
 def render_selectable_globe(fig) -> tuple[str | None, str | None]:
-    st.markdown('<div class="globe-panel">', unsafe_allow_html=True)
-
     selected_event = st.plotly_chart(
         fig,
         width="stretch",
@@ -292,8 +345,6 @@ def render_selectable_globe(fig) -> tuple[str | None, str | None]:
         on_select="rerun",
         selection_mode="points",
     )
-
-    st.markdown("</div>", unsafe_allow_html=True)
 
     selected_points = selected_event.get("selection", {}).get("points", [])
 
@@ -364,7 +415,7 @@ def render_city_profile(
     selected_city: str | None,
     selected_country: str | None,
 ) -> None:
-    st.divider()
+    # st.divider()
     st.subheader("City profile")
 
     if selected_city is None or selected_country is None:
@@ -398,6 +449,8 @@ def render_city_profile(
     render_metric_table(metric_df)
 
 def render_globe_page(payload: dict, all_df: pd.DataFrame) -> None:
+    st.caption("DEBUG VERSION 999")
+
     render_css()
 
     st.markdown(
@@ -420,7 +473,13 @@ def render_globe_page(payload: dict, all_df: pd.DataFrame) -> None:
     if globe_df.empty:
         st.warning("No cities found for the selected filters.")
         return
+    
+    searched_city, searched_country = render_city_search(globe_df)
 
     fig = build_globe_figure(globe_df, all_df)
     selected_city, selected_country = render_selectable_globe(fig)
-    render_city_profile(globe_df, selected_city, selected_country)
+
+    profile_city = selected_city or searched_city
+    profile_country = selected_country or searched_country
+
+    render_city_profile(globe_df, profile_city, profile_country)

@@ -31,7 +31,12 @@ services:
       - "8501:8501"
     depends_on:
       - api
-    command: streamlit run app/streamlit_app.py --server.address=0.0.0.0
+    command: >
+      streamlit run app/streamlit_app.py
+      --server.address=0.0.0.0
+      --server.port=8501
+      --server.runOnSave=true
+      --server.fileWatcherType=poll
 
   mlflow:
     build: .
