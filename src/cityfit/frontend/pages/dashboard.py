@@ -30,6 +30,45 @@ def render_chat_styles() -> None:
         unsafe_allow_html=True,
     )
 
+def build_default_cityfit_payload(base_payload: dict) -> dict:
+    default_priority_value = 2.0  # 10 / 5 normalization
+
+    return {
+        **base_payload,
+        "priority_safety": default_priority_value,
+        "priority_healthcare": default_priority_value,
+        "priority_climate": default_priority_value,
+        "priority_purchasing_power": default_priority_value,
+        "priority_low_cost": default_priority_value,
+        "priority_housing": default_priority_value,
+        "priority_low_pollution": default_priority_value,
+    }
+
+def merge_default_personalized_dfs(
+    default_df: pd.DataFrame,
+    recommendations_df: pd.DataFrame,
+) -> pd.DataFrame:
+    default_rank_cols = default_df[
+        ["city", "country", "cityfit_rank", "cityfit_score"]
+    ].rename(
+        columns={
+            "cityfit_rank": "default_cityfit_rank",
+            "cityfit_score": "default_cityfit_score",
+        }
+    )
+
+    merged_df = recommendations_df.merge(
+        default_rank_cols,
+        on=["city", "country"],
+        how="left",
+    )
+
+    merged_df["personalized_rank_difference"] = (
+        merged_df["default_cityfit_rank"] - merged_df["cityfit_rank"]
+    )
+
+    return merged_df
+
 def get_recommendations_from_api(payload: dict) -> list[dict]:
     response = requests.post(f"{API_URL}/recommend", json=payload, timeout=10)
     response.raise_for_status()
@@ -47,36 +86,28 @@ def render_dashboard_page(base_payload: dict, all_df: pd.DataFrame) -> None:
 
     st.title("📊 CityFit Dashboard")
     st.write(
-        "Compare Numbeo's baseline Quality of Life ranking against a personalized "
-        "CityFit ranking based on your priorities."
+        "Compare a default CityFit ranking against your personalized CityFit ranking. "
+        "The default ranking treats every priority as maximally important, while the "
+        "personalized ranking uses your selected priorities."
     )
 
-    metadata_payload = {
+    default_payload = {
+        **build_default_cityfit_payload(base_payload),
+        "top_n": 500,
+    }
+
+    personalized_payload = {
         **base_payload,
         "top_n": 500,
     }
 
     try:
-        all_recommendations = get_recommendations_from_api(metadata_payload)
-        all_df = pd.DataFrame(all_recommendations)
-    except requests.RequestException as exc:
-        st.error(f"Could not reach CityFit API: {exc}")
-        st.stop()
+        default_recommendations = get_recommendations_from_api(default_payload)
+        personalized_recommendations = get_recommendations_from_api(personalized_payload)
 
-    show_dev_details = st.sidebar.checkbox("Show developer details", value=False)
-
-    st.subheader("Top CityFit Recommendations")
-
-    top_n = st.slider("Number of cities to show", 5, 100, 15)
-
-    recommendation_payload = {
-        **base_payload,
-        "top_n": 500,
-    }
-
-    try:
-        recommendations = get_recommendations_from_api(recommendation_payload)
-        recommendations_df = pd.DataFrame(recommendations)
+        default_df = pd.DataFrame(default_recommendations)
+        recommendations_df = pd.DataFrame(personalized_recommendations)
+        recommendations_df = merge_default_personalized_dfs(default_df, recommendations_df)
     except requests.RequestException as exc:
         st.error(f"Could not reach CityFit API: {exc}")
         st.stop()
@@ -85,14 +116,21 @@ def render_dashboard_page(base_payload: dict, all_df: pd.DataFrame) -> None:
         st.warning("No cities match the selected filters. Try a broader region or country.")
         st.stop()
 
+    show_dev_details = st.sidebar.checkbox("Show developer details", value=False)
+
+    st.subheader("Top CityFit Recommendations")
+    top_n = st.slider("Number of cities to show", 5, 306, 15)
+
+    recommendation_payload = personalized_payload
+
     display_cols = [
         "city",
         "country",
         "region",
-        "numbeo_qol_rank",
+        "default_cityfit_rank",
         "cityfit_rank",
-        "rank_difference",
-        "numbeo_quality_of_life_index",
+        "personalized_rank_difference",
+        "default_cityfit_score",
         "cityfit_score",
         "cost_of_living_index",
         "purchasing_power_index",
@@ -102,17 +140,66 @@ def render_dashboard_page(base_payload: dict, all_df: pd.DataFrame) -> None:
         "climate_index",
     ]
 
-    st.dataframe(
-        recommendations_df[display_cols].head(top_n),
-        width="stretch",
-        hide_index=True,
+    top_recommendation_cols = [
+        "city",
+        "country",
+        "region",
+        "cityfit_rank",
+        "cityfit_score",
+        "cost_of_living_index",
+        "purchasing_power_index",
+        "safety_index",
+        "healthcare_index",
+        "pollution_index",
+        "climate_index",
+    ]
+
+    column_labels = {
+        "city": "City",
+        "country": "Country",
+        "region": "Region",
+        "default_cityfit_rank": "Default CityFit Rank",
+        "cityfit_rank": "Personalized CityFit Rank",
+        "personalized_rank_difference": "Rank Movement",
+        "default_cityfit_score": "Default CityFit Score",
+        "cityfit_score": "Personalized CityFit Score",
+        "cost_of_living_index": "Cost of Living Index",
+        "purchasing_power_index": "Purchasing Power Index",
+        "safety_index": "Safety Index",
+        "healthcare_index": "Healthcare Index",
+        "pollution_index": "Pollution Index",
+        "climate_index": "Climate Index",
+    }
+
+    top_recommendations_df = recommendations_df.head(top_n)
+
+    st.caption(
+        f"Showing {len(top_recommendations_df)} of {len(recommendations_df)} matching cities."
     )
 
-    cityfit_score_bar_n = 10
-    recommendations_bar_df = recommendations_df.head(cityfit_score_bar_n)
+    st.dataframe(
+        top_recommendations_df[top_recommendation_cols],
+        width="stretch",
+        hide_index=True,
+        column_config={
+            column: st.column_config.Column(label)
+            for column, label in column_labels.items()
+            if column in top_recommendation_cols
+        },
+    )
 
-    min_score_val = all_df["cityfit_score"].min()
-    max_score_val = all_df["cityfit_score"].max()
+    display_bar_n = 10
+    recommendations_bar_df = recommendations_df.head(display_bar_n)
+
+    min_score_val = min(
+        recommendations_df["cityfit_score"].min(),
+        recommendations_df["default_cityfit_score"].min(),
+    )
+
+    max_score_val = max(
+        recommendations_df["cityfit_score"].max(),
+        recommendations_df["default_cityfit_score"].max(),
+    )
     min_score_val_2 = recommendations_bar_df["cityfit_score"].min()
     max_score_val_2 = recommendations_bar_df["cityfit_score"].max()
 
@@ -155,33 +242,42 @@ def render_dashboard_page(base_payload: dict, all_df: pd.DataFrame) -> None:
 
     st.subheader("Rank movement")
 
-    moved_ranks_n = 10
+    moved_ranks_n = (recommendations_df["personalized_rank_difference"] > 0).sum()
 
     st.write(
-        "Positive rank difference means the city ranks better in your personalized "
-        "CityFit score than in Numbeo's baseline Quality of Life ranking."
+        "Positive rank movement means the city ranks higher with your selected priorities "
+        "than it does under the default CityFit ranking where every priority is set to 10."
     )
 
     rank_movers = (
         recommendations_df[display_cols]
-        .sort_values("rank_difference", ascending=False)
+        .sort_values("personalized_rank_difference", ascending=False)
         .head(moved_ranks_n)
     )
 
-    st.dataframe(rank_movers, width="stretch", hide_index=True)
+    st.dataframe(
+        rank_movers,
+        width="stretch",
+        hide_index=True,
+        column_config={
+            column: st.column_config.Column(label)
+            for column, label in column_labels.items()
+            if column in display_cols
+        },
+    )
 
     st.subheader("Biggest ranking changes")
 
     movement_chart_df = (
-        recommendations_df[["city", "rank_difference"]]
-        .sort_values("rank_difference", ascending=False)
-        .head(moved_ranks_n)
+        recommendations_df[["city", "personalized_rank_difference"]]
+        .sort_values("personalized_rank_difference", ascending=False)
+        .head(display_bar_n)
     )
 
-    min_rank_val = all_df["rank_difference"].min()
-    max_rank_val = all_df["rank_difference"].max()
-    min_rank_val_2 = movement_chart_df["rank_difference"].min()
-    max_rank_val_2 = movement_chart_df["rank_difference"].max()
+    min_rank_val = recommendations_df["personalized_rank_difference"].min()
+    max_rank_val = recommendations_df["personalized_rank_difference"].max()
+    min_rank_val_2 = movement_chart_df["personalized_rank_difference"].min()
+    max_rank_val_2 = movement_chart_df["personalized_rank_difference"].max()
 
     min_ranks_avg = (min_rank_val + min_rank_val_2) / 2
     max_ranks_avg = (max_rank_val + max_rank_val_2) / 2
@@ -191,9 +287,9 @@ def render_dashboard_page(base_payload: dict, all_df: pd.DataFrame) -> None:
     fig = px.bar(
         movement_chart_df,
         x="city",
-        y="rank_difference",
+        y="personalized_rank_difference",
         title="Cities that moved up most after personalization",
-        color="rank_difference",
+        color="personalized_rank_difference",
         color_continuous_scale="speed",
         range_color=cityrank_color_range,
     )
@@ -208,7 +304,7 @@ def render_dashboard_page(base_payload: dict, all_df: pd.DataFrame) -> None:
 
     fig.update_layout(
         xaxis_title="City",
-        yaxis_title="Rank Difference",
+        yaxis_title="Rank Movement",
         coloraxis_showscale=False,
     )
 
@@ -327,6 +423,6 @@ def render_dashboard_page(base_payload: dict, all_df: pd.DataFrame) -> None:
         st.rerun()
 
     st.caption(
-        "Data note: This app uses a small educational sample derived from Numbeo city ranking pages. "
-        "Numbeo data is credited to Numbeo.com and is not covered by this repository's code license."
+        "Data note: This app uses a small educational city metrics sample. "
+        "CityFit scores and rankings are generated by this project for demonstration purposes."
     )
