@@ -6,35 +6,52 @@ from cityfit.features.transformations import add_cityfit_features
 def calculate_cityfit_score(
     df: pd.DataFrame,
     weights: dict,
-    personalization_strength: float = 0.20,
+    personalization_strength: float = 0.4,
 ) -> pd.DataFrame:
     """
-    Calculate personalized CityFit score.
+    Calculate CityFit score.
 
-    Numbeo's Quality of Life Index is the baseline.
-    CityFit adds a small user-priority adjustment.
+    CityFit combines a quality-of-life baseline with a weighted priority
+    adjustment. The adjustment is normalized by total priority weight so
+    default and personalized scores remain comparable.
     """
+    global_score_scaler = 1.2
+
     scored = add_cityfit_features(df.copy())
 
-    personalization_adjustment = (
-        scored["purchasing_power_score"] * weights["purchasing_power"]
-        + scored["safety_score"] * weights["safety"]
-        + scored["healthcare_score"] * weights["healthcare"]
-        + scored["climate_score"] * weights["climate"]
-        + scored["affordability_score"] * weights["affordability"]
-        + scored["housing_affordability_score"] * weights["housing_affordability"]
-        + scored["low_pollution_score"] * weights["low_pollution"]
-        + scored["low_traffic_score"] * weights["low_traffic"]
+    priority_features = {
+        "purchasing_power": "purchasing_power_score",
+        "safety": "safety_score",
+        "healthcare": "healthcare_score",
+        "climate": "climate_score",
+        "affordability": "affordability_score",
+        "housing_affordability": "housing_affordability_score",
+        "low_pollution": "low_pollution_score",
+        "low_traffic": "low_traffic_score",
+    }
+
+    total_weight = sum(
+        weights.get(priority, 0)
+        for priority in priority_features
     )
 
-    scored["personalization_adjustment"] = (
-        personalization_adjustment * personalization_strength
+    if total_weight == 0:
+        total_weight = 1
+
+    weighted_priority_score = sum(
+        scored[column] * weights.get(priority, 0)
+        for priority, column in priority_features.items()
+    ) / total_weight
+
+    scored["personalization_adjustment"] = weighted_priority_score
+
+    scored["cityfit_score"] = (
+        scored["numbeo_quality_of_life_index"] * (1 - personalization_strength)
+        + scored["personalization_adjustment"] * personalization_strength
     )
 
     scored["cityfit_score"] = (
-        scored["numbeo_quality_of_life_index"]
-        * (scored["personalization_adjustment"])
-        / 20
+        scored["cityfit_score"] * global_score_scaler
     ).round(1)
 
     return scored
