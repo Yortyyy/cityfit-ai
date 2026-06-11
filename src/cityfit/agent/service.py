@@ -170,11 +170,8 @@ def _build_comparison_answer(question: str, city_results: list[dict]) -> str:
             [
                 f"### {city['city']}, {city['country']}",
                 "",
-                "**Ranking**",
-                f"- CityFit rank: **{int(city['cityfit_rank'])}**",
-                f"- Rank movement: **{rank_note}**",
-                "",
                 "**Key metrics**",
+                f"- CityFit rank: **{int(city['cityfit_rank'])}**",
                 f"- CityFit score: **{city['cityfit_score']:.2f}**",
                 f"- Cost of living: **{city['cost_of_living_index']:.1f}**",
                 f"- Purchasing power: **{city['purchasing_power_index']:.1f}**",
