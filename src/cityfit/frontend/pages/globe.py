@@ -273,6 +273,31 @@ def render_css() -> None:
             color: rgba(31, 37, 79, 0.50) !important;
         }
 
+        /* Vertically center selected city text inside the search bar */
+        .st-key-city_search_selectbox div[data-baseweb="select"] > div {
+            display: flex !important;
+            align-items: center !important;
+        }
+
+        /* Center the selected value / placeholder container */
+        .st-key-city_search_selectbox div[data-baseweb="select"] > div > div {
+            display: flex !important;
+            align-items: center !important;
+            min-height: 100% !important;
+        }
+
+        /* Center the actual text input/value */
+        .st-key-city_search_selectbox div[data-baseweb="select"] input,
+        .st-key-city_search_selectbox div[data-baseweb="select"] span,
+        .st-key-city_search_selectbox div[data-baseweb="select"] div {
+            line-height: 1.1 !important;
+        }
+
+        /* Nudge the value down slightly if it still sits high */
+        .st-key-city_search_selectbox div[data-baseweb="select"] div[role="combobox"] {
+            transform: translateY(1px) !important;
+        }
+
         /* Hide Streamlit top header / Deploy toolbar */
         header[data-testid="stHeader"] {
             display: none !important;
