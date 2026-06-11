@@ -48,7 +48,21 @@ def test_calculate_cityfit_score_adds_score_column():
 
 
 def test_calculate_cityfit_score_uses_priority_weights():
-    df = make_scoring_df()
+    df = pd.DataFrame(
+        {
+            "city": ["Affordable", "Expensive"],
+            "country": ["X", "Y"],
+            "numbeo_quality_of_life_index": [150.0, 150.0],
+            "purchasing_power_index": [80.0, 80.0],
+            "safety_index": [70.0, 70.0],
+            "healthcare_index": [70.0, 70.0],
+            "climate_index": [70.0, 70.0],
+            "cost_of_living_index": [60.0, 100.0],
+            "property_price_to_income_ratio": [10.0, 10.0],
+            "pollution_index": [40.0, 40.0],
+            "traffic_commute_index": [40.0, 40.0],
+        }
+    )
 
     low_affordability_weights = TEST_WEIGHTS | {
         "affordability": 0.01,
@@ -58,13 +72,20 @@ def test_calculate_cityfit_score_uses_priority_weights():
         "affordability": 1.0,
     }
 
-    low_affordability_scores = calculate_cityfit_score(df, low_affordability_weights)
-    high_affordability_scores = calculate_cityfit_score(df, high_affordability_weights)
+    low_scores = calculate_cityfit_score(df, low_affordability_weights)
+    high_scores = calculate_cityfit_score(df, high_affordability_weights)
 
-    assert (
-        high_affordability_scores["cityfit_score"]
-        >= low_affordability_scores["cityfit_score"]
-    ).all()
+    low_gap = (
+        low_scores.loc[low_scores["city"] == "Affordable", "cityfit_score"].iloc[0]
+        - low_scores.loc[low_scores["city"] == "Expensive", "cityfit_score"].iloc[0]
+    )
+
+    high_gap = (
+        high_scores.loc[high_scores["city"] == "Affordable", "cityfit_score"].iloc[0]
+        - high_scores.loc[high_scores["city"] == "Expensive", "cityfit_score"].iloc[0]
+    )
+
+    assert high_gap > low_gap
 
 
 def test_add_cityfit_rank_adds_rank_columns():

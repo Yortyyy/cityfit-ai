@@ -191,23 +191,15 @@ def render_dashboard_page(base_payload: dict, all_df: pd.DataFrame) -> None:
     display_bar_n = 10
     recommendations_bar_df = recommendations_df.head(display_bar_n)
 
-    min_score_val = min(
-        recommendations_df["cityfit_score"].min(),
-        recommendations_df["default_cityfit_score"].min(),
-    )
-
-    max_score_val = max(
-        recommendations_df["cityfit_score"].max(),
-        recommendations_df["default_cityfit_score"].max(),
-    )
-    min_score_val_2 = recommendations_bar_df["cityfit_score"].min()
-    max_score_val_2 = recommendations_bar_df["cityfit_score"].max()
-
-    min_scores_avg = (min_score_val + min_score_val_2) / 2
-    max_scores_avg = (max_score_val + max_score_val_2) / 2
-
     padding = 1
-    cityscore_color_range = [min_scores_avg - padding, max_scores_avg + padding]
+
+    global_min_cityfit_score = all_df["cityfit_score"].min()
+    global_max_cityfit_score = all_df["cityfit_score"].max()
+
+    cityscore_color_range = [
+        global_min_cityfit_score - padding,
+        global_max_cityfit_score + padding,
+    ]
 
     fig = px.bar(
         recommendations_bar_df,
@@ -242,6 +234,8 @@ def render_dashboard_page(base_payload: dict, all_df: pd.DataFrame) -> None:
 
     st.subheader("Rank movement")
 
+    # TODO: If priorities are all 10 - default - don't display rank movement/changes
+
     moved_ranks_n = (recommendations_df["personalized_rank_difference"] > 0).sum()
 
     st.write(
@@ -274,15 +268,13 @@ def render_dashboard_page(base_payload: dict, all_df: pd.DataFrame) -> None:
         .head(display_bar_n)
     )
 
-    min_rank_val = recommendations_df["personalized_rank_difference"].min()
-    max_rank_val = recommendations_df["personalized_rank_difference"].max()
-    min_rank_val_2 = movement_chart_df["personalized_rank_difference"].min()
-    max_rank_val_2 = movement_chart_df["personalized_rank_difference"].max()
+    global_min_rank_movement = recommendations_df["personalized_rank_difference"].min()
+    global_max_rank_movement = recommendations_df["personalized_rank_difference"].max()
 
-    min_ranks_avg = (min_rank_val + min_rank_val_2) / 2
-    max_ranks_avg = (max_rank_val + max_rank_val_2) / 2
-
-    cityrank_color_range = [min_ranks_avg - padding, max_ranks_avg + padding]
+    cityrank_color_range = [
+        global_min_rank_movement - padding,
+        global_max_rank_movement + padding,
+    ]
 
     fig = px.bar(
         movement_chart_df,
