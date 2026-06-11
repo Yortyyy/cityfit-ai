@@ -366,12 +366,92 @@ def load_globe_data(payload: dict) -> pd.DataFrame:
 
     return df.dropna(subset=["latitude", "longitude"])
 
-def build_globe_figure(globe_df: pd.DataFrame, all_df: pd.DataFrame):
+def get_selected_city_df(
+    globe_df: pd.DataFrame,
+    selected_city: str | None,
+    selected_country: str | None,
+) -> pd.DataFrame:
+    if selected_city is None or selected_country is None:
+        return pd.DataFrame()
+
+    return globe_df[
+        (globe_df["city"] == selected_city)
+        & (globe_df["country"] == selected_country)
+    ]
+
+def get_projection_rotation(selected_city_df: pd.DataFrame) -> dict:
+    if selected_city_df.empty:
+        return dict(lon=0, lat=20, roll=0)
+
+    selected_row = selected_city_df.iloc[0]
+
+    return dict(
+        lon=float(selected_row["longitude"]),
+        lat=float(selected_row["latitude"]),
+        roll=0,
+    )
+
+def add_selected_city_marker(fig, selected_city_df: pd.DataFrame):
+    if selected_city_df.empty:
+        return fig
+
+    # Outer highlight ring
+    fig.add_scattergeo(
+        lat=selected_city_df["latitude"],
+        lon=selected_city_df["longitude"],
+        mode="markers",
+        hoverinfo="skip",
+        marker=dict(
+            size=24,
+            color="rgba(255, 255, 255, 0.20)",
+            line=dict(
+                width=4,
+                color="rgba(31, 37, 79, 0.95)",
+            ),
+            symbol="circle",
+        ),
+        showlegend=False,
+    )
+
+    # Inner selected dot
+    fig.add_scattergeo(
+        lat=selected_city_df["latitude"],
+        lon=selected_city_df["longitude"],
+        mode="markers",
+        hoverinfo="skip",
+        marker=dict(
+            size=10,
+            color="rgb(255, 255, 255)",
+            line=dict(
+                width=3,
+                color="rgb(31, 37, 79)",
+            ),
+            symbol="circle",
+        ),
+        showlegend=False,
+    )
+
+    return fig
+
+def build_globe_figure(
+    globe_df: pd.DataFrame,
+    all_df: pd.DataFrame,
+    searched_city: str | None = None,
+    searched_country: str | None = None,
+):
     global_min_score = all_df["cityfit_score"].min()
     global_max_score = all_df["cityfit_score"].max()
 
     max_marker_size = 10
     sizeref = 2.0 * global_max_score / (max_marker_size**2)
+
+    searched_city_df = get_selected_city_df(
+        globe_df,
+        searched_city,
+        searched_country,
+    )
+
+    projection_rotation = get_projection_rotation(searched_city_df)
 
     fig = px.scatter_geo(
         globe_df,
@@ -414,6 +494,8 @@ def build_globe_figure(globe_df: pd.DataFrame, all_df: pd.DataFrame):
         ),
     )
 
+    fig = add_selected_city_marker(fig, searched_city_df)
+
     fig.update_geos(
         showland=True,
         landcolor="rgb(215, 220, 230)",
@@ -424,7 +506,7 @@ def build_globe_figure(globe_df: pd.DataFrame, all_df: pd.DataFrame):
         showlakes=True,
         lakecolor="rgb(188, 190, 230)",
         bgcolor="rgba(0,0,0,0)",
-        projection_rotation=dict(lon=0, lat=20, roll=0),
+        projection_rotation=projection_rotation,
     )
 
     fig.update_layout(
@@ -588,7 +670,13 @@ def render_globe_page(payload: dict, all_df: pd.DataFrame) -> None:
     
     searched_city, searched_country = render_city_search(globe_df)
 
-    fig = build_globe_figure(globe_df, all_df)
+    fig = build_globe_figure(
+        globe_df,
+        all_df,
+        searched_city,
+        searched_country,
+    )
+
     selected_city, selected_country = render_selectable_globe(fig)
 
     profile_city = selected_city or searched_city
