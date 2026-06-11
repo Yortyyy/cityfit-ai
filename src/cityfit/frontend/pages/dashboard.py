@@ -7,6 +7,29 @@ import streamlit as st
 API_URL = "http://api:8000"
 
 
+def render_chat_styles() -> None:
+    # Chat emoji align with headers
+    st.markdown(
+        """
+        <style>
+        div[data-testid="stChatMessage"] {
+            align-items: flex-start;
+        }
+
+        div[data-testid="stChatMessage"] div[data-testid="stAvatar"] {
+            margin-top: 0.55rem;
+        }
+
+        div[data-testid="stChatMessage"] h2 {
+            margin-top: 0;
+            padding-top: 0;
+            line-height: 1;
+        }
+        </style>
+        """,
+        unsafe_allow_html=True,
+    )
+
 def get_recommendations_from_api(payload: dict) -> list[dict]:
     response = requests.post(f"{API_URL}/recommend", json=payload, timeout=10)
     response.raise_for_status()
@@ -20,6 +43,8 @@ def query_agent_from_api(payload: dict) -> dict:
 
 
 def render_dashboard_page(base_payload: dict, all_df: pd.DataFrame) -> None:
+    render_chat_styles()
+
     st.title("📊 CityFit Dashboard")
     st.write(
         "Compare Numbeo's baseline Quality of Life ranking against a personalized "
