@@ -35,6 +35,10 @@ def render_css() -> None:
             z-index: 999999;
         }
 
+        /* ========================= */
+        /* SIDEBAR */
+        /* ========================= */
+
         section[data-testid="stSidebar"] {
             background:
                 radial-gradient(circle at 20% 10%, rgba(255,255,255,0.16), transparent 28%),
@@ -72,40 +76,94 @@ def render_css() -> None:
             color: rgba(245, 246, 255, 0.96) !important;
         }
 
+        /* ========================= */
+        /* GLOSSY CITY SEARCH BAR */
+        /* ========================= */
+
+        div[data-testid="stAppViewContainer"] main div[data-testid="stSelectbox"] {
+            max-width: 100% !important;
+            margin-top: 1.25rem !important;
+            margin-bottom: 1.25rem !important;
+        }
+
+        /* Actual visible selectbox */
         div[data-testid="stAppViewContainer"] main div[data-testid="stSelectbox"] div[data-baseweb="select"] > div {
-            min-height: 3rem !important;
-            border-radius: 999px !important;
-            background:
+            min-height: 56px !important;
+            border-radius: 14px !important;
+
+            padding-left: 3.25rem !important;
+            padding-right: 1rem !important;
+
+            background-image:
+                url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='22' height='22' viewBox='0 0 24 24' fill='none' stroke='%231f254f' stroke-width='2.6' stroke-linecap='round' stroke-linejoin='round'%3E%3Ccircle cx='11' cy='11' r='7'%3E%3C/circle%3E%3Cline x1='16.5' y1='16.5' x2='21' y2='21'%3E%3C/line%3E%3C/svg%3E"),
+                linear-gradient(
+                    90deg,
+                    transparent 0%,
+                    rgba(255, 255, 255, 0.75) 18%,
+                    rgba(255, 255, 255, 0.18) 36%,
+                    transparent 52%
+                ),
                 linear-gradient(
                     180deg,
-                    rgba(255, 255, 255, 0.78) 0%,
-                    rgba(245, 246, 255, 0.58) 48%,
-                    rgba(225, 228, 248, 0.46) 100%
+                    rgba(255, 255, 255, 0.72) 0%,
+                    rgba(235, 238, 255, 0.42) 48%,
+                    rgba(180, 185, 230, 0.32) 100%
                 ) !important;
-            border: 1px solid rgba(255, 255, 255, 0.86) !important;
+
+            background-repeat: no-repeat, no-repeat, no-repeat !important;
+            background-position:
+                1.15rem center,
+                3.2rem 0.45rem,
+                center !important;
+            background-size:
+                22px 22px,
+                calc(100% - 6rem) 14px,
+                100% 100% !important;
+
+            border: 1px solid rgba(255, 255, 255, 0.78) !important;
+
             box-shadow:
-                inset 0 1px 0 rgba(255, 255, 255, 0.90),
-                inset 0 -10px 18px rgba(120, 130, 190, 0.12),
-                0 10px 24px rgba(40, 40, 90, 0.14) !important;
-            backdrop-filter: blur(10px) !important;
-            -webkit-backdrop-filter: blur(10px) !important;
-            padding-left: 0.35rem !important;
+                inset 0 1px 0 rgba(255, 255, 255, 0.95),
+                inset 0 -14px 26px rgba(90, 100, 175, 0.18),
+                0 14px 32px rgba(40, 40, 90, 0.18) !important;
+
+            backdrop-filter: blur(14px) !important;
+            -webkit-backdrop-filter: blur(14px) !important;
         }
 
-        div[data-testid="stAppViewContainer"] main div[data-testid="stSelectbox"] div[data-baseweb="select"] div {
-            background-color: transparent !important;
+        /* Make inner BaseWeb layers transparent */
+        div[data-testid="stAppViewContainer"] main div[data-testid="stSelectbox"] div[data-baseweb="select"],
+        div[data-testid="stAppViewContainer"] main div[data-testid="stSelectbox"] div[data-baseweb="select"] > div > div {
+            background: transparent !important;
+        }
+
+        /* Text */
+        div[data-testid="stAppViewContainer"] main div[data-testid="stSelectbox"] div[data-baseweb="select"] div,
+        div[data-testid="stAppViewContainer"] main div[data-testid="stSelectbox"] div[data-baseweb="select"] span,
+        div[data-testid="stAppViewContainer"] main div[data-testid="stSelectbox"] div[data-baseweb="select"] input {
             color: #1f254f !important;
-            font-weight: 500 !important;
+            font-weight: 700 !important;
+            font-size: 1rem !important;
         }
 
-        div[data-testid="stAppViewContainer"] main div[data-testid="stSelectbox"] span {
-            color: #1f254f !important;
+        /* Hover effect */
+        div[data-testid="stAppViewContainer"] main div[data-testid="stSelectbox"] div[data-baseweb="select"] > div:hover {
+            box-shadow:
+                inset 0 1px 0 rgba(255, 255, 255, 1),
+                inset 0 -14px 26px rgba(90, 100, 175, 0.22),
+                0 18px 42px rgba(40, 40, 90, 0.24),
+                0 0 0 3px rgba(120, 140, 255, 0.16) !important;
         }
 
+        /* Dropdown arrow */
         div[data-testid="stAppViewContainer"] main div[data-testid="stSelectbox"] svg {
             color: #1f254f !important;
             fill: #1f254f !important;
         }
+
+        /* ========================= */
+        /* HERO TITLE */
+        /* ========================= */
 
         .hero-title .eyebrow {
             font-size: 0.78rem;
@@ -125,6 +183,10 @@ def render_css() -> None:
             color: rgba(20, 25, 55, 0.75);
             font-size: 1.05rem;
         }
+
+        /* ========================= */
+        /* METRIC TABLE */
+        /* ========================= */
 
         .metric-table-card {
             margin-top: 1rem !important;
@@ -185,6 +247,10 @@ def render_css() -> None:
             background: rgba(255, 255, 255, 0.35) !important;
         }
 
+        /* ========================= */
+        /* GLOBAL TEXT / METRICS */
+        /* ========================= */
+
         .hero-title,
         [data-testid="stMarkdownContainer"],
         [data-testid="stMetric"],
@@ -217,7 +283,7 @@ def render_city_search(globe_df: pd.DataFrame) -> tuple[str | None, str | None]:
         .sort_values(["city", "country"])
     )
 
-    city_options = [""] + [
+    city_options = [
         f"{row.city}, {row.country}"
         for row in city_options_df.itertuples(index=False)
     ]
@@ -225,13 +291,13 @@ def render_city_search(globe_df: pd.DataFrame) -> tuple[str | None, str | None]:
     selected_city_label = st.selectbox(
         "Search for a city",
         city_options,
-        index=0,
+        index=None,
         placeholder="Search for a city...",
         key="city_search_selectbox",
         label_visibility="collapsed",
     )
 
-    if selected_city_label == "":
+    if selected_city_label is None:
         return None, None
 
     selected_city, selected_country = selected_city_label.rsplit(", ", 1)
@@ -286,8 +352,8 @@ def build_globe_figure(globe_df: pd.DataFrame, all_df: pd.DataFrame):
         hovertemplate=(
             "<b>%{customdata[0]}</b><br>"
             "%{customdata[1]} · %{customdata[2]}<br><br>"
-            "CityFit score: %{customdata[3]:.1f}<br>"
-            "CityFit rank: #%{customdata[4]:.0f}<br>"
+            "CityFit Score: %{customdata[3]:.1f}<br>"
+            "CityFit Rank: #%{customdata[4]:.0f}<br>"
             "<extra></extra>"
         ),
         marker=dict(
