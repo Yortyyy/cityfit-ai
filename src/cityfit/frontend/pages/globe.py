@@ -77,86 +77,80 @@ def render_css() -> None:
         }
 
         /* ========================= */
-        /* GLOSSY CITY SEARCH BAR */
+        /* CITY SEARCH SELECTBOX ONLY */
         /* ========================= */
 
-        div[data-testid="stAppViewContainer"] main div[data-testid="stSelectbox"] {
+        /* Widget wrapper generated from key="city_search_selectbox" */
+        .st-key-city_search_selectbox {
+            position: relative !important;
             max-width: 100% !important;
             margin-top: 1.25rem !important;
             margin-bottom: 1.25rem !important;
         }
 
-        /* Actual visible selectbox */
-        div[data-testid="stAppViewContainer"] main div[data-testid="stSelectbox"] div[data-baseweb="select"] > div {
-            min-height: 56px !important;
-            border-radius: 14px !important;
+        /* Actual visible selectbox surface */
+        .st-key-city_search_selectbox div[data-baseweb="select"] > div {
+            min-height: 44px !important;
+            height: 44px !important;
+            border-radius: 999px !important;
+            padding-left: 3rem !important;
 
-            padding-left: 3.25rem !important;
-            padding-right: 1rem !important;
-
-            background-image:
-                url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='22' height='22' viewBox='0 0 24 24' fill='none' stroke='%231f254f' stroke-width='2.6' stroke-linecap='round' stroke-linejoin='round'%3E%3Ccircle cx='11' cy='11' r='7'%3E%3C/circle%3E%3Cline x1='16.5' y1='16.5' x2='21' y2='21'%3E%3C/line%3E%3C/svg%3E"),
+            background:
+                url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='18' height='18' viewBox='0 0 24 24' fill='none' stroke='%231f254f' stroke-width='2.6' stroke-linecap='round' stroke-linejoin='round'%3E%3Ccircle cx='11' cy='11' r='7'%3E%3C/circle%3E%3Cline x1='16.5' y1='16.5' x2='21' y2='21'%3E%3C/line%3E%3C/svg%3E") 1.05rem center / 18px 18px no-repeat,
                 linear-gradient(
                     90deg,
                     transparent 0%,
-                    rgba(255, 255, 255, 0.75) 18%,
-                    rgba(255, 255, 255, 0.18) 36%,
-                    transparent 52%
-                ),
+                    rgba(255, 255, 255, 0.85) 18%,
+                    rgba(255, 255, 255, 0.28) 38%,
+                    transparent 58%
+                ) 3rem 0.35rem / calc(100% - 5.8rem) 10px no-repeat,
                 linear-gradient(
                     180deg,
-                    rgba(255, 255, 255, 0.72) 0%,
-                    rgba(235, 238, 255, 0.42) 48%,
-                    rgba(180, 185, 230, 0.32) 100%
+                    rgba(255, 255, 255, 0.88) 0%,
+                    rgba(238, 241, 255, 0.58) 45%,
+                    rgba(178, 185, 235, 0.42) 100%
                 ) !important;
-
-            background-repeat: no-repeat, no-repeat, no-repeat !important;
-            background-position:
-                1.15rem center,
-                3.2rem 0.45rem,
-                center !important;
-            background-size:
-                22px 22px,
-                calc(100% - 6rem) 14px,
-                100% 100% !important;
-
-            border: 1px solid rgba(255, 255, 255, 0.78) !important;
-
-            box-shadow:
-                inset 0 1px 0 rgba(255, 255, 255, 0.95),
-                inset 0 -14px 26px rgba(90, 100, 175, 0.18),
-                0 14px 32px rgba(40, 40, 90, 0.18) !important;
-
-            backdrop-filter: blur(14px) !important;
-            -webkit-backdrop-filter: blur(14px) !important;
         }
 
-        /* Make inner BaseWeb layers transparent */
-        div[data-testid="stAppViewContainer"] main div[data-testid="stSelectbox"] div[data-baseweb="select"],
-        div[data-testid="stAppViewContainer"] main div[data-testid="stSelectbox"] div[data-baseweb="select"] > div > div {
-            background: transparent !important;
-        }
+            border: 1px solid rgba(255, 255, 255, 0.95) !important;
 
-        /* Text */
-        div[data-testid="stAppViewContainer"] main div[data-testid="stSelectbox"] div[data-baseweb="select"] div,
-        div[data-testid="stAppViewContainer"] main div[data-testid="stSelectbox"] div[data-baseweb="select"] span,
-        div[data-testid="stAppViewContainer"] main div[data-testid="stSelectbox"] div[data-baseweb="select"] input {
-            color: #1f254f !important;
-            font-weight: 700 !important;
-            font-size: 1rem !important;
-        }
-
-        /* Hover effect */
-        div[data-testid="stAppViewContainer"] main div[data-testid="stSelectbox"] div[data-baseweb="select"] > div:hover {
             box-shadow:
                 inset 0 1px 0 rgba(255, 255, 255, 1),
-                inset 0 -14px 26px rgba(90, 100, 175, 0.22),
-                0 18px 42px rgba(40, 40, 90, 0.24),
-                0 0 0 3px rgba(120, 140, 255, 0.16) !important;
+                inset 0 -16px 28px rgba(85, 95, 175, 0.24),
+                0 18px 42px rgba(35, 40, 100, 0.24),
+                0 0 0 1px rgba(90, 105, 190, 0.16) !important;
+
+            backdrop-filter: blur(16px) !important;
+            -webkit-backdrop-filter: blur(16px) !important;
+        }
+
+        /* Force BaseWeb inner layers transparent */
+        .st-key-city_search_selectbox div[data-baseweb="select"],
+        .st-key-city_search_selectbox div[data-baseweb="select"] > div > div,
+        .st-key-city_search_selectbox div[data-baseweb="select"] input {
+            background-color: transparent !important;
+        }
+
+        /* Placeholder / selected text */
+        .st-key-city_search_selectbox div[data-baseweb="select"] div,
+        .st-key-city_search_selectbox div[data-baseweb="select"] span,
+        .st-key-city_search_selectbox div[data-baseweb="select"] input {
+            color: #1f254f !important;
+            font-weight: 750 !important;
+            font-size: 0.95rem !important;
+        }
+
+        /* Hover glow */
+        .st-key-city_search_selectbox div[data-baseweb="select"] > div:hover {
+            box-shadow:
+                inset 0 1px 0 rgba(255, 255, 255, 1),
+                inset 0 -16px 28px rgba(85, 95, 175, 0.28),
+                0 22px 52px rgba(35, 40, 100, 0.30),
+                0 0 0 3px rgba(120, 140, 255, 0.20) !important;
         }
 
         /* Dropdown arrow */
-        div[data-testid="stAppViewContainer"] main div[data-testid="stSelectbox"] svg {
+        .st-key-city_search_selectbox svg {
             color: #1f254f !important;
             fill: #1f254f !important;
         }
@@ -264,6 +258,37 @@ def render_css() -> None:
 
         [data-testid="stMetricValue"] {
             color: #1f254f !important;
+        }
+
+        /* Make the search placeholder text softer */
+        .st-key-city_search_selectbox div[data-baseweb="select"] input::placeholder {
+            color: rgba(31, 37, 79, 0.45) !important;
+            opacity: 1 !important;
+            font-weight: 600 !important;
+        }
+
+        /* Sometimes Streamlit/BaseWeb renders the placeholder as a div/span instead */
+        .st-key-city_search_selectbox div[data-baseweb="select"] div,
+        .st-key-city_search_selectbox div[data-baseweb="select"] span {
+            color: rgba(31, 37, 79, 0.50) !important;
+        }
+
+        /* Hide Streamlit top header / Deploy toolbar */
+        header[data-testid="stHeader"] {
+            display: none !important;
+        }
+
+        div[data-testid="stToolbar"] {
+            display: none !important;
+        }
+
+        div[data-testid="stDecoration"] {
+            display: none !important;
+        }
+
+        /* Remove leftover top spacing */
+        .block-container {
+            padding-top: 1rem !important;
         }
         </style>
         """,
