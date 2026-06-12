@@ -220,7 +220,19 @@ def render_css() -> None:
             border-bottom: 1px solid rgba(255, 255, 255, 0.38) !important;
             font-weight: 650 !important;
             color: #1f254f !important;
+        }
+
+        .metric-table-card td.metric-value-cell,
+        .metric-table td.metric-value-cell {
+            color: var(--metric-color) !important;
             background: rgba(245, 246, 255, 0.20) !important;
+            font-size: 1.05rem !important;
+            font-weight: 850 !important;
+            letter-spacing: 0.02em !important;
+            font-variant-numeric: tabular-nums !important;
+            text-shadow:
+                1px 1px 0 color-mix(in srgb, var(--metric-color) 55%, #1f254f),
+                2px 2px 1px rgba(31, 37, 79, 0.22) !important;
         }
 
         .metric-table-card td:last-child,
@@ -230,13 +242,19 @@ def render_css() -> None:
             text-align: right !important;
         }
 
-        .metric-table-card tbody tr:last-child td,
-        .metric-table tbody tr:last-child td {
-            border-bottom: none !important;
+        .metric-table-card tbody tr,
+        .metric-table tbody tr {
+            background: rgba(245, 246, 255, 0.20) !important;
         }
 
-        .metric-table-card tbody tr:hover td,
-        .metric-table tbody tr:hover td {
+        .metric-table-card tbody tr:hover td:not(.metric-value-cell),
+        .metric-table tbody tr:hover td:not(.metric-value-cell) {
+            background: rgba(255, 255, 255, 0.35) !important;
+        }
+
+        .metric-table-card tbody tr:hover td.metric-value-cell,
+        .metric-table tbody tr:hover td.metric-value-cell {
+            color: var(--metric-color) !important;
             background: rgba(255, 255, 255, 0.35) !important;
         }
 
@@ -540,60 +558,105 @@ def render_selectable_globe(fig) -> tuple[str | None, str | None]:
 
     return selected_custom_data[0], selected_custom_data[1]
 
-def build_city_metric_table(city: pd.Series) -> pd.DataFrame:
+def get_metric_color(
+    value: float,
+    min_value: float,
+    max_value: float,
+    lower_is_better: bool = False,
+) -> str:
+    if pd.isna(value) or pd.isna(min_value) or pd.isna(max_value) or max_value == min_value:
+        return "rgb(31, 37, 79)"
+
+    normalized = (value - min_value) / (max_value - min_value)
+    normalized = max(0.0, min(1.0, normalized))
+
+    if lower_is_better:
+        normalized = 1.0 - normalized
+
+    return px.colors.sample_colorscale("RdYlGn", normalized)[0]
+
+def build_city_metric_table(city: pd.Series, all_df: pd.DataFrame) -> pd.DataFrame:
     metric_labels = {
         "cityfit_score": "City Score",
         "purchasing_power_index": "Purchasing power",
+        "cost_of_living_index": "Cost of living",
         "safety_index": "Safety",
         "healthcare_index": "Healthcare",
-        "cost_of_living_index": "Cost of living",
         "property_price_to_income_ratio": "Housing price to income",
         "traffic_commute_index": "Traffic commute",
-        "pollution_index": "Pollution",
         "climate_index": "Climate",
+        "pollution_index": "Pollution",
+    }
+
+    lower_is_better_metrics = {
+        "cost_of_living_index",
+        "property_price_to_income_ratio",
+        "traffic_commute_index",
+        "pollution_index",
     }
 
     rows = []
 
     for column, label in metric_labels.items():
-        if column in city.index and pd.notna(city[column]):
-            rows.append(
-                {
-                    "Metric": label,
-                    "Value": round(float(city[column]), 1),
-                }
-            )
+        if column not in city.index or column not in all_df.columns:
+            continue
+
+        if pd.isna(city[column]):
+            continue
+
+        value = float(city[column])
+        min_value = float(all_df[column].min())
+        max_value = float(all_df[column].max())
+
+        rows.append(
+            {
+                "Metric": label,
+                "Value": round(value, 1),
+                "Color": get_metric_color(
+                    value=value,
+                    min_value=min_value,
+                    max_value=max_value,
+                    lower_is_better=column in lower_is_better_metrics,
+                ),
+            }
+        )
 
     return pd.DataFrame(rows)
 
 def render_metric_table(metric_df: pd.DataFrame) -> None:
-    rows_html = "".join(
-        [
-            f"<tr><td>{row['Metric']}</td><td>{row['Value']}</td></tr>"
-            for _, row in metric_df.iterrows()
-        ]
-    )
+    rows_html = ""
 
-    table_html = f"""
-<div class="metric-table-card">
-<table class="metric-table">
-<thead>
-<tr>
-<th>Metric</th>
-<th>Value</th>
-</tr>
-</thead>
-<tbody>
-{rows_html}
-</tbody>
-</table>
-</div>
-"""
+    for _, row in metric_df.iterrows():
+        rows_html += (
+            "<tr>"
+            f"<td>{row['Metric']}</td>"
+            f"<td class='metric-value-cell' style='--metric-color: {row['Color']};'>"
+            f"{row['Value']}"
+            "</td>"
+            "</tr>"
+        )
+
+    table_html = (
+        "<div class='metric-table-card'>"
+        "<table class='metric-table'>"
+        "<thead>"
+        "<tr>"
+        "<th>Metric</th>"
+        "<th>Value</th>"
+        "</tr>"
+        "</thead>"
+        "<tbody>"
+        f"{rows_html}"
+        "</tbody>"
+        "</table>"
+        "</div>"
+    )
 
     st.markdown(table_html, unsafe_allow_html=True)
 
 def render_city_profile(
     globe_df: pd.DataFrame,
+    all_df: pd.DataFrame,
     selected_city: str | None,
     selected_country: str | None,
 ) -> None:
@@ -626,7 +689,7 @@ def render_city_profile(
 
     st.markdown("#### Metric breakdown")
 
-    metric_df = build_city_metric_table(city)
+    metric_df = build_city_metric_table(city, all_df)
 
     render_metric_table(metric_df)
 
@@ -668,4 +731,4 @@ def render_globe_page(payload: dict, all_df: pd.DataFrame) -> None:
     profile_city = selected_city or searched_city
     profile_country = selected_country or searched_country
 
-    render_city_profile(globe_df, profile_city, profile_country)
+    render_city_profile(globe_df, all_df, profile_city, profile_country)
