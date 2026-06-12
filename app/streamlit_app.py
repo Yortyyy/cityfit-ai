@@ -19,6 +19,7 @@ st.set_page_config(
     page_title="CityFit AI",
     page_icon="🌎",
     layout="wide",
+    initial_sidebar_state="expanded",
 )
 
 

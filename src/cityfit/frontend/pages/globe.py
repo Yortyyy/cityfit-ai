@@ -110,7 +110,6 @@ def render_css() -> None:
                     rgba(238, 241, 255, 0.58) 45%,
                     rgba(178, 185, 235, 0.42) 100%
                 ) !important;
-        }
 
             border: 1px solid rgba(255, 255, 255, 0.95) !important;
 
@@ -296,19 +295,6 @@ def render_css() -> None:
         /* Nudge the value down slightly if it still sits high */
         .st-key-city_search_selectbox div[data-baseweb="select"] div[role="combobox"] {
             transform: translateY(1px) !important;
-        }
-
-        /* Hide Streamlit top header / Deploy toolbar */
-        header[data-testid="stHeader"] {
-            display: none !important;
-        }
-
-        div[data-testid="stToolbar"] {
-            display: none !important;
-        }
-
-        div[data-testid="stDecoration"] {
-            display: none !important;
         }
 
         /* Remove leftover top spacing */
