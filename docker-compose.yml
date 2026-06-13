@@ -9,17 +9,23 @@ services:
   api:
     build: .
     container_name: cityfit-api
+    working_dir: /app
     volumes:
       - .:/app
       - hf_cache:/root/.cache/huggingface
     ports:
       - "8000:8000"
-    # depends_on:
-    #   - ollama
     environment:
       - OLLAMA_BASE_URL=http://ollama:11434
       - OLLAMA_MODEL=llama3.1:8b
-    command: uvicorn cityfit.api.main:app --host 0.0.0.0 --port 8000 --reload
+      - PYTHONPATH=/app/src
+    command: >
+      uvicorn cityfit.api.main:app
+      --host 0.0.0.0
+      --port 8000
+      --reload
+      --reload-dir /app/src
+      --reload-dir /app/app
 
   streamlit:
     build: .
@@ -31,6 +37,8 @@ services:
       - "8501:8501"
     depends_on:
       - api
+    environment:
+      - PYTHONPATH=/app/src
     command: >
       streamlit run app/streamlit_app.py
       --server.address=0.0.0.0
