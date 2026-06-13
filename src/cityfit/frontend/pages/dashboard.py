@@ -235,7 +235,7 @@ def render_dashboard_page(base_payload: dict, all_df: pd.DataFrame) -> None:
 
     st.plotly_chart(fig, width="stretch")
 
-    st.subheader("Rank movement")
+    st.subheader("Rank Movement")
 
     # TODO: If priorities are all 10 - default - don't display rank movement/changes
 
@@ -263,7 +263,7 @@ def render_dashboard_page(base_payload: dict, all_df: pd.DataFrame) -> None:
         },
     )
 
-    st.subheader("Biggest ranking changes")
+    st.subheader("Biggest Ranking Changes")
 
     movement_chart_df = (
         recommendations_df[["city", "personalized_rank_difference"]]
@@ -341,7 +341,7 @@ def render_dashboard_page(base_payload: dict, all_df: pd.DataFrame) -> None:
             hide_index=True,
         )
 
-        st.subheader("City explanations")
+        st.subheader("City Explanations")
 
         for _, row in comparison_df.iterrows():
             st.write(f"**{row['city']} - #{round(row['cityfit_rank'])}**")
