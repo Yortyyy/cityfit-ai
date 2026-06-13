@@ -6,19 +6,22 @@ def explain_city_rank(row: pd.Series) -> str:
 
     rank_difference = row["rank_difference"]
 
+
+    # TODO: This needs to be redone to not be a comparison to the base rank, just explanations.
+    #       ALso rank by selected cities not the ranking of them???
     if rank_difference > 0:
         movement = (
-            f"{city} moves up compared with its Numbeo baseline because the personalized "
+            f"{city} moves up compared to the base CityFit rank because the personalized "
             "CityFit profile rewards its strengths more than the baseline ranking does."
         )
     elif rank_difference < 0:
         movement = (
-            f"{city} moves down compared with its Numbeo baseline because some of its tradeoffs "
+            f"{city} moves down compared to the base CityFit rank because some of its tradeoffs "
             "matter more under the selected CityFit priorities."
         )
     else:
         movement = (
-            f"{city} ranks about the same in CityFit as it does in the Numbeo baseline, "
+            f"{city} ranks about the same in CityFit as it does in the CityFit baseline, "
             "which suggests the personalized priorities broadly agree with the baseline ranking."
         )
 
@@ -42,6 +45,11 @@ def explain_city_rank(row: pd.Series) -> str:
         strengths.append(f"moderate cost of living ({row['cost_of_living_index']:.1f})")
     elif row["cost_of_living_index"] >= 85:
         tradeoffs.append(f"high cost of living ({row['cost_of_living_index']:.1f})")
+
+    if row["traffic_commute_index"] < 35:
+        strengths.append(f"less traffic ({row['cost_of_living_index']:.1f})")
+    elif row["cost_of_living_index"] >= 85:
+        tradeoffs.append(f"more traffic ({row['cost_of_living_index']:.1f})")
 
     if row["pollution_index"] < 35:
         strengths.append(f"low pollution ({row['pollution_index']:.1f})")

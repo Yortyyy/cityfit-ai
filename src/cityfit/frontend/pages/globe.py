@@ -577,13 +577,13 @@ def get_metric_color(
 
 def build_city_metric_table(city: pd.Series, all_df: pd.DataFrame) -> pd.DataFrame:
     metric_labels = {
-        "cityfit_score": "City Score",
-        "purchasing_power_index": "Purchasing power",
-        "cost_of_living_index": "Cost of living",
+        "cityfit_score": "CityFit Score",
+        "purchasing_power_index": "Purchasing Power",
+        "cost_of_living_index": "Cost of Living",
         "safety_index": "Safety",
         "healthcare_index": "Healthcare",
         "property_price_to_income_ratio": "Housing price to income",
-        "traffic_commute_index": "Traffic commute",
+        "traffic_commute_index": "Traffic Commute",
         "climate_index": "Climate",
         "pollution_index": "Pollution",
     }
@@ -718,6 +718,9 @@ def render_globe_page(payload: dict, all_df: pd.DataFrame) -> None:
         return
     
     searched_city, searched_country = render_city_search(globe_df)
+
+    # Delete later
+    # st.write(globe_df.columns.tolist())
 
     fig = build_globe_figure(
         globe_df,

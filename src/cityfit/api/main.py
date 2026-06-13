@@ -38,12 +38,14 @@ def recommend_cities(profile: UserProfile):
         "rank_difference",
         "numbeo_quality_of_life_index",
         "cityfit_score",
-        "cost_of_living_index",
         "purchasing_power_index",
+        "cost_of_living_index",
         "safety_index",
         "healthcare_index",
-        "pollution_index",
+        "property_price_to_income_ratio",
+        "traffic_commute_index",
         "climate_index",
+        "pollution_index",
         "explanation",
     ]
 
@@ -54,12 +56,13 @@ def recommend_cities(profile: UserProfile):
 @app.post("/agent/query", response_model=AgentQueryResponse)
 def query_agent(request: AgentQueryRequest):
     profile = UserProfile(
-        priority_safety=request.priority_safety,
-        priority_healthcare=request.priority_healthcare,
-        priority_climate=request.priority_climate,
         priority_purchasing_power=request.priority_purchasing_power,
         priority_low_cost=request.priority_low_cost,
+        priority_safety=request.priority_safety,
+        priority_healthcare=request.priority_healthcare,
         priority_housing=request.priority_housing,
+        priority_low_traffic=request.priority_low_traffic,
+        priority_climate=request.priority_climate,
         priority_low_pollution=request.priority_low_pollution,
         remote_worker=request.remote_worker,
         top_n=request.top_n,

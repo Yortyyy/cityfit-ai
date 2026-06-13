@@ -2,12 +2,13 @@ from pydantic import BaseModel, Field
 
 
 class UserProfile(BaseModel):
-    priority_safety: float = Field(default=1.0, ge=0.0, le=2.0)
-    priority_healthcare: float = Field(default=1.0, ge=0.0, le=2.0)
-    priority_climate: float = Field(default=0.8, ge=0.0, le=2.0)
     priority_purchasing_power: float = Field(default=1.0, ge=0.0, le=2.0)
     priority_low_cost: float = Field(default=1.0, ge=0.0, le=2.0)
+    priority_safety: float = Field(default=1.0, ge=0.0, le=2.0)
+    priority_healthcare: float = Field(default=1.0, ge=0.0, le=2.0)
     priority_housing: float = Field(default=1.0, ge=0.0, le=2.0)
+    priority_low_traffic: float = Field(default=0.7, ge=0.0, le=2.0)
+    priority_climate: float = Field(default=0.8, ge=0.0, le=2.0)
     priority_low_pollution: float = Field(default=0.7, ge=0.0, le=2.0)
     remote_worker: bool = True
     top_n: int = Field(default=10, ge=1, le=500)
@@ -33,8 +34,9 @@ class CityRecommendation(BaseModel):
     purchasing_power_index: float
     safety_index: float
     healthcare_index: float
-    pollution_index: float
+    traffic_commute_index: float
     climate_index: float
+    pollution_index: float
 
     explanation: str
 

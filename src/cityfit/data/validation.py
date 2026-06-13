@@ -18,13 +18,13 @@ def validate_city_metrics(df: pd.DataFrame) -> None:
         "latitude",
         "longitude",
         "purchasing_power_index",
+        "cost_of_living_index",
         "safety_index",
         "healthcare_index",
-        "cost_of_living_index",
         "property_price_to_income_ratio",
         "traffic_commute_index",
-        "pollution_index",
         "climate_index",
+        "pollution_index",
     ]
 
     for col in numeric_columns:

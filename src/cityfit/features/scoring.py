@@ -6,7 +6,7 @@ from cityfit.features.transformations import add_cityfit_features
 def calculate_cityfit_score(
     df: pd.DataFrame,
     weights: dict,
-    personalization_strength: float = 0.4,
+    personalization_strength: float = 0.5,
 ) -> pd.DataFrame:
     """
     Calculate CityFit score.
@@ -15,19 +15,19 @@ def calculate_cityfit_score(
     adjustment. The adjustment is normalized by total priority weight so
     default and personalized scores remain comparable.
     """
-    global_score_scaler = 1.2
+    global_score_scaler = 1.25
 
     scored = add_cityfit_features(df.copy())
 
     priority_features = {
         "purchasing_power": "purchasing_power_score",
+        "affordability": "affordability_score",
         "safety": "safety_score",
         "healthcare": "healthcare_score",
-        "climate": "climate_score",
-        "affordability": "affordability_score",
         "housing_affordability": "housing_affordability_score",
-        "low_pollution": "low_pollution_score",
         "low_traffic": "low_traffic_score",
+        "climate": "climate_score",
+        "low_pollution": "low_pollution_score",
     }
 
     total_weight = sum(

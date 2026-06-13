@@ -132,12 +132,13 @@ def render_dashboard_page(base_payload: dict, all_df: pd.DataFrame) -> None:
         "personalized_rank_difference",
         "default_cityfit_score",
         "cityfit_score",
-        "cost_of_living_index",
         "purchasing_power_index",
+        "cost_of_living_index",
         "safety_index",
         "healthcare_index",
-        "pollution_index",
+        "traffic_commute_index",
         "climate_index",
+        "pollution_index",
     ]
 
     top_recommendation_cols = [
@@ -150,6 +151,7 @@ def render_dashboard_page(base_payload: dict, all_df: pd.DataFrame) -> None:
         "purchasing_power_index",
         "safety_index",
         "healthcare_index",
+        "traffic_commute_index",
         "pollution_index",
         "climate_index",
     ]
@@ -167,6 +169,7 @@ def render_dashboard_page(base_payload: dict, all_df: pd.DataFrame) -> None:
         "purchasing_power_index": "Purchasing Power Index",
         "safety_index": "Safety Index",
         "healthcare_index": "Healthcare Index",
+        "traffic_commute_index": "Traffic Index",
         "pollution_index": "Pollution Index",
         "climate_index": "Climate Index",
     }
@@ -307,7 +310,9 @@ def render_dashboard_page(base_payload: dict, all_df: pd.DataFrame) -> None:
 
     st.plotly_chart(fig, width="stretch")
 
-    st.subheader("Compare specific cities")
+    st.subheader("Compare Specific Cities")
+    
+    preselected_cities = ["Tampa", "Miami", "New York", "Rome", "Tokyo"]
 
     city_options = sorted(recommendations_df["city"].unique())
     selected_cities = st.multiselect(
@@ -315,7 +320,7 @@ def render_dashboard_page(base_payload: dict, all_df: pd.DataFrame) -> None:
         options=city_options,
         default=[
             city
-            for city in ["Tampa", "Miami", "New York", "Tokyo", "Rome"]
+            for city in preselected_cities
             if city in city_options
         ],
     )
@@ -339,7 +344,7 @@ def render_dashboard_page(base_payload: dict, all_df: pd.DataFrame) -> None:
         st.subheader("City explanations")
 
         for _, row in comparison_df.iterrows():
-            st.write(f"**{row['city']}**")
+            st.write(f"**{row['city']} - #{round(row['cityfit_rank'])}**")
             st.write(row["explanation"])
 
     st.subheader("Ask CityFit AI")
