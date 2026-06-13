@@ -1,8 +1,9 @@
+import time
 import pandas as pd
 import plotly.express as px
 import requests
 import streamlit as st
-import streamlit.components.v1 as components
+from urllib.parse import quote
 
 from cityfit.utils.countries import get_country_flag_url
 
@@ -342,7 +343,7 @@ def render_css() -> None:
         }
 
         /* ========================= */
-        /* SIMILAR CITY CARDS */
+        /* SIMILAR CITY LINKS */
         /* ========================= */
 
         .similar-city-section {
@@ -364,12 +365,13 @@ def render_css() -> None:
             font-size: 0.95rem;
         }
 
-        div[data-testid="stButton"] {
-            margin-bottom: 0.55rem !important;
-        }
+        .similar-city-link {
+            display: block !important;
+            width: 100% !important;
+            box-sizing: border-box !important;
+            text-decoration: none !important;
 
-        div[data-testid="stButton"] > button {
-            position: relative !important;
+            margin-bottom: 0.55rem !important;
             border-radius: 16px !important;
             border: 1px solid rgba(55, 65, 130, 0.22) !important;
             border-left: 5px solid rgba(70, 95, 190, 0.72) !important;
@@ -384,7 +386,7 @@ def render_css() -> None:
 
             color: #1f254f !important;
             min-height: 3.15rem !important;
-            padding: 0.55rem 1rem !important;
+            padding: 0.85rem 1rem !important;
             font-weight: 750 !important;
             letter-spacing: 0.005em !important;
 
@@ -399,7 +401,7 @@ def render_css() -> None:
                 background 0.16s ease !important;
         }
 
-        div[data-testid="stButton"] > button:hover {
+        .similar-city-link:hover {
             border-color: rgba(55, 65, 130, 0.34) !important;
             border-left-color: rgba(31, 37, 79, 0.95) !important;
 
@@ -418,13 +420,6 @@ def render_css() -> None:
 
             transform: translateY(-1px);
         }
-
-        div[data-testid="stButton"] > button:active {
-            transform: translateY(0);
-            box-shadow:
-                inset 0 1px 0 rgba(255, 255, 255, 1),
-                0 7px 16px rgba(35, 40, 100, 0.13) !important;
-        }
         </style>
         """,
         unsafe_allow_html=True,
@@ -435,28 +430,37 @@ def get_recommendations_from_api(payload: dict) -> list[dict]:
     response.raise_for_status()
     return response.json()["recommendations"]
 
-def scroll_to_globe_top() -> None:
-    components.html(
-        """
-        <script>
-            const doc = window.parent.document;
+def apply_similar_city_query_navigation() -> None:
+    query_city = st.query_params.get("similar_city")
+    query_country = st.query_params.get("similar_country")
+    query_nav = st.query_params.get("nav")
 
-            const target = doc.getElementById("globe-top");
+    if not query_city or not query_country or not query_nav:
+        return
 
-            if (target) {
-                target.scrollIntoView({
-                    behavior: "smooth",
-                    block: "start"
-                });
-            } else {
-                window.parent.scrollTo({
-                    top: 0,
-                    behavior: "smooth"
-                });
-            }
-        </script>
-        """,
-        height=0,
+    last_applied_nav = st.session_state.get("last_applied_query_nav")
+
+    if query_nav == last_applied_nav:
+        return
+
+    set_active_city(
+        city=query_city,
+        country=query_country,
+        source="similar_city",
+    )
+
+    set_focused_city(
+        city=query_city,
+        country=query_country,
+    )
+
+    bump_globe_chart_version()
+
+    st.session_state["skip_globe_selection_once"] = True
+    st.session_state["skip_search_once"] = True
+    st.session_state["last_applied_query_nav"] = query_nav
+    st.session_state["last_city_search_label"] = st.session_state.get(
+        "city_search_selectbox"
     )
 
 def render_city_search(globe_df: pd.DataFrame) -> tuple[str | None, str | None]:
@@ -496,7 +500,10 @@ def render_city_search(globe_df: pd.DataFrame) -> tuple[str | None, str | None]:
 
     return selected_city, selected_country
 
-def load_globe_data(payload: dict) -> pd.DataFrame:
+@st.cache_data(ttl=300)
+def load_globe_data_cached(payload_key: tuple) -> pd.DataFrame:
+    payload = dict(payload_key)
+
     recommendations = get_recommendations_from_api(
         {
             **payload,
@@ -507,6 +514,11 @@ def load_globe_data(payload: dict) -> pd.DataFrame:
     df = pd.DataFrame(recommendations)
 
     return df.dropna(subset=["latitude", "longitude"])
+
+
+def load_globe_data(payload: dict) -> pd.DataFrame:
+    payload_key = tuple(sorted(payload.items()))
+    return load_globe_data_cached(payload_key)
 
 def get_selected_city_df(
     globe_df: pd.DataFrame,
@@ -792,7 +804,21 @@ def render_metric_table(metric_df: pd.DataFrame) -> None:
 
     st.markdown(table_html, unsafe_allow_html=True)
 
-def get_similar_cities_by_metrics(
+@st.cache_data(ttl=300)
+def get_similar_cities_by_metrics_cached(
+    globe_df: pd.DataFrame,
+    selected_city: str,
+    selected_country: str,
+    top_n: int = 5,
+) -> pd.DataFrame:
+    return get_similar_cities_by_metrics_uncached(
+        globe_df=globe_df,
+        selected_city=selected_city,
+        selected_country=selected_country,
+        top_n=top_n,
+    )
+
+def get_similar_cities_by_metrics_uncached(
     globe_df: pd.DataFrame,
     selected_city: str,
     selected_country: str,
@@ -876,6 +902,29 @@ def get_similar_cities_by_metrics(
 
     return similar_df
 
+# Wrapper
+def get_similar_cities_by_metrics(
+    globe_df: pd.DataFrame,
+    selected_city: str,
+    selected_country: str,
+    top_n: int = 5,
+) -> pd.DataFrame:
+    return get_similar_cities_by_metrics_cached(
+        globe_df=globe_df,
+        selected_city=selected_city,
+        selected_country=selected_country,
+        top_n=top_n,
+    )
+
+def build_similar_city_href(city: str, country: str) -> str:
+    nav_token = f"{city}-{country}-{time.time_ns()}".replace(" ", "-")
+
+    return (
+        f"?similar_city={quote(str(city), safe='')}"
+        f"&similar_country={quote(str(country), safe='')}"
+        f"&nav={quote(nav_token, safe='')}"
+    )
+
 def render_similar_cities_by_metrics(
     globe_df: pd.DataFrame,
     selected_city: str,
@@ -917,27 +966,16 @@ def render_similar_cities_by_metrics(
             f"↗ {city_label} · {similarity}% match · #{rank} CityFit · {score} Score"
         )
 
-        if st.button(
-            button_label,
-            key=f"similar_city_{city}_{country}",
-            use_container_width=True,
-        ):
-            set_active_city(
-                city=city,
-                country=country,
-                source="similar_city",
-            )
+        href = build_similar_city_href(city, country)
 
-            set_focused_city(
-                city=city,
-                country=country,
-            )
-
-            bump_globe_chart_version()
-
-            st.session_state["scroll_to_globe_top"] = True
-
-            st.rerun()
+        st.markdown(
+            f"""
+            <a class="similar-city-link" href="{href}" target="_self">
+                {button_label}
+            </a>
+            """,
+            unsafe_allow_html=True,
+        )
 
 def render_city_profile(
     globe_df: pd.DataFrame,
@@ -1070,8 +1108,7 @@ def render_globe_page(payload: dict, all_df: pd.DataFrame) -> None:
         unsafe_allow_html=True,
     )
 
-    # Anchor
-    st.markdown("<div id='globe-top'></div>", unsafe_allow_html=True)
+    apply_similar_city_query_navigation()
 
     try:
         globe_df = load_globe_data(payload)
@@ -1082,7 +1119,7 @@ def render_globe_page(payload: dict, all_df: pd.DataFrame) -> None:
     if globe_df.empty:
         st.warning("No cities found for the selected filters.")
         return
-    
+
     previous_search_label = st.session_state.get("last_city_search_label")
 
     searched_city, searched_country = render_city_search(globe_df)
@@ -1091,38 +1128,41 @@ def render_globe_page(payload: dict, all_df: pd.DataFrame) -> None:
     if searched_city is not None and searched_country is not None:
         current_search_label = f"{searched_city}, {searched_country}"
 
-    search_changed = (
-        current_search_label is not None
-        and current_search_label != previous_search_label
-    )
+    skip_search_once = st.session_state.pop("skip_search_once", False)
 
-    search_cleared = (
-        current_search_label is None
-        and previous_search_label is not None
-    )
-
-    if search_changed:
-        set_active_city(
-            city=searched_city,
-            country=searched_country,
-            source="search",
+    if not skip_search_once:
+        search_changed = (
+            current_search_label is not None
+            and current_search_label != previous_search_label
         )
 
-        set_focused_city(
-            city=searched_city,
-            country=searched_country,
+        search_cleared = (
+            current_search_label is None
+            and previous_search_label is not None
         )
 
-        bump_globe_chart_version()
+        if search_changed:
+            set_active_city(
+                city=searched_city,
+                country=searched_country,
+                source="search",
+            )
 
-    elif search_cleared:
-        clear_active_city()
-        clear_focused_city()
+            set_focused_city(
+                city=searched_city,
+                country=searched_country,
+            )
 
-        st.session_state.pop("ignore_next_empty_globe_selection", None)
-        st.session_state.pop("ignore_next_globe_click", None)
+            bump_globe_chart_version()
 
-        bump_globe_chart_version()
+        elif search_cleared:
+            clear_active_city()
+            clear_focused_city()
+
+            st.session_state.pop("ignore_next_empty_globe_selection", None)
+            st.session_state.pop("ignore_next_globe_click", None)
+
+            bump_globe_chart_version()
 
     st.session_state["last_city_search_label"] = current_search_label
 
@@ -1138,8 +1178,14 @@ def render_globe_page(payload: dict, all_df: pd.DataFrame) -> None:
 
     clicked_city, clicked_country = render_selectable_globe(fig)
 
-    if st.session_state.pop("scroll_to_globe_top", False):
-        scroll_to_globe_top()
+    skip_globe_selection_once = st.session_state.pop(
+        "skip_globe_selection_once",
+        False,
+    )
+
+    if skip_globe_selection_once:
+        clicked_city = None
+        clicked_country = None
 
     if clicked_city is not None and clicked_country is not None:
         clicked_label = f"{clicked_city}, {clicked_country}"
@@ -1170,7 +1216,7 @@ def render_globe_page(payload: dict, all_df: pd.DataFrame) -> None:
     else:
         active_source = st.session_state.get("active_city_source")
 
-        if active_source == "globe":
+        if active_source == "globe" and not skip_globe_selection_once:
             restore_focused_city_as_active()
             bump_globe_chart_version()
             st.rerun()
