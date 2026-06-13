@@ -34,7 +34,7 @@ selected_page = st.sidebar.radio(
     ["Globe", "Dashboard"],
 )
 
-st.sidebar.header("Your priorities")
+st.sidebar.header("Your Priorities")
 
 priority_purchasing_power_ui = st.sidebar.slider("Purchasing Power", 0, 10, 5)
 priority_low_cost_ui = st.sidebar.slider("Low Cost of Living", 0, 10, 5)

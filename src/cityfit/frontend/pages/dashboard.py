@@ -87,7 +87,7 @@ def render_dashboard_page(base_payload: dict, all_df: pd.DataFrame) -> None:
     st.title("📊 CityFit Dashboard")
     st.write(
         "Compare a default CityFit ranking against your personalized CityFit ranking. "
-        "The default ranking treats every priority as maximally important, while the "
+        "The default ranking treats every priority as moderately important, while the "
         "personalized ranking uses your selected priorities."
     )
 
