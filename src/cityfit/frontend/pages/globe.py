@@ -2,6 +2,7 @@ import pandas as pd
 import plotly.express as px
 import requests
 import streamlit as st
+import streamlit.components.v1 as components
 
 from cityfit.utils.countries import get_country_flag_url
 
@@ -433,6 +434,30 @@ def get_recommendations_from_api(payload: dict) -> list[dict]:
     response = requests.post(f"{API_URL}/recommend", json=payload, timeout=10)
     response.raise_for_status()
     return response.json()["recommendations"]
+
+def scroll_to_globe_top() -> None:
+    components.html(
+        """
+        <script>
+            const doc = window.parent.document;
+
+            const target = doc.getElementById("globe-top");
+
+            if (target) {
+                target.scrollIntoView({
+                    behavior: "smooth",
+                    block: "start"
+                });
+            } else {
+                window.parent.scrollTo({
+                    top: 0,
+                    behavior: "smooth"
+                });
+            }
+        </script>
+        """,
+        height=0,
+    )
 
 def render_city_search(globe_df: pd.DataFrame) -> tuple[str | None, str | None]:
     city_options_df = (
@@ -910,6 +935,8 @@ def render_similar_cities_by_metrics(
 
             bump_globe_chart_version()
 
+            st.session_state["scroll_to_globe_top"] = True
+
             st.rerun()
 
 def render_city_profile(
@@ -1043,6 +1070,9 @@ def render_globe_page(payload: dict, all_df: pd.DataFrame) -> None:
         unsafe_allow_html=True,
     )
 
+    # Anchor
+    st.markdown("<div id='globe-top'></div>", unsafe_allow_html=True)
+
     try:
         globe_df = load_globe_data(payload)
     except requests.RequestException as exc:
@@ -1107,6 +1137,9 @@ def render_globe_page(payload: dict, all_df: pd.DataFrame) -> None:
     )
 
     clicked_city, clicked_country = render_selectable_globe(fig)
+
+    if st.session_state.pop("scroll_to_globe_top", False):
+        scroll_to_globe_top()
 
     if clicked_city is not None and clicked_country is not None:
         clicked_label = f"{clicked_city}, {clicked_country}"
