@@ -441,6 +441,7 @@ def apply_similar_city_query_navigation() -> None:
     last_applied_nav = st.session_state.get("last_applied_query_nav")
 
     if query_nav == last_applied_nav:
+        st.query_params.clear()
         return
 
     set_active_city(
@@ -456,12 +457,15 @@ def apply_similar_city_query_navigation() -> None:
 
     bump_globe_chart_version()
 
+    city_label = f"{query_city}, {query_country}"
+
+    st.session_state["pending_city_search_label"] = city_label
     st.session_state["skip_globe_selection_once"] = True
     st.session_state["skip_search_once"] = True
     st.session_state["last_applied_query_nav"] = query_nav
-    st.session_state["last_city_search_label"] = st.session_state.get(
-        "city_search_selectbox"
-    )
+    st.session_state["last_city_search_label"] = city_label
+
+    st.query_params.clear()
 
 def render_city_search(globe_df: pd.DataFrame) -> tuple[str | None, str | None]:
     city_options_df = (
