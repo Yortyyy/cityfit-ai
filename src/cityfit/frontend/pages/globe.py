@@ -539,13 +539,25 @@ def get_selected_city_df(
 
 def get_projection_rotation(selected_city_df: pd.DataFrame) -> dict:
     if selected_city_df.empty:
-        return dict(lon=0, lat=20, roll=0)
+        return dict(lon=0, lat=15, roll=0)
 
     selected_row = selected_city_df.iloc[0]
 
+    selected_lon = float(selected_row["longitude"])
+    selected_lat = float(selected_row["latitude"])
+
+    safe_lat = selected_lat
+
+    if selected_lat > 30:
+        safe_lat = 30 + (selected_lat - 30) * 0.25
+    elif selected_lat < -30:
+        safe_lat = -30 + (selected_lat + 30) * 0.25
+
+    safe_lat = max(min(safe_lat, 38), -38)
+
     return dict(
-        lon=float(selected_row["longitude"]),
-        lat=float(selected_row["latitude"]),
+        lon=selected_lon,
+        lat=safe_lat,
         roll=0,
     )
 
