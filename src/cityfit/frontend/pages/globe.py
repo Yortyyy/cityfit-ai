@@ -192,11 +192,41 @@ def render_css() -> None:
             margin-bottom: 1.25rem;
         }
 
-        .city-profile-flag {
-            width: 45px;
-            height: auto;
-            box-shadow: 0 2px 2px rgba(15, 35, 84, 0.16);
-            transform: translateY(2px);
+        .city-profile-title-text {
+            font-size: 34px;
+            font-weight: 600;
+            color: #08285a;
+            line-height: 1.15;
+            white-space: nowrap;
+        }
+
+        .city-profile-title-row {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            margin: 12px 0 28px 0;
+        }
+
+        .city-profile-flag-box {
+            width: 60px;
+            height: 40px;
+
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            flex: 0 0 60px;
+        }
+
+        .city-profile-flag-img {
+            width: 60px !important;
+            height: 40px !important;
+
+            display: block !important;
+            object-fit: cover !important;
+
+            border-radius: 4px;
+            box-shadow: 0 3px 8px rgba(20, 30, 60, 0.18);
         }
 
         /* ========================= */
@@ -1014,25 +1044,24 @@ def render_city_profile(
         st.warning("Selected city was not found in the filtered data.")
         return
 
-    city = city_matches.iloc[0]
+    city_row = city_matches.iloc[0]
 
-    country = city['country']
+    city_name = city_row["city"]
+    country = city_row["country"]
 
-    flag_url = get_country_flag_url(country)
-
-    flag_html = ""
-    if flag_url:
-        flag_html = (
-            f'<img class="city-profile-flag" '
-            f'src="{flag_url}" '
-            f'alt="{country} flag">'
-        )
+    flag_url = get_country_flag_url(country, size=160)
 
     st.markdown(
         f"""
-        <div class="city-profile-title">
-            <span>{city['city']}, {country}</span>
-            {flag_html}
+        <div class="city-profile-title-row">
+            <span class="city-profile-title-text">{city_name}, {country}</span>
+            <span class="city-profile-flag-box">
+                <img
+                    src="{flag_url}"
+                    class="city-profile-flag-img"
+                    alt="{country} flag"
+                />
+            </span>
         </div>
         """,
         unsafe_allow_html=True,
@@ -1040,14 +1069,16 @@ def render_city_profile(
 
     col1, col2 = st.columns(2)
 
-    col1.metric("CityFit Score", round(city["cityfit_score"], 1))
-    col2.metric("CityFit Rank", f"#{int(city['cityfit_rank'])}")
+    col1.metric("CityFit Score", round(city_row["cityfit_score"], 1))
+    col2.metric("CityFit Rank", f"#{int(city_row['cityfit_rank'])}")
 
-    st.write(f"**Region:** {city['region']}")
+    st.write(f"**Region:** {city_row['region']}")
+
+    metric_df = build_city_metric_table(city_row, all_df)
 
     st.markdown("#### Metric Breakdown")
 
-    metric_df = build_city_metric_table(city, all_df)
+    metric_df = build_city_metric_table(city_row, all_df)
 
     render_metric_table(metric_df)
 
