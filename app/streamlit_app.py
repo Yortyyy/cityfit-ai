@@ -36,16 +36,16 @@ selected_page = st.sidebar.radio(
 
 st.sidebar.header("Your priorities")
 
-priority_purchasing_power_ui = st.sidebar.slider("Purchasing power", 0, 10, 7)
-priority_low_cost_ui = st.sidebar.slider("Low cost of living", 0, 10, 3)
+priority_purchasing_power_ui = st.sidebar.slider("Purchasing Power", 0, 10, 7)
+priority_low_cost_ui = st.sidebar.slider("Low Cost of Living", 0, 10, 3)
 
 priority_safety_ui = st.sidebar.slider("Safety", 0, 10, 8)
 priority_healthcare_ui = st.sidebar.slider("Healthcare", 0, 10, 5)
 
-priority_housing_ui = st.sidebar.slider("Housing affordability", 0, 10, 5)
+priority_housing_ui = st.sidebar.slider("Housing Affordability", 0, 10, 5)
 
 priority_climate_ui = st.sidebar.slider("Climate", 0, 10, 8)
-priority_low_pollution_ui = st.sidebar.slider("Low pollution", 0, 10, 7)
+priority_low_pollution_ui = st.sidebar.slider("Low Pollution", 0, 10, 7)
 
 remote_worker = st.sidebar.checkbox("I work remotely", value=False)
 

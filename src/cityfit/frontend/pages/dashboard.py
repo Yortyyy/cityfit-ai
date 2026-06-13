@@ -315,7 +315,7 @@ def render_dashboard_page(base_payload: dict, all_df: pd.DataFrame) -> None:
         options=city_options,
         default=[
             city
-            for city in ["Tampa", "Miami", "New York", "Tokyo", "Madrid"]
+            for city in ["Tampa", "Miami", "New York", "Tokyo", "Rome"]
             if city in city_options
         ],
     )
