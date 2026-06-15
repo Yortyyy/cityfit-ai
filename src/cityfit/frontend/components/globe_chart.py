@@ -87,6 +87,7 @@ def build_globe_figure(
     all_df: pd.DataFrame,
     focused_city: str | None = None,
     focused_country: str | None = None,
+    projection_rotation_override: dict | None = None,
 ):
     global_min_score = all_df["cityfit_score"].min()
     global_max_score = all_df["cityfit_score"].max()
@@ -100,7 +101,10 @@ def build_globe_figure(
         focused_country,
     )
 
-    projection_rotation = get_projection_rotation(focused_city_df)
+    if projection_rotation_override is not None:
+        projection_rotation = projection_rotation_override
+    else:
+        projection_rotation = get_projection_rotation(focused_city_df)
 
     fig = px.scatter_geo(
         globe_df,

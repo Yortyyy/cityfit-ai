@@ -27,6 +27,48 @@ def render_globe_styles() -> None:
             opacity: 0.35;
             z-index: 999999;
         }
+        
+        /* ========================= */
+        /* LANDING PAGE */
+        /* ========================= */
+        
+        
+        .landing-hero {
+            padding-top: 2rem;
+            padding-bottom: 2rem;
+        }
+
+        .landing-hero .eyebrow {
+            font-size: 0.72rem;
+            letter-spacing: 0.22rem;
+            color: rgba(30, 40, 80, 0.58);
+            font-weight: 800;
+            margin-bottom: 0.2rem;
+        }
+
+        .landing-hero h1 {
+            font-size: 4rem;
+            margin-top: 0;
+            margin-bottom: 0.25rem;
+            color: #1f254f;
+            font-weight: 900;
+            line-height: 1.02;
+            letter-spacing: -0.055em;
+            font-style: italic;
+            transform: skewX(-1.5deg);
+            transform-origin: left center;
+            text-shadow: 2px 2px 0 rgba(255,255,255,0.68);
+        }
+
+        .landing-hero p {
+            margin-top: 0.2rem;
+            margin-bottom: 1.5rem;
+            color: rgba(31, 37, 79, 0.78);
+            font-size: 1.55rem;
+            font-weight: 650;
+            line-height: 1.2;
+            letter-spacing: -0.015em;
+        }
 
         /* ========================= */
         /* SIDEBAR */
@@ -70,8 +112,88 @@ def render_globe_styles() -> None:
         }
 
         /* ========================= */
+        /* METHODOLOGY EXPANDER BOX  */
+        /* ========================= */
+
+        .methodology-card {
+            margin-top: 1.1rem;
+            margin-bottom: 0.25rem;
+            padding: 0.9rem 1.15rem;
+
+            border-radius: 18px;
+            border: 1px solid rgba(255, 255, 255, 0.58);
+
+            background:
+                linear-gradient(
+                    135deg,
+                    rgba(245, 246, 255, 0.58) 0%,
+                    rgba(230, 235, 255, 0.30) 100%
+                );
+
+            box-shadow:
+                inset 0 1px 0 rgba(255, 255, 255, 0.78),
+                0 12px 28px rgba(35, 40, 100, 0.10);
+
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+        }
+
+        .methodology-card h3 {
+            margin-top: 0;
+            margin-bottom: 0.45rem;
+            color: #1f254f;
+            font-size: 1.05rem;
+            font-weight: 850;
+        }
+
+        .methodology-card p {
+            margin: 0;
+            color: rgba(31, 37, 79, 0.68);
+            font-size: 0.92rem;
+            line-height: 1.45;
+        }
+
+        .methodology-pill-row {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.35rem;
+            margin-top: 0.65rem;
+        }
+
+        .methodology-pill {
+            display: inline-flex;
+            align-items: center;
+
+            padding: 0.22rem 0.52rem;
+            border-radius: 999px;
+
+            background: rgba(255, 255, 255, 0.30);
+            border: 1px solid rgba(31, 37, 79, 0.08);
+
+            color: rgba(31, 37, 79, 0.68);
+            font-size: 0.74rem;
+            font-weight: 700;
+            line-height: 1.1;
+
+            box-shadow: none;
+        }
+
+        /* ========================= */
         /* CITY SEARCH SELECTBOX ONLY */
         /* ========================= */
+
+        .city-search-hint-wrap {
+            padding-left: 1.25rem !important;
+            margin-top: 1rem !important;
+            margin-bottom: -0.15rem !important;
+        }
+
+        .city-search-hint {
+            margin: 0 !important;
+            color: rgba(31, 37, 79, 0.62) !important;
+            font-size: 1rem !important;
+            font-weight: 650 !important;
+        }
 
         /* Widget wrapper generated from key="city_search_selectbox" */
         .st-key-city_search_selectbox {
@@ -151,23 +273,43 @@ def render_globe_styles() -> None:
         /* HERO TITLE */
         /* ========================= */
 
+        .hero-title {
+            margin-top: 0.25rem;
+            margin-bottom: 0.65rem;
+        }
+
         .hero-title .eyebrow {
-            font-size: 0.78rem;
+            font-size: 0.72rem;
             letter-spacing: 0.22rem;
-            color: rgba(30, 40, 80, 0.7);
-            font-weight: 700;
+            color: rgba(30, 40, 80, 0.58);
+            font-weight: 800;
+            margin-bottom: 0.15rem;
         }
 
         .hero-title h1 {
-            font-size: 3rem;
-            margin-bottom: 0.25rem;
+            font-size: 3.25rem;
+            margin-top: 0;
+            margin-bottom: 0.15rem;
             color: #1f254f;
-            text-shadow: 2px 2px 0 rgba(255,255,255,0.7);
+            font-weight: 900;
+            line-height: 1.02;
+            letter-spacing: -0.045em;
+
+            font-style: italic;
+            transform: skewX(-0.5deg);
+            transform-origin: left center;
+
+            text-shadow: 2px 2px 0 rgba(255,255,255,0.68);
         }
 
         .hero-title p {
-            color: rgba(20, 25, 55, 0.75);
-            font-size: 1.05rem;
+            margin-top: 0.15rem;
+            margin-bottom: 0;
+            color: rgba(31, 37, 79, 0.78);
+            font-size: 1.35rem;
+            font-weight: 650;
+            line-height: 1.2;
+            letter-spacing: -0.015em;
         }
 
         .city-profile-title {

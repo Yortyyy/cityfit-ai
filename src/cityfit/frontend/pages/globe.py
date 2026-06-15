@@ -10,6 +10,7 @@ from cityfit.frontend.components.globe_chart import (
     render_selectable_globe,
 )
 from cityfit.frontend.components.globe_data import load_globe_data
+from cityfit.frontend.components.globe_landing import render_globe_landing
 from cityfit.frontend.components.globe_navigation import (
     apply_similar_city_query_navigation,
     bump_globe_chart_version,
@@ -19,7 +20,9 @@ from cityfit.frontend.components.globe_navigation import (
     set_active_city,
     set_focused_city,
 )
+from cityfit.frontend.components.methodology import render_methodology_card
 from cityfit.frontend.components.styles import render_globe_styles
+
 
 
 def render_globe_page(payload: dict, all_df: pd.DataFrame) -> None:
@@ -29,13 +32,14 @@ def render_globe_page(payload: dict, all_df: pd.DataFrame) -> None:
         """
         <div class="hero-title">
             <div class="eyebrow">CITYFIT</div>
-            <h1>Explore your best-fit cities</h1>
-            <p>Filter cities by region and country, then select a globe marker to inspect a city.</p>
+            <h1>Hello, this is our World.</h1>
+            <p>Find where you fit in</p>
         </div>
         """,
         unsafe_allow_html=True,
     )
 
+    render_methodology_card()
     apply_similar_city_query_navigation()
 
     try:

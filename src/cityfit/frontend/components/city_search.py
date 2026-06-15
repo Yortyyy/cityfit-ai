@@ -2,7 +2,19 @@ import pandas as pd
 import streamlit as st
 
 
+
 def render_city_search(globe_df: pd.DataFrame) -> tuple[str | None, str | None]:
+    st.markdown(
+        """
+        <div class="city-search-hint-wrap">
+            <p class="city-search-hint">
+                Filter cities by region and country, then search for a city or select a globe marker.
+            </p>
+        </div>
+        """,
+        unsafe_allow_html=True,
+    )
+
     """Render city search selectbox and return selected city/country."""
     city_options_df = (
         globe_df[["city", "country"]]
