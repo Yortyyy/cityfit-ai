@@ -6,7 +6,6 @@ from cityfit.api.schemas import UserProfile
 from cityfit.data.load_data import load_city_metrics
 from cityfit.data.validation import validate_city_metrics
 from cityfit.features.filters import filter_by_country, filter_by_region
-from cityfit.features.scoring import rank_cities
 from cityfit.recommendations.service import add_city_explanations, get_ranked_cities
 
 
@@ -20,7 +19,7 @@ def get_ranked_city_data(profile: UserProfile) -> pd.DataFrame:
 def rank_city_recommendations(profile: UserProfile, top_n: int = 10) -> list[dict]:
     """Return top ranked city recommendations."""
     ranked_df = get_ranked_city_data(profile)
-    top_df = rank_cities(ranked_df, top_n=top_n)
+    top_df = ranked_df.head(top_n).copy()
 
     return top_df.to_dict(orient="records")
 

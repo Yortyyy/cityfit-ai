@@ -7,7 +7,7 @@ def render_methodology_card() -> None:
         <div class="methodology-card">
             <h3>How CityFit works</h3>
             <p>
-                CityFit re-ranks cities based on your selected lifestyle priorities. Each city receives a personalized
+                CityFit ranks cities based on your selected lifestyle priorities. Each city receives a personalized
                 score based on the factors below.
             </p>
             

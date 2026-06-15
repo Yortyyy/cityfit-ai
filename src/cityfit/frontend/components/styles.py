@@ -254,7 +254,7 @@ def render_globe_styles() -> None:
             letter-spacing: -0.045em;
 
             font-style: italic;
-            transform: skewX(-0.5deg);
+            transform: skewX(1deg);
             transform-origin: left center;
 
             text-shadow: 2px 2px 0 rgba(255,255,255,0.68);

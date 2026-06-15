@@ -25,11 +25,12 @@ class CityRecommendation(BaseModel):
     latitude: float
     longitude: float
 
-    numbeo_qol_rank: float
     cityfit_rank: float
+    baseline_cityfit_rank: float
     rank_difference: float
     numbeo_quality_of_life_index: float
     cityfit_score: float
+    baseline_cityfit_score: float
     cost_of_living_index: float
     purchasing_power_index: float
     safety_index: float

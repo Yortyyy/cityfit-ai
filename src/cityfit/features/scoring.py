@@ -6,12 +6,12 @@ from cityfit.features.transformations import add_cityfit_features
 def calculate_cityfit_score(
     df: pd.DataFrame,
     weights: dict,
-    personalization_strength: float = 0.5,
+    personalization_strength: float = 0.7,
 ) -> pd.DataFrame:
     """
     Calculate CityFit score.
 
-    CityFit combines a quality-of-life baseline with a weighted priority
+    CityFit combines a source quality-of-life baseline with a weighted priority
     adjustment. The adjustment is normalized by total priority weight so
     default and personalized scores remain comparable.
     """
@@ -57,29 +57,16 @@ def calculate_cityfit_score(
     return scored
 
 
-def add_cityfit_rank(df: pd.DataFrame) -> pd.DataFrame:
+def rank_cities(df: pd.DataFrame) -> pd.DataFrame:
     ranked = df.copy()
 
-    ranked["numbeo_qol_rank"] = ranked["numbeo_quality_of_life_index"].rank(
-        ascending=False,
-        method="min",
+    ranked["cityfit_rank"] = (
+        ranked["cityfit_score"]
+        .rank(method="min", ascending=False)
+        .astype(int)
     )
 
-    ranked["cityfit_rank"] = ranked["cityfit_score"].rank(
-        ascending=False,
-        method="min",
-    )
-
-    ranked["rank_difference"] = (
-        ranked["numbeo_qol_rank"] - ranked["cityfit_rank"]
-    )
-
-    return ranked
-
-
-def rank_cities(df: pd.DataFrame, top_n: int = 10) -> pd.DataFrame:
-    return (
-        df.sort_values("cityfit_score", ascending=False)
-        .head(top_n)
-        .reset_index(drop=True)
-    )
+    return ranked.sort_values(
+        ["cityfit_rank", "cityfit_score", "city", "country"],
+        ascending=[True, False, True, True],
+    ).reset_index(drop=True)

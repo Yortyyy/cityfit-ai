@@ -29,37 +29,39 @@ def explain_city_rank(row: pd.Series) -> str:
     tradeoffs = []
 
     if row["climate_index"] >= 80:
-        strengths.append(f"strong climate fit ({row['climate_index']:.1f})")
+        strengths.append(f"strong climate fit")
+    elif row["climate_index"] <= 40:
+        tradeoffs.append(f"harsher climate")
 
     if row["safety_index"] >= 70:
-        strengths.append(f"strong safety ({row['safety_index']:.1f})")
+        strengths.append(f"strong safety")
     elif row["safety_index"] < 55:
-        tradeoffs.append(f"weaker safety ({row['safety_index']:.1f})")
+        tradeoffs.append(f"weaker safety")
 
     if row["healthcare_index"] >= 70:
-        strengths.append(f"strong healthcare ({row['healthcare_index']:.1f})")
+        strengths.append(f"strong healthcare")
     elif row["healthcare_index"] < 60:
-        tradeoffs.append(f"weaker healthcare ({row['healthcare_index']:.1f})")
+        tradeoffs.append(f"weaker healthcare")
 
     if row["cost_of_living_index"] < 65:
-        strengths.append(f"moderate cost of living ({row['cost_of_living_index']:.1f})")
+        strengths.append(f"moderate cost of living")
     elif row["cost_of_living_index"] >= 85:
-        tradeoffs.append(f"high cost of living ({row['cost_of_living_index']:.1f})")
+        tradeoffs.append(f"high cost of living")
 
     if row["traffic_commute_index"] < 35:
-        strengths.append(f"less traffic ({row['cost_of_living_index']:.1f})")
+        strengths.append(f"less traffic")
     elif row["cost_of_living_index"] >= 85:
-        tradeoffs.append(f"more traffic ({row['cost_of_living_index']:.1f})")
+        tradeoffs.append(f"more traffic")
 
     if row["pollution_index"] < 35:
-        strengths.append(f"low pollution ({row['pollution_index']:.1f})")
+        strengths.append(f"low pollution")
     elif row["pollution_index"] >= 55:
-        tradeoffs.append(f"higher pollution ({row['pollution_index']:.1f})")
+        tradeoffs.append(f"higher pollution")
 
     if row["purchasing_power_index"] >= 100:
-        strengths.append(f"strong purchasing power ({row['purchasing_power_index']:.1f})")
+        strengths.append(f"strong purchasing power")
     elif row["purchasing_power_index"] < 70:
-        tradeoffs.append(f"lower purchasing power ({row['purchasing_power_index']:.1f})")
+        tradeoffs.append(f"lower purchasing power")
 
     strengths_text = _format_list(strengths)
     tradeoffs_text = _format_list(tradeoffs)

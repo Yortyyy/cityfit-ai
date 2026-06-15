@@ -1,7 +1,6 @@
 import pandas as pd
 
 from cityfit.features.scoring import (
-    add_cityfit_rank,
     calculate_cityfit_score,
     rank_cities,
 )
@@ -88,22 +87,35 @@ def test_calculate_cityfit_score_uses_priority_weights():
     assert high_gap > low_gap
 
 
-def test_add_cityfit_rank_adds_rank_columns():
+def test_rank_cities_adds_rank_column():
     df = make_scoring_df()
     scored = calculate_cityfit_score(df, TEST_WEIGHTS)
 
-    ranked = add_cityfit_rank(scored)
+    ranked = rank_cities(scored)
 
-    assert "numbeo_qol_rank" in ranked.columns
     assert "cityfit_rank" in ranked.columns
-    assert "rank_difference" in ranked.columns
 
 
-def test_rank_cities_returns_top_n_sorted_by_cityfit_score():
+def test_rank_cities_sorts_by_cityfit_score():
     df = make_scoring_df()
     scored = calculate_cityfit_score(df, TEST_WEIGHTS)
 
-    top = rank_cities(scored, top_n=2)
+    ranked = rank_cities(scored)
 
-    assert len(top) == 2
-    assert top["cityfit_score"].iloc[0] >= top["cityfit_score"].iloc[1]
+    assert len(ranked) == 3
+    assert ranked["cityfit_score"].is_monotonic_decreasing
+
+
+def test_rank_cities_assigns_equal_scores_the_same_rank():
+    scored = pd.DataFrame(
+        {
+            "city": ["B", "A", "C"],
+            "country": ["Y", "X", "Z"],
+            "cityfit_score": [100.0, 100.0, 90.0],
+        }
+    )
+
+    ranked = rank_cities(scored)
+
+    assert ranked["city"].tolist() == ["A", "B", "C"]
+    assert ranked["cityfit_rank"].tolist() == [1, 1, 3]

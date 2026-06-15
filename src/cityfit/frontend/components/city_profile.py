@@ -153,9 +153,12 @@ def render_city_profile(
     st.write(f"**Region:** {city_row['region']}")
 
     metric_df = build_city_metric_table(city_row, all_df)
+    
+    if "explanation" in city_row.index and pd.notna(city_row["explanation"]):
+        st.markdown("#### Why this city?")
+        st.write(city_row["explanation"])
 
     st.markdown("#### Metric Breakdown")
-
     metric_df = build_city_metric_table(city_row, all_df)
 
     render_metric_table(metric_df)

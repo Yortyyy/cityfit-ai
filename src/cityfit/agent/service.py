@@ -158,14 +158,14 @@ def _build_comparison_answer(question: str, city_results: list[dict]) -> str:
     ]
 
     for city in city_results:
-        rank_gap = int(city["numbeo_qol_rank"] - city["cityfit_rank"])
+        rank_gap = int(city["rank_difference"])
 
         if rank_gap > 0:
-            rank_note = f"moves up {rank_gap} spots versus the Numbeo baseline"
+            rank_note = f"moves up {rank_gap} spots versus the CityFit baseline"
         elif rank_gap < 0:
-            rank_note = f"moves down {abs(rank_gap)} spots versus the Numbeo baseline"
+            rank_note = f"moves down {abs(rank_gap)} spots versus the CityFit baseline"
         else:
-            rank_note = "stays aligned with its Numbeo baseline rank"
+            rank_note = "stays aligned with its CityFit baseline rank"
 
         lines.extend(
             [
@@ -174,6 +174,7 @@ def _build_comparison_answer(question: str, city_results: list[dict]) -> str:
                 "**Key metrics**",
                 f"- CityFit rank: **{int(city['cityfit_rank'])}**",
                 f"- CityFit score: **{city['cityfit_score']:.2f}**",
+                f"- Rank movement: **{rank_note}**",
                 f"- Cost of living: **{city['cost_of_living_index']:.1f}**",
                 f"- Purchasing power: **{city['purchasing_power_index']:.1f}**",
                 f"- Safety: **{city['safety_index']:.1f}**",
@@ -261,11 +262,12 @@ def _clean_city_results(city_results: list[dict]) -> list[dict]:
         "city",
         "country",
         "region",
-        "numbeo_qol_rank",
         "cityfit_rank",
+        "baseline_cityfit_rank",
         "rank_difference",
         "numbeo_quality_of_life_index",
         "cityfit_score",
+        "baseline_cityfit_score",
         "cost_of_living_index",
         "purchasing_power_index",
         "safety_index",
