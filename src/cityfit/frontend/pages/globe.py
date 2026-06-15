@@ -5,6 +5,10 @@ import streamlit as st
 
 from cityfit.frontend.api import get_recommendations_from_api
 from cityfit.frontend.components.city_profile import render_city_profile
+from cityfit.frontend.components.globe_chart import (
+    build_globe_figure,
+    render_selectable_globe,
+)
 from cityfit.frontend.components.styles import render_globe_styles
 
 def apply_similar_city_query_navigation() -> None:
