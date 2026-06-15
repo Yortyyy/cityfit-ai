@@ -5,10 +5,8 @@ import requests
 import streamlit as st
 from urllib.parse import quote
 
+from cityfit.frontend.api import get_recommendations_from_api
 from cityfit.utils.countries import get_country_flag_url
-
-
-API_URL = "http://api:8000"
 
 
 def render_css() -> None:
@@ -454,11 +452,6 @@ def render_css() -> None:
         """,
         unsafe_allow_html=True,
     )
-
-def get_recommendations_from_api(payload: dict) -> list[dict]:
-    response = requests.post(f"{API_URL}/recommend", json=payload, timeout=10)
-    response.raise_for_status()
-    return response.json()["recommendations"]
 
 def apply_similar_city_query_navigation() -> None:
     query_city = st.query_params.get("similar_city")
