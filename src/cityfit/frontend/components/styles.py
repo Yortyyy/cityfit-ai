@@ -27,48 +27,6 @@ def render_globe_styles() -> None:
             opacity: 0.35;
             z-index: 999999;
         }
-        
-        /* ========================= */
-        /* LANDING PAGE */
-        /* ========================= */
-        
-        
-        .landing-hero {
-            padding-top: 2rem;
-            padding-bottom: 2rem;
-        }
-
-        .landing-hero .eyebrow {
-            font-size: 0.72rem;
-            letter-spacing: 0.22rem;
-            color: rgba(30, 40, 80, 0.58);
-            font-weight: 800;
-            margin-bottom: 0.2rem;
-        }
-
-        .landing-hero h1 {
-            font-size: 4rem;
-            margin-top: 0;
-            margin-bottom: 0.25rem;
-            color: #1f254f;
-            font-weight: 900;
-            line-height: 1.02;
-            letter-spacing: -0.055em;
-            font-style: italic;
-            transform: skewX(-1.5deg);
-            transform-origin: left center;
-            text-shadow: 2px 2px 0 rgba(255,255,255,0.68);
-        }
-
-        .landing-hero p {
-            margin-top: 0.2rem;
-            margin-bottom: 1.5rem;
-            color: rgba(31, 37, 79, 0.78);
-            font-size: 1.55rem;
-            font-weight: 650;
-            line-height: 1.2;
-            letter-spacing: -0.015em;
-        }
 
         /* ========================= */
         /* SIDEBAR */
@@ -183,7 +141,7 @@ def render_globe_styles() -> None:
         /* ========================= */
 
         .city-search-hint-wrap {
-            padding-left: 1.25rem !important;
+            padding-left: 1.15rem !important;
             margin-top: 1rem !important;
             margin-bottom: -0.15rem !important;
         }
@@ -291,7 +249,7 @@ def render_globe_styles() -> None:
             margin-top: 0;
             margin-bottom: 0.15rem;
             color: #1f254f;
-            font-weight: 900;
+            font-weight: 760;
             line-height: 1.02;
             letter-spacing: -0.045em;
 
@@ -307,9 +265,13 @@ def render_globe_styles() -> None:
             margin-bottom: 0;
             color: rgba(31, 37, 79, 0.78);
             font-size: 1.35rem;
-            font-weight: 650;
+            font-weight: 500;
             line-height: 1.2;
             letter-spacing: -0.015em;
+        }
+        
+        .hero-bold {
+            font-weight: 950;
         }
 
         .city-profile-title {

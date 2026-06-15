@@ -10,7 +10,6 @@ from cityfit.frontend.components.globe_chart import (
     render_selectable_globe,
 )
 from cityfit.frontend.components.globe_data import load_globe_data
-from cityfit.frontend.components.globe_landing import render_globe_landing
 from cityfit.frontend.components.globe_navigation import (
     apply_similar_city_query_navigation,
     bump_globe_chart_version,
@@ -32,8 +31,8 @@ def render_globe_page(payload: dict, all_df: pd.DataFrame) -> None:
         """
         <div class="hero-title">
             <div class="eyebrow">CITYFIT</div>
-            <h1>Hello, this is our World.</h1>
-            <p>Find where you fit in</p>
+            <h1><span class="hero-bold">Hello</span>, this is our <span class="hero-bold">World</span>.</h1>
+            <p>Find out where <span class="hero-bold">you</span> fit in.</p>
         </div>
         """,
         unsafe_allow_html=True,
