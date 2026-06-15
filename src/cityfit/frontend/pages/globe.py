@@ -28,7 +28,7 @@ def render_globe_page(payload: dict, all_df: pd.DataFrame) -> None:
     st.markdown(
         """
         <div class="hero-title">
-            <div class="eyebrow">CITYFIT AI</div>
+            <div class="eyebrow">CITYFIT</div>
             <h1>Explore your best-fit cities</h1>
             <p>Filter cities by region and country, then select a globe marker to inspect a city.</p>
         </div>

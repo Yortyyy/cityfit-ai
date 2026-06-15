@@ -12,7 +12,7 @@ from cityfit.recommendations.service import get_top_city_recommendations
 
 
 app = FastAPI(
-    title="CityFit AI API",
+    title="CityFit API",
     description="Personalized city recommendations using quality-of-life and cost-of-living metrics.",
     version="0.1.0",
 )

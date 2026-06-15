@@ -13,7 +13,7 @@ from cityfit.frontend.pages.globe import render_globe_page
 
 
 st.set_page_config(
-    page_title="CityFit AI",
+    page_title="CityFit",
     page_icon="🌎",
     layout="wide",
     initial_sidebar_state="expanded",
@@ -24,7 +24,7 @@ def normalize_priority(value: int) -> float:
     return value / 5
 
 
-st.sidebar.title("🌎 CityFit AI")
+st.sidebar.title("🌎 CityFit")
 
 selected_page = st.sidebar.radio(
     "Page",
