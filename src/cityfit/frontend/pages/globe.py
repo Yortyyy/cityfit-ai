@@ -9,6 +9,7 @@ from cityfit.frontend.components.globe_chart import (
     build_globe_figure,
     render_selectable_globe,
 )
+from cityfit.frontend.components.globe_data import load_globe_data
 from cityfit.frontend.components.globe_navigation import (
     apply_similar_city_query_navigation,
     bump_globe_chart_version,
@@ -19,27 +20,6 @@ from cityfit.frontend.components.globe_navigation import (
     set_focused_city,
 )
 from cityfit.frontend.components.styles import render_globe_styles
-
-
-@st.cache_data(ttl=300)
-def load_globe_data_cached(payload_key: tuple) -> pd.DataFrame:
-    payload = dict(payload_key)
-
-    recommendations = get_recommendations_from_api(
-        {
-            **payload,
-            "top_n": 500,
-        }
-    )
-
-    df = pd.DataFrame(recommendations)
-
-    return df.dropna(subset=["latitude", "longitude"])
-
-
-def load_globe_data(payload: dict) -> pd.DataFrame:
-    payload_key = tuple(sorted(payload.items()))
-    return load_globe_data_cached(payload_key)
 
 
 def render_globe_page(payload: dict, all_df: pd.DataFrame) -> None:
