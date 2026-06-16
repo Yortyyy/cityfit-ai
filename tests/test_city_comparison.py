@@ -84,6 +84,19 @@ def test_build_city_comparison_table_colors_values_from_global_scale():
     assert cost_row["First Color"] != cost_row["Second Color"]
 
 
+def test_build_city_comparison_table_colors_difference_from_global_metric_scale():
+    comparison = build_city_comparison_table(
+        globe_df=make_comparison_df(),
+        all_df=make_comparison_df(),
+        first_city_label="Tampa, United States",
+        second_city_label="Tokyo, Japan",
+    )
+
+    safety_row = comparison[comparison["Metric"] == "Safety"].iloc[0]
+
+    assert safety_row["Difference Color"] == safety_row["Second Color"]
+
+
 def test_calculate_percent_difference_uses_first_city_as_baseline():
     assert calculate_percent_difference(first_value=50, second_value=75) == 50
 

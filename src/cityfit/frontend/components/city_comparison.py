@@ -18,9 +18,6 @@ COMPARISON_METRICS = {
     "pollution_index": ("Pollution", True),
 }
 
-DIFFERENCE_BETTER_COLOR = "rgb(0, 95, 65)"
-DIFFERENCE_WORSE_COLOR = "rgb(165, 45, 45)"
-DIFFERENCE_TIE_COLOR = "rgb(31, 37, 79)"
 DIFFERENCE_COLUMN = "Difference From First City"
 COMPARISON_WIDGET_KEY = "globe_city_comparison"
 COMPARISON_TRACE_KEY = "globe_city_comparison_trace_labels"
@@ -100,23 +97,6 @@ def format_difference(column: str, first_value: float, second_value: float) -> s
     )
 
 
-def get_difference_color(
-    first_value: float,
-    second_value: float,
-    lower_is_better: bool,
-) -> str:
-    if pd.isna(first_value) or pd.isna(second_value) or first_value == second_value:
-        return DIFFERENCE_TIE_COLOR
-
-    second_is_better = (
-        second_value < first_value
-        if lower_is_better
-        else second_value > first_value
-    )
-
-    return DIFFERENCE_BETTER_COLOR if second_is_better else DIFFERENCE_WORSE_COLOR
-
-
 def build_city_comparison_table(
     globe_df: pd.DataFrame,
     all_df: pd.DataFrame,
@@ -171,9 +151,10 @@ def build_city_comparison_table(
                     max_value=max_value,
                     lower_is_better=lower_is_better,
                 ),
-                "Difference Color": get_difference_color(
-                    first_value=float(first_value),
-                    second_value=float(second_value),
+                "Difference Color": get_metric_color(
+                    value=float(second_value),
+                    min_value=min_value,
+                    max_value=max_value,
                     lower_is_better=lower_is_better,
                 ),
             }
