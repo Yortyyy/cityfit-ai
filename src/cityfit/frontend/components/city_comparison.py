@@ -395,13 +395,71 @@ def render_selected_city_pill_flag_styles(selected_city_labels: list[str]) -> No
         style_rules.append(
             f"""
             .st-key-globe_city_comparison [data-baseweb="tag"]:nth-of-type({index}) {{
+                position: relative !important;
+                overflow: hidden !important;
+
                 background:
                     linear-gradient(
                         90deg,
-                        rgba(245, 247, 255, 0.50) 0%,
-                        rgba(245, 247, 255, 0.42) 100%
-                    ),
-                    url("{flag_url}") center / cover no-repeat !important;
+                        rgba(255, 255, 255, 0.72) 0%,
+                        rgba(232, 237, 255, 0.58) 100%
+                    ) !important;
+            }}
+
+            .st-key-globe_city_comparison [data-baseweb="tag"]:nth-of-type({index})::before {{
+                content: "" !important;
+                position: absolute !important;
+
+                left: -0.35rem !important;
+                top: 50% !important;
+
+                width: 3.35rem !important;
+                height: 2.15rem !important;
+
+                background: url("{flag_url}") center / cover no-repeat !important;
+                border-radius: 4px !important;
+
+                transform: translateY(-50%) rotate(-10deg) !important;
+                transform-origin: center !important;
+
+                opacity: 0.82 !important;
+                box-shadow: 0 3px 8px rgba(20, 30, 60, 0.20) !important;
+                z-index: 0 !important;
+                
+                -webkit-mask-image: linear-gradient(
+                    90deg,
+                    black 0%,
+                    black 58%,
+                    transparent 100%
+                ) !important;
+                mask-image: linear-gradient(
+                    90deg,
+                    black 0%,
+                    black 58%,
+                    transparent 100%
+                ) !important;
+            }}
+
+            .st-key-globe_city_comparison [data-baseweb="tag"]:nth-of-type({index})::after {{
+                content: "" !important;
+                position: absolute !important;
+                inset: 0 !important;
+
+                background:
+                    linear-gradient(
+                        90deg,
+                        rgba(255, 255, 255, 0.38) 0%,
+                        rgba(255, 255, 255, 0.72) 38%,
+                        rgba(232, 237, 255, 0.64) 100%
+                    ) !important;
+
+                z-index: 1 !important;
+                pointer-events: none !important;
+            }}
+
+            .st-key-globe_city_comparison [data-baseweb="tag"]:nth-of-type({index}) > * {{
+                position: relative !important;
+                z-index: 2 !important;
             }}
             """
         )
