@@ -88,7 +88,15 @@ def format_metric_value(column: str, value: float) -> str:
 
 def format_difference(column: str, first_value: float, second_value: float) -> str:
     if column == "cityfit_rank":
-        return f"{int(-(second_value - first_value)):+d}"
+        rank_change = int(-(second_value - first_value))
+
+        if rank_change > 0:
+            return f"↑ {abs(rank_change)}"
+
+        if rank_change < 0:
+            return f"↓ {abs(rank_change)}"
+
+        return "→ 0"
 
     return format_percent_difference(
         calculate_percent_difference(
