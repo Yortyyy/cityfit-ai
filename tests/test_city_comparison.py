@@ -1,11 +1,14 @@
 import pandas as pd
 
 from cityfit.frontend.components.city_comparison import (
+    COMPARISON_TRACE_KEY,
+    COMPARISON_WIDGET_KEY,
     DIFFERENCE_COLUMN,
     build_city_comparison_table,
     calculate_percent_difference,
     format_difference,
     render_city_header,
+    sync_comparison_trace_selection,
 )
 
 
@@ -95,3 +98,25 @@ def test_render_city_header_includes_country_flag():
     assert "flagcdn.com" in header_html
     assert "United States flag" in header_html
     assert "Tampa, United States" in header_html
+
+
+def test_sync_comparison_trace_selection_clears_trace_state_when_less_than_two_selected():
+    import streamlit as st
+
+    st.session_state[COMPARISON_WIDGET_KEY] = ["Tampa, United States"]
+    st.session_state[COMPARISON_TRACE_KEY] = ["Tampa, United States", "Tokyo, Japan"]
+
+    sync_comparison_trace_selection()
+
+    assert st.session_state[COMPARISON_TRACE_KEY] == []
+
+
+def test_sync_comparison_trace_selection_sets_trace_state_for_two_selected():
+    import streamlit as st
+
+    selected_cities = ["Tampa, United States", "Tokyo, Japan"]
+    st.session_state[COMPARISON_WIDGET_KEY] = selected_cities
+
+    sync_comparison_trace_selection()
+
+    assert st.session_state[COMPARISON_TRACE_KEY] == selected_cities

@@ -3,7 +3,10 @@ import requests
 import streamlit as st
 
 from cityfit.frontend.api import get_recommendations_from_api
-from cityfit.frontend.components.city_comparison import render_city_comparison
+from cityfit.frontend.components.city_comparison import (
+    COMPARISON_TRACE_KEY,
+    render_city_comparison,
+)
 from cityfit.frontend.components.city_profile import render_city_profile
 from cityfit.frontend.components.city_search import render_city_search
 from cityfit.frontend.components.globe_chart import (
@@ -100,7 +103,7 @@ def render_globe_page(payload: dict, all_df: pd.DataFrame) -> None:
 
     focused_city = st.session_state.get("focused_city")
     focused_country = st.session_state.get("focused_country")
-    comparison_city_labels = st.session_state.get("globe_city_comparison", [])
+    comparison_city_labels = st.session_state.get(COMPARISON_TRACE_KEY, [])
 
     fig = build_globe_figure(
         globe_df,

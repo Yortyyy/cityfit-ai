@@ -22,6 +22,9 @@ DIFFERENCE_BETTER_COLOR = "rgb(0, 95, 65)"
 DIFFERENCE_WORSE_COLOR = "rgb(165, 45, 45)"
 DIFFERENCE_TIE_COLOR = "rgb(31, 37, 79)"
 DIFFERENCE_COLUMN = "Difference From First City"
+COMPARISON_WIDGET_KEY = "globe_city_comparison"
+COMPARISON_TRACE_KEY = "globe_city_comparison_trace_labels"
+COMPARISON_LAST_SELECTION_KEY = "globe_city_comparison_last_selection"
 
 
 def format_city_label(city: str, country: str) -> str:
@@ -193,6 +196,15 @@ def get_city_options(globe_df: pd.DataFrame) -> list[str]:
     ]
 
 
+def sync_comparison_trace_selection() -> None:
+    selected_city_labels = st.session_state.get(COMPARISON_WIDGET_KEY, [])
+
+    if len(selected_city_labels) == 2:
+        st.session_state[COMPARISON_TRACE_KEY] = list(selected_city_labels)
+    else:
+        st.session_state[COMPARISON_TRACE_KEY] = []
+
+
 def render_comparison_table(
     comparison_df: pd.DataFrame,
     first_city_label: str,
@@ -248,7 +260,7 @@ def render_city_comparison(globe_df: pd.DataFrame, all_df: pd.DataFrame) -> None
 
     city_options = get_city_options(globe_df)
     previous_selection = tuple(
-        st.session_state.get("globe_city_comparison_last_selection", [])
+        st.session_state.get(COMPARISON_LAST_SELECTION_KEY, [])
     )
 
     selected_city_labels = st.multiselect(
@@ -256,17 +268,18 @@ def render_city_comparison(globe_df: pd.DataFrame, all_df: pd.DataFrame) -> None
         options=city_options,
         default=[],
         max_selections=2,
-        key="globe_city_comparison",
+        key=COMPARISON_WIDGET_KEY,
+        on_change=sync_comparison_trace_selection,
     )
 
     current_selection = tuple(selected_city_labels)
 
     if len(selected_city_labels) == 2 and current_selection != previous_selection:
-        st.session_state["globe_city_comparison_last_selection"] = current_selection
+        st.session_state[COMPARISON_LAST_SELECTION_KEY] = current_selection
         st.rerun()
 
     if len(selected_city_labels) < 2:
-        st.session_state["globe_city_comparison_last_selection"] = current_selection
+        st.session_state[COMPARISON_LAST_SELECTION_KEY] = current_selection
 
     if len(selected_city_labels) < 2:
         st.info("Choose two cities to compare their CityFit tradeoffs.")
