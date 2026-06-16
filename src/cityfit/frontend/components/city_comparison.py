@@ -22,6 +22,7 @@ DIFFERENCE_COLUMN = "Difference From First City"
 COMPARISON_WIDGET_KEY = "globe_city_comparison"
 COMPARISON_TRACE_KEY = "globe_city_comparison_trace_labels"
 COMPARISON_LAST_SELECTION_KEY = "globe_city_comparison_last_selection"
+COMPARISON_SWAP_BUTTON_KEY = "globe_city_comparison_swap"
 
 
 def format_city_label(city: str, country: str) -> str:
@@ -97,6 +98,129 @@ def format_difference(column: str, first_value: float, second_value: float) -> s
     )
 
 
+def get_rank_difference_color(
+    first_rank: float,
+    second_rank: float,
+    min_rank: float,
+    max_rank: float,
+) -> str:
+    if (
+        pd.isna(first_rank)
+        or pd.isna(second_rank)
+        or pd.isna(min_rank)
+        or pd.isna(max_rank)
+        or max_rank == min_rank
+    ):
+        return get_metric_color(
+            value=0.5,
+            min_value=0,
+            max_value=1,
+        )
+
+    rank_range = max_rank - min_rank
+    rank_delta = second_rank - first_rank
+    normalized_difference = 0.5 - (rank_delta / (2 * rank_range))
+    normalized_difference = max(0.0, min(1.0, normalized_difference))
+
+    return get_metric_color(
+        value=normalized_difference,
+        min_value=0,
+        max_value=1,
+    )
+
+
+def get_percent_difference_color(
+    first_value: float,
+    second_value: float,
+    min_value: float,
+    max_value: float,
+    lower_is_better: bool,
+) -> str:
+    percent_difference = calculate_percent_difference(
+        first_value=first_value,
+        second_value=second_value,
+    )
+
+    if (
+        percent_difference is None
+        or pd.isna(min_value)
+        or pd.isna(max_value)
+        or max_value == min_value
+    ):
+        return get_metric_color(value=0.5, min_value=0, max_value=1)
+
+    best_value = min_value if lower_is_better else max_value
+    worst_value = max_value if lower_is_better else min_value
+
+    best_percent_difference = calculate_percent_difference(
+        first_value=first_value,
+        second_value=best_value,
+    )
+    worst_percent_difference = calculate_percent_difference(
+        first_value=first_value,
+        second_value=worst_value,
+    )
+
+    if best_percent_difference is None or worst_percent_difference is None:
+        return get_metric_color(value=0.5, min_value=0, max_value=1)
+
+    movement = -percent_difference if lower_is_better else percent_difference
+    best_movement = (
+        -best_percent_difference if lower_is_better else best_percent_difference
+    )
+    worst_movement = (
+        -worst_percent_difference if lower_is_better else worst_percent_difference
+    )
+
+    if movement >= 0:
+        max_better_movement = max(best_movement, 0)
+        normalized_difference = (
+            0.5
+            if max_better_movement == 0
+            else 0.5 + (0.5 * movement / max_better_movement)
+        )
+    else:
+        max_worse_movement = abs(min(worst_movement, 0))
+        normalized_difference = (
+            0.5
+            if max_worse_movement == 0
+            else 0.5 + (0.5 * movement / max_worse_movement)
+        )
+
+    normalized_difference = max(0.0, min(1.0, normalized_difference))
+
+    return get_metric_color(
+        value=normalized_difference,
+        min_value=0,
+        max_value=1,
+    )
+
+
+def get_difference_color(
+    column: str,
+    first_value: float,
+    second_value: float,
+    min_value: float,
+    max_value: float,
+    lower_is_better: bool,
+) -> str:
+    if column == "cityfit_rank":
+        return get_rank_difference_color(
+            first_rank=first_value,
+            second_rank=second_value,
+            min_rank=min_value,
+            max_rank=max_value,
+        )
+
+    return get_percent_difference_color(
+        first_value=first_value,
+        second_value=second_value,
+        min_value=min_value,
+        max_value=max_value,
+        lower_is_better=lower_is_better,
+    )
+
+
 def build_city_comparison_table(
     globe_df: pd.DataFrame,
     all_df: pd.DataFrame,
@@ -151,8 +275,10 @@ def build_city_comparison_table(
                     max_value=max_value,
                     lower_is_better=lower_is_better,
                 ),
-                "Difference Color": get_metric_color(
-                    value=float(second_value),
+                "Difference Color": get_difference_color(
+                    column=column,
+                    first_value=float(first_value),
+                    second_value=float(second_value),
                     min_value=min_value,
                     max_value=max_value,
                     lower_is_better=lower_is_better,
@@ -184,6 +310,19 @@ def sync_comparison_trace_selection() -> None:
         st.session_state[COMPARISON_TRACE_KEY] = list(selected_city_labels)
     else:
         st.session_state[COMPARISON_TRACE_KEY] = []
+
+
+def swap_comparison_city_order() -> None:
+    selected_city_labels = st.session_state.get(COMPARISON_WIDGET_KEY, [])
+
+    if len(selected_city_labels) != 2:
+        return
+
+    swapped_city_labels = list(reversed(selected_city_labels))
+
+    st.session_state[COMPARISON_WIDGET_KEY] = swapped_city_labels
+    st.session_state[COMPARISON_TRACE_KEY] = swapped_city_labels
+    st.session_state[COMPARISON_LAST_SELECTION_KEY] = tuple(swapped_city_labels)
 
 
 def render_comparison_table(
@@ -279,6 +418,13 @@ def render_city_comparison(globe_df: pd.DataFrame, all_df: pd.DataFrame) -> None
     if len(selected_city_labels) < 2:
         st.info("Choose two cities to compare their CityFit tradeoffs.")
         return
+
+    st.button(
+        "Swap",
+        help="Switch which city is used as the baseline.",
+        key=COMPARISON_SWAP_BUTTON_KEY,
+        on_click=swap_comparison_city_order,
+    )
 
     first_city_label, second_city_label = selected_city_labels
 

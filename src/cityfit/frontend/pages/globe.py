@@ -135,12 +135,9 @@ def render_globe_page(payload: dict, all_df: pd.DataFrame) -> None:
         if active_city is not None and active_country is not None:
             active_label = f"{active_city}, {active_country}"
 
-        if clicked_label == active_label and active_source == "globe":
-            restore_focused_city_as_active()
-            bump_globe_chart_version()
-            st.rerun()
-
-        elif clicked_label != active_label:
+        # Re-selecting the same globe city is a no-op; clearing the selection
+        # is handled by the empty-selection branch below.
+        if clicked_label != active_label:
             set_active_city(
                 city=clicked_city,
                 country=clicked_country,

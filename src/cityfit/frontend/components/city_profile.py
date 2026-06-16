@@ -1,3 +1,5 @@
+from html import escape
+
 import pandas as pd
 import plotly.express as px
 import streamlit as st
@@ -107,7 +109,15 @@ def render_city_profile(
     selected_city: str | None,
     selected_country: str | None,
 ) -> None:
-    st.subheader("City Profile")
+    st.markdown(
+        """
+        <div class="city-profile-section-heading">
+            <div class="city-profile-eyebrow">SELECTED CITY</div>
+            <h2>City Profile</h2>
+        </div>
+        """,
+        unsafe_allow_html=True,
+    )
 
     if selected_city is None or selected_country is None:
         st.info("Select a city dot on the globe to view its profile.")
@@ -128,40 +138,73 @@ def render_city_profile(
     country = city_row["country"]
 
     flag_url = get_country_flag_url(country, size=160)
+    cityfit_score = round(float(city_row["cityfit_score"]), 1)
+    cityfit_rank = int(city_row["cityfit_rank"])
+    region = city_row["region"]
+    city_name_display = escape(str(city_name))
+    country_display = escape(str(country))
+    region_display = escape(str(region))
+    flag_url_display = escape(str(flag_url), quote=True)
 
     st.markdown(
         f"""
-        <div class="city-profile-title-row">
-            <span class="city-profile-title-text">{city_name}, {country}</span>
-            <span class="city-profile-flag-box">
-                <img
-                    src="{flag_url}"
-                    class="city-profile-flag-img"
-                    alt="{country} flag"
-                />
-            </span>
+        <div class="city-profile-hero-card">
+            <div class="city-profile-title-row">
+                <span class="city-profile-title-text">
+                    {city_name_display}, {country_display}
+                </span>
+                <span class="city-profile-flag-box">
+                    <img
+                        src="{flag_url_display}"
+                        class="city-profile-flag-img"
+                        alt="{country_display} flag"
+                    />
+                </span>
+            </div>
+            <div class="city-profile-summary-row">
+                <div class="city-profile-summary-badge">
+                    <span>Rank</span>
+                    <strong>#{cityfit_rank}</strong>
+                </div>
+                <div class="city-profile-summary-badge">
+                    <span>Score</span>
+                    <strong>{cityfit_score}</strong>
+                </div>
+                <div class="city-profile-summary-badge">
+                    <span>Region</span>
+                    <strong>{region_display}</strong>
+                </div>
+            </div>
         </div>
         """,
         unsafe_allow_html=True,
     )
-
-    col1, col2 = st.columns(2)
-
-    col1.metric("CityFit Score", round(city_row["cityfit_score"], 1))
-    col2.metric("CityFit Rank", f"#{int(city_row['cityfit_rank'])}")
-
-    st.write(f"**Region:** {city_row['region']}")
-
-    metric_df = build_city_metric_table(city_row, all_df)
     
-    if "explanation" in city_row.index and pd.notna(city_row["explanation"]):
-        st.markdown("#### Why this city?")
-        st.write(city_row["explanation"])
-
-    st.markdown("#### Metric Breakdown")
+    st.markdown(
+        "<h4 class='city-profile-subsection-heading'>Metric Breakdown</h4>",
+        unsafe_allow_html=True,
+    )
     metric_df = build_city_metric_table(city_row, all_df)
 
     render_metric_table(metric_df)
+
+    if "explanation" in city_row.index and pd.notna(city_row["explanation"]):
+        st.markdown(
+            "<div class='city-profile-summary-spacer'></div>",
+            unsafe_allow_html=True,
+        )
+        st.markdown(
+            "<h4 class='city-profile-subsection-heading'>CityFit Summary</h4>",
+            unsafe_allow_html=True,
+        )
+        st.markdown(
+            f"""
+            <div class="city-profile-summary-copy">
+                {escape(str(city_row["explanation"]))}
+            </div>
+            """,
+            unsafe_allow_html=True,
+        )
 
     render_similar_cities_by_metrics(
         globe_df=globe_df,
