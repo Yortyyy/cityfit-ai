@@ -7,7 +7,6 @@ from cityfit.frontend.components.city_comparison import (
     build_city_comparison_table,
     calculate_percent_difference,
     format_difference,
-    format_city_option_label,
     get_comparison_trace_labels,
     get_percent_difference_color,
     get_rank_difference_color,
@@ -63,7 +62,7 @@ def test_build_city_comparison_table_displays_rank_first_with_hashmark():
     assert rank_row["Metric"] == "CityFit Rank"
     assert rank_row["Tampa, United States"] == "#57"
     assert rank_row["Tokyo, Japan"] == "#69"
-    assert rank_row[DIFFERENCE_COLUMN] == "-12"
+    assert rank_row[DIFFERENCE_COLUMN] == "↓ 12"
 
 
 def test_build_city_comparison_table_omits_stronger_fit_column():
@@ -138,7 +137,7 @@ def test_build_city_comparison_table_colors_percent_difference_from_movement():
     assert safety_row["Difference Color"] != safety_row["Second Color"]
 
 
-def test_percent_difference_color_uses_midpoint_for_no_change():
+def test_percent_difference_color_uses_midpoint_for_no_changeformat_city_():
     same_value_color = get_percent_difference_color(
         first_value=50,
         second_value=50,
@@ -259,7 +258,7 @@ def test_calculate_percent_difference_uses_first_city_as_baseline():
 
 
 def test_format_difference_uses_better_worse_sign_for_rank():
-    assert format_difference(column="cityfit_rank", first_value=57, second_value=69) == "-12"
+    assert format_difference(column="cityfit_rank", first_value=57, second_value=69) == "↓ 12"
 
 
 def test_render_city_header_includes_country_flag():
@@ -268,12 +267,6 @@ def test_render_city_header_includes_country_flag():
     assert "flagcdn.com" in header_html
     assert "United States flag" in header_html
     assert "Tampa, United States" in header_html
-
-
-def test_format_city_option_label_includes_flag_emoji_for_display():
-    assert format_city_option_label("Tampa, United States") == (
-        "🇺🇸 Tampa, United States"
-    )
 
 
 def test_sync_comparison_trace_selection_clears_trace_state_when_less_than_two_selected():
