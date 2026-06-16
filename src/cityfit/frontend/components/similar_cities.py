@@ -1,4 +1,5 @@
 import time
+from html import escape
 from urllib.parse import quote
 
 import pandas as pd
@@ -143,16 +144,18 @@ def render_similar_cities_by_metrics(
     if similar_df.empty:
         return
 
+    selected_city_display = escape(str(selected_city))
+
     st.markdown("<div style='margin-top: 1rem;'></div>", unsafe_allow_html=True)
 
     st.markdown(
-        """
+        f"""
         <div class="similar-city-section">
             <div class="similar-city-eyebrow">RELATED FITS</div>
             <h4>Similar Cities by Metrics</h4>
             <p>
-                These cities have the closest overall metric profile to the
-                selected city. Click any match to load its profile.
+                These cities have the closest overall metric profile to 
+                {selected_city_display}, {selected_country}. Click any match to load its profile.
             </p>
         </div>
         """,

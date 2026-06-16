@@ -88,7 +88,7 @@ def format_metric_value(column: str, value: float) -> str:
 
 def format_difference(column: str, first_value: float, second_value: float) -> str:
     if column == "cityfit_rank":
-        return f"{int(second_value - first_value):+d}"
+        return f"{int(-(second_value - first_value)):+d}"
 
     return format_percent_difference(
         calculate_percent_difference(
@@ -304,12 +304,16 @@ def get_city_options(globe_df: pd.DataFrame) -> list[str]:
 
 
 def sync_comparison_trace_selection() -> None:
+    st.session_state[COMPARISON_TRACE_KEY] = get_comparison_trace_labels()
+
+
+def get_comparison_trace_labels() -> list[str]:
     selected_city_labels = st.session_state.get(COMPARISON_WIDGET_KEY, [])
 
     if len(selected_city_labels) == 2:
-        st.session_state[COMPARISON_TRACE_KEY] = list(selected_city_labels)
-    else:
-        st.session_state[COMPARISON_TRACE_KEY] = []
+        return list(selected_city_labels)
+
+    return []
 
 
 def swap_comparison_city_order() -> None:
@@ -375,6 +379,42 @@ def render_comparison_table(
     st.markdown(table_html, unsafe_allow_html=True)
 
 
+def render_selected_city_pill_flag_styles(selected_city_labels: list[str]) -> None:
+    if len(selected_city_labels) != 2:
+        return
+
+    style_rules = []
+
+    for index, city_label in enumerate(selected_city_labels, start=1):
+        _, country = split_city_label(city_label)
+        flag_url = get_country_flag_url(country, size=160)
+
+        if not flag_url:
+            continue
+
+        style_rules.append(
+            f"""
+            .st-key-globe_city_comparison [data-baseweb="tag"]:nth-of-type({index}) {{
+                background:
+                    linear-gradient(
+                        90deg,
+                        rgba(245, 247, 255, 0.50) 0%,
+                        rgba(245, 247, 255, 0.42) 100%
+                    ),
+                    url("{flag_url}") center / cover no-repeat !important;
+            }}
+            """
+        )
+
+    if not style_rules:
+        return
+
+    st.markdown(
+        f"<style>{''.join(style_rules)}</style>",
+        unsafe_allow_html=True,
+    )
+
+
 def render_city_comparison(globe_df: pd.DataFrame, all_df: pd.DataFrame) -> None:
     st.markdown(
         """
@@ -407,6 +447,8 @@ def render_city_comparison(globe_df: pd.DataFrame, all_df: pd.DataFrame) -> None
     )
 
     current_selection = tuple(selected_city_labels)
+    sync_comparison_trace_selection()
+    render_selected_city_pill_flag_styles(selected_city_labels)
 
     if len(selected_city_labels) == 2 and current_selection != previous_selection:
         st.session_state[COMPARISON_LAST_SELECTION_KEY] = current_selection

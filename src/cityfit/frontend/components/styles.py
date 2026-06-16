@@ -637,12 +637,111 @@ def render_globe_styles() -> None:
             background-color: transparent !important;
         }
 
-        .st-key-globe_city_comparison div[data-baseweb="tag"] {
-            border-radius: 999px !important;
-            background: rgba(92, 92, 255, 0.14) !important;
-            border: 1px solid rgba(92, 92, 255, 0.22) !important;
+        .st-key-globe_city_comparison [data-baseweb="tag"] {
+            overflow: hidden !important;
+            border-radius: 14px !important;
+            background:
+                linear-gradient(
+                    90deg,
+                    rgba(255, 255, 255, 0.42) 0%,
+                    rgba(225, 232, 255, 0.30) 100%
+                ) !important;
+            border: 1px solid rgba(255, 255, 255, 0.62) !important;
             color: #1f254f !important;
-            font-weight: 760 !important;
+            min-height: 1.95rem !important;
+            margin-top: 0.1rem !important;
+            margin-bottom: 0.1rem !important;
+            padding: 0.2rem 0.24rem 0.2rem 0.76rem !important;
+            font-weight: 820 !important;
+            letter-spacing: -0.01em !important;
+            box-shadow:
+                inset 0 1px 0 rgba(255, 255, 255, 0.62),
+                0 5px 12px rgba(35, 40, 100, 0.10) !important;
+            backdrop-filter: blur(12px) saturate(1.2) !important;
+            -webkit-backdrop-filter: blur(12px) saturate(1.2) !important;
+        }
+
+        .st-key-globe_city_comparison [data-baseweb="tag"],
+        .st-key-globe_city_comparison [data-baseweb="tag"] * {
+            border-radius: 14px !important;
+        }
+
+        .st-key-globe_city_comparison [data-baseweb="tag"] > div,
+        .st-key-globe_city_comparison [data-baseweb="tag"] > span {
+            background-color: transparent !important;
+            background-image: none !important;
+        }
+
+        .st-key-globe_city_comparison [data-baseweb="tag"] span {
+            color: #1f254f !important;
+            line-height: 1.05 !important;
+            background: transparent !important;
+        }
+
+        .st-key-globe_city_comparison [data-baseweb="tag"] button,
+        .st-key-globe_city_comparison [data-baseweb="tag"] div[role="button"],
+        .st-key-globe_city_comparison [data-baseweb="tag"] [aria-label*="emove"],
+        .st-key-globe_city_comparison [data-baseweb="tag"] [title*="emove"] {
+            display: inline-flex !important;
+            align-items: center !important;
+            justify-content: center !important;
+            width: 1.12rem !important;
+            height: 1.12rem !important;
+            min-width: 1.12rem !important;
+            border-radius: 10px !important;
+            margin-left: 0.32rem !important;
+            border: 1px solid rgba(255, 255, 255, 0.38) !important;
+            background: rgba(255, 255, 255, 0.22) !important;
+            color: rgba(31, 37, 79, 0.58) !important;
+            box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.40) !important;
+        }
+
+        .st-key-globe_city_comparison [data-baseweb="tag"] button:hover,
+        .st-key-globe_city_comparison [data-baseweb="tag"] div[role="button"]:hover,
+        .st-key-globe_city_comparison [data-baseweb="tag"] [aria-label*="emove"]:hover,
+        .st-key-globe_city_comparison [data-baseweb="tag"] [title*="emove"]:hover {
+            background: rgba(255, 255, 255, 0.44) !important;
+            color: rgba(31, 37, 79, 0.74) !important;
+        }
+
+        .st-key-globe_city_comparison [data-baseweb="tag"] svg,
+        .st-key-globe_city_comparison [data-baseweb="tag"] button svg,
+        .st-key-globe_city_comparison [data-baseweb="tag"] [role="button"] svg,
+        .st-key-globe_city_comparison [data-baseweb="tag"] [aria-label*="emove"] svg {
+            width: 0.66rem !important;
+            height: 0.66rem !important;
+            color: currentColor !important;
+            fill: currentColor !important;
+            stroke: currentColor !important;
+        }
+
+        .st-key-globe_city_comparison [data-baseweb="tag"] :is(button, div, span):has(svg) {
+            display: inline-flex !important;
+            align-items: center !important;
+            justify-content: center !important;
+            width: 1.12rem !important;
+            height: 1.12rem !important;
+            min-width: 1.12rem !important;
+            margin-left: 0.32rem !important;
+            border-radius: 10px !important;
+            background: rgba(255, 255, 255, 0.24) !important;
+            color: rgba(31, 37, 79, 0.58) !important;
+        }
+
+        .st-key-globe_city_comparison [data-baseweb="tag"] :is(button, div, span):has(svg):hover {
+            background: rgba(255, 255, 255, 0.46) !important;
+            color: rgba(31, 37, 79, 0.76) !important;
+        }
+
+        .st-key-globe_city_comparison [data-baseweb="tag"] svg path {
+            fill: currentColor !important;
+            stroke: currentColor !important;
+        }
+
+        .st-key-globe_city_comparison [data-baseweb="tag"] button svg,
+        .st-key-globe_city_comparison [data-baseweb="tag"] div[role="button"] svg {
+            transform: scale(0.78) !important;
+            opacity: 0.72 !important;
         }
 
         .st-key-globe_city_comparison div[data-baseweb="select"] div,
@@ -650,6 +749,14 @@ def render_globe_styles() -> None:
         .st-key-globe_city_comparison div[data-baseweb="select"] input {
             color: #1f254f !important;
             font-weight: 720 !important;
+        }
+
+        .st-key-globe_city_comparison div[data-baseweb="select"] input {
+            min-height: 1.4rem !important;
+            line-height: 1.4rem !important;
+            padding-top: 0 !important;
+            padding-bottom: 0 !important;
+            transform: translateY(2px) !important;
         }
 
         .st-key-globe_city_comparison_swap {

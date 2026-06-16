@@ -7,6 +7,8 @@ from cityfit.frontend.components.city_comparison import (
     build_city_comparison_table,
     calculate_percent_difference,
     format_difference,
+    format_city_option_label,
+    get_comparison_trace_labels,
     get_percent_difference_color,
     get_rank_difference_color,
     render_city_header,
@@ -61,7 +63,7 @@ def test_build_city_comparison_table_displays_rank_first_with_hashmark():
     assert rank_row["Metric"] == "CityFit Rank"
     assert rank_row["Tampa, United States"] == "#57"
     assert rank_row["Tokyo, Japan"] == "#69"
-    assert rank_row[DIFFERENCE_COLUMN] == "+12"
+    assert rank_row[DIFFERENCE_COLUMN] == "-12"
 
 
 def test_build_city_comparison_table_omits_stronger_fit_column():
@@ -256,8 +258,8 @@ def test_calculate_percent_difference_uses_first_city_as_baseline():
     assert calculate_percent_difference(first_value=50, second_value=75) == 50
 
 
-def test_format_difference_uses_raw_rank_difference_for_rank():
-    assert format_difference(column="cityfit_rank", first_value=57, second_value=69) == "+12"
+def test_format_difference_uses_better_worse_sign_for_rank():
+    assert format_difference(column="cityfit_rank", first_value=57, second_value=69) == "-12"
 
 
 def test_render_city_header_includes_country_flag():
@@ -266,6 +268,12 @@ def test_render_city_header_includes_country_flag():
     assert "flagcdn.com" in header_html
     assert "United States flag" in header_html
     assert "Tampa, United States" in header_html
+
+
+def test_format_city_option_label_includes_flag_emoji_for_display():
+    assert format_city_option_label("Tampa, United States") == (
+        "🇺🇸 Tampa, United States"
+    )
 
 
 def test_sync_comparison_trace_selection_clears_trace_state_when_less_than_two_selected():
@@ -277,6 +285,15 @@ def test_sync_comparison_trace_selection_clears_trace_state_when_less_than_two_s
     sync_comparison_trace_selection()
 
     assert st.session_state[COMPARISON_TRACE_KEY] == []
+
+
+def test_get_comparison_trace_labels_ignores_stale_trace_selection():
+    import streamlit as st
+
+    st.session_state[COMPARISON_WIDGET_KEY] = []
+    st.session_state[COMPARISON_TRACE_KEY] = ["Tampa, United States", "Tokyo, Japan"]
+
+    assert get_comparison_trace_labels() == []
 
 
 def test_sync_comparison_trace_selection_sets_trace_state_for_two_selected():

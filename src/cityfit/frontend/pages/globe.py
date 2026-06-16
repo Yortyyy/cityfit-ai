@@ -5,6 +5,7 @@ import streamlit as st
 from cityfit.frontend.api import get_recommendations_from_api
 from cityfit.frontend.components.city_comparison import (
     COMPARISON_TRACE_KEY,
+    get_comparison_trace_labels,
     render_city_comparison,
 )
 from cityfit.frontend.components.city_profile import render_city_profile
@@ -103,7 +104,8 @@ def render_globe_page(payload: dict, all_df: pd.DataFrame) -> None:
 
     focused_city = st.session_state.get("focused_city")
     focused_country = st.session_state.get("focused_country")
-    comparison_city_labels = st.session_state.get(COMPARISON_TRACE_KEY, [])
+    comparison_city_labels = get_comparison_trace_labels()
+    st.session_state[COMPARISON_TRACE_KEY] = comparison_city_labels
 
     fig = build_globe_figure(
         globe_df,
