@@ -47,6 +47,22 @@ def build_rank_comparison_df(
     )
 
 
+def get_global_cityfit_score_range(all_df: pd.DataFrame, padding: int) -> list[float]:
+    return [
+        all_df["cityfit_score"].min() - padding,
+        all_df["cityfit_score"].max() + padding,
+    ]
+
+
+def get_global_rank_movement_range(all_df: pd.DataFrame, padding: int) -> list[float]:
+    max_rank_movement = max(0, all_df["rank_difference"].max())
+
+    return [
+        0 - padding,
+        max_rank_movement + padding,
+    ]
+
+
 def render_dashboard_page(base_payload: dict, all_df: pd.DataFrame) -> None:
     render_chat_styles()
 
@@ -156,14 +172,7 @@ def render_dashboard_page(base_payload: dict, all_df: pd.DataFrame) -> None:
     recommendations_bar_df = recommendations_df.head(display_bar_n)
 
     padding = 1
-
-    global_min_cityfit_score = recommendations_df["personalized_cityfit_score"].min()
-    global_max_cityfit_score = recommendations_df["personalized_cityfit_score"].max()
-
-    cityscore_color_range = [
-        global_min_cityfit_score - padding,
-        global_max_cityfit_score + padding,
-    ]
+    cityscore_color_range = get_global_cityfit_score_range(all_df, padding)
 
     fig = px.bar(
         recommendations_bar_df,
@@ -233,17 +242,11 @@ def render_dashboard_page(base_payload: dict, all_df: pd.DataFrame) -> None:
         ["city", "rank_movement"]
     ].head(display_bar_n)
 
-    global_min_rank_movement = 0
-    global_max_rank_movement = positive_movers_df["rank_movement"].max()
-
-    cityrank_color_range = [
-        global_min_rank_movement - padding,
-        global_max_rank_movement + padding,
-    ]
-    
     if positive_movers_df.empty:
         st.info("No cities moved up with the current priority settings.")
     else:
+        cityrank_color_range = get_global_rank_movement_range(all_df, padding)
+
         fig = px.bar(
             movement_chart_df,
             x="city",
@@ -277,7 +280,7 @@ def render_dashboard_page(base_payload: dict, all_df: pd.DataFrame) -> None:
 
     st.subheader("Compare Specific Cities")
     
-    preselected_cities = ["Tampa", "Miami", "New York", "Rome", "Tokyo"]
+    preselected_cities = ["Tampa", "Rome", "Tokyo"]
 
     city_options = sorted(recommendations_df["city"].unique())
     selected_cities = st.multiselect(

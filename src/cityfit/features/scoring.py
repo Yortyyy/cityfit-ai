@@ -15,7 +15,7 @@ def calculate_cityfit_score(
     adjustment. The adjustment is normalized by total priority weight so
     default and personalized scores remain comparable.
     """
-    global_score_scaler = 1.25
+    global_score_scaler = 1.75
 
     scored = add_cityfit_features(df.copy())
 
