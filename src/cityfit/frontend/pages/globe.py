@@ -3,6 +3,7 @@ import requests
 import streamlit as st
 
 from cityfit.frontend.api import get_recommendations_from_api
+from cityfit.frontend.components.city_comparison import render_city_comparison
 from cityfit.frontend.components.city_profile import render_city_profile
 from cityfit.frontend.components.city_search import render_city_search
 from cityfit.frontend.components.globe_chart import (
@@ -156,3 +157,4 @@ def render_globe_page(payload: dict, all_df: pd.DataFrame) -> None:
     profile_country = st.session_state.get("active_country")
 
     render_city_profile(globe_df, all_df, profile_city, profile_country)
+    render_city_comparison(globe_df, all_df)
