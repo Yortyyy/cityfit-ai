@@ -2,6 +2,7 @@ import pandas as pd
 import streamlit as st
 
 from cityfit.frontend.components.city_profile import get_metric_color
+from cityfit.utils.countries import get_country_flag_url
 
 
 COMPARISON_METRICS = {
@@ -29,6 +30,21 @@ def format_city_label(city: str, country: str) -> str:
 
 def split_city_label(city_label: str) -> tuple[str, str]:
     return city_label.rsplit(", ", 1)
+
+
+def render_city_header(city_label: str) -> str:
+    city, country = split_city_label(city_label)
+    flag_url = get_country_flag_url(country, size=80)
+
+    if not flag_url:
+        return city_label
+
+    return (
+        "<span class='comparison-city-header'>"
+        f"<span>{city}, {country}</span>"
+        f"<img src='{flag_url}' class='comparison-flag-img' alt='{country} flag' />"
+        "</span>"
+    )
 
 
 def get_city_row(globe_df: pd.DataFrame, city_label: str) -> pd.Series | None:
@@ -201,14 +217,20 @@ def render_comparison_table(
         )
 
     table_html = (
-        "<div class='metric-table-card'>"
-        "<table class='metric-table'>"
+        "<div class='metric-table-card comparison-table-card'>"
+        "<table class='metric-table comparison-table'>"
+        "<colgroup>"
+        "<col class='comparison-metric-col' />"
+        "<col class='comparison-city-col' />"
+        "<col class='comparison-city-col' />"
+        "<col class='comparison-difference-col' />"
+        "</colgroup>"
         "<thead>"
         "<tr>"
         "<th>Metric</th>"
-        f"<th>{first_city_label}</th>"
-        f"<th>{second_city_label}</th>"
-        f"<th>{DIFFERENCE_COLUMN}</th>"
+        f"<th>{render_city_header(first_city_label)}</th>"
+        f"<th>{render_city_header(second_city_label)}</th>"
+        f"<th class='comparison-difference-header'>{DIFFERENCE_COLUMN}</th>"
         "</tr>"
         "</thead>"
         "<tbody>"

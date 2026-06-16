@@ -403,6 +403,42 @@ def render_globe_styles() -> None:
             background: rgba(255, 255, 255, 0.35) !important;
         }
 
+        .comparison-table {
+            table-layout: fixed !important;
+        }
+
+        .comparison-metric-col {
+            width: 22% !important;
+        }
+
+        .comparison-city-col {
+            width: 31% !important;
+        }
+
+        .comparison-difference-col {
+            width: 16% !important;
+        }
+
+        .comparison-city-header {
+            display: inline-flex !important;
+            align-items: center !important;
+            gap: 0.55rem !important;
+        }
+
+        .comparison-flag-img {
+            width: 30px !important;
+            height: 20px !important;
+            object-fit: cover !important;
+            border-radius: 3px !important;
+            box-shadow: 0 2px 5px rgba(20, 30, 60, 0.20) !important;
+            flex: 0 0 30px !important;
+        }
+
+        .comparison-difference-header {
+            font-size: 0.92rem !important;
+            line-height: 1.15 !important;
+        }
+
         /* ========================= */
         /* GLOBAL TEXT / METRICS */
         /* ========================= */

@@ -5,6 +5,7 @@ from cityfit.frontend.components.city_comparison import (
     build_city_comparison_table,
     calculate_percent_difference,
     format_difference,
+    render_city_header,
 )
 
 
@@ -86,3 +87,11 @@ def test_calculate_percent_difference_uses_first_city_as_baseline():
 
 def test_format_difference_uses_raw_rank_difference_for_rank():
     assert format_difference(column="cityfit_rank", first_value=57, second_value=69) == "+12"
+
+
+def test_render_city_header_includes_country_flag():
+    header_html = render_city_header("Tampa, United States")
+
+    assert "flagcdn.com" in header_html
+    assert "United States flag" in header_html
+    assert "Tampa, United States" in header_html
