@@ -100,12 +100,14 @@ def render_globe_page(payload: dict, all_df: pd.DataFrame) -> None:
 
     focused_city = st.session_state.get("focused_city")
     focused_country = st.session_state.get("focused_country")
+    comparison_city_labels = st.session_state.get("globe_city_comparison", [])
 
     fig = build_globe_figure(
         globe_df,
         all_df,
         focused_city,
         focused_country,
+        comparison_city_labels=comparison_city_labels,
     )
 
     clicked_city, clicked_country = render_selectable_globe(fig)

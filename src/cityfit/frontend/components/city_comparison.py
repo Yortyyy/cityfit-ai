@@ -225,6 +225,9 @@ def render_city_comparison(globe_df: pd.DataFrame, all_df: pd.DataFrame) -> None
     st.subheader("Compare Two Cities")
 
     city_options = get_city_options(globe_df)
+    previous_selection = tuple(
+        st.session_state.get("globe_city_comparison_last_selection", [])
+    )
 
     selected_city_labels = st.multiselect(
         "Choose exactly two cities",
@@ -233,6 +236,15 @@ def render_city_comparison(globe_df: pd.DataFrame, all_df: pd.DataFrame) -> None
         max_selections=2,
         key="globe_city_comparison",
     )
+
+    current_selection = tuple(selected_city_labels)
+
+    if len(selected_city_labels) == 2 and current_selection != previous_selection:
+        st.session_state["globe_city_comparison_last_selection"] = current_selection
+        st.rerun()
+
+    if len(selected_city_labels) < 2:
+        st.session_state["globe_city_comparison_last_selection"] = current_selection
 
     if len(selected_city_labels) < 2:
         st.info("Choose two cities to compare their CityFit tradeoffs.")
