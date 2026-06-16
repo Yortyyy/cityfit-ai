@@ -148,8 +148,12 @@ def render_similar_cities_by_metrics(
     st.markdown(
         """
         <div class="similar-city-section">
+            <div class="similar-city-eyebrow">RELATED FITS</div>
             <h4>Similar Cities by Metrics</h4>
-            <p>Click a city to load its profile.</p>
+            <p>
+                These cities have the closest overall metric profile to the
+                selected city. Click any match to load its profile.
+            </p>
         </div>
         """,
         unsafe_allow_html=True,

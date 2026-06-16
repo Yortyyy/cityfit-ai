@@ -143,7 +143,7 @@ def render_globe_styles() -> None:
         .city-search-panel {
             margin-top: 1.15rem !important;
             margin-bottom: 0.45rem !important;
-            padding-left: 1.15rem !important;
+            padding-left: 0.8rem !important;
         }
 
         .city-search-panel .city-search-eyebrow {
@@ -453,7 +453,7 @@ def render_globe_styles() -> None:
         .comparison-section-heading {
             margin-top: 2rem !important;
             margin-bottom: 0.45rem !important;
-            padding-left: 1.15rem !important;
+            padding-left: 0.8rem !important;
         }
 
         .comparison-section-heading .comparison-eyebrow {
@@ -605,21 +605,34 @@ def render_globe_styles() -> None:
 
         .similar-city-section {
             margin-top: 1.75rem;
-            margin-bottom: 0.65rem;
+            margin-bottom: 0.75rem;
+            padding-left: 0.8rem;
+        }
+
+        .similar-city-section .similar-city-eyebrow {
+            margin-bottom: 0.25rem;
+            color: rgba(70, 75, 150, 0.74);
+            font-size: 0.70rem;
+            font-weight: 900;
+            letter-spacing: 0.18rem;
+            text-transform: uppercase;
         }
 
         .similar-city-section h4 {
-            margin-bottom: 0.25rem;
+            margin: 0;
             color: #1f254f;
-            font-size: 1.35rem;
-            font-weight: 850;
+            font-size: 1.45rem;
+            font-weight: 900;
+            letter-spacing: -0.035rem;
         }
 
         .similar-city-section p {
-            margin-top: 0;
-            margin-bottom: 0.75rem;
-            color: rgba(31, 37, 79, 0.62);
+            max-width: 56rem;
+            margin: 0.42rem 0 0 0;
+            color: rgba(31, 37, 79, 0.68);
             font-size: 0.95rem;
+            font-weight: 620;
+            line-height: 1.45;
         }
 
         .similar-city-link {
