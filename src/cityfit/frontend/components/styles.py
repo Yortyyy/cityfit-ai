@@ -140,60 +140,71 @@ def render_globe_styles() -> None:
         /* CITY SEARCH SELECTBOX ONLY */
         /* ========================= */
 
-        .city-search-hint-wrap {
+        .city-search-panel {
+            margin-top: 1.15rem !important;
+            margin-bottom: 0.45rem !important;
             padding-left: 1.15rem !important;
-            margin-top: 1rem !important;
-            margin-bottom: -0.15rem !important;
         }
 
-        .city-search-hint {
+        .city-search-panel .city-search-eyebrow {
+            margin-bottom: 0.25rem !important;
+            color: rgba(70, 75, 150, 0.74) !important;
+            font-size: 0.70rem !important;
+            font-weight: 900 !important;
+            letter-spacing: 0.18rem !important;
+        }
+
+        .city-search-panel h3 {
             margin: 0 !important;
-            color: rgba(31, 37, 79, 0.62) !important;
-            font-size: 1rem !important;
-            font-weight: 650 !important;
+            color: #1f254f !important;
+            font-size: 1.45rem !important;
+            font-weight: 900 !important;
+            letter-spacing: -0.025em !important;
+            line-height: 1.05 !important;
+        }
+
+        .city-search-panel p {
+            margin: 0.45rem 0 0 0 !important;
+            max-width: 56rem !important;
+            color: rgba(31, 37, 79, 0.68) !important;
+            font-size: 0.95rem !important;
+            font-weight: 620 !important;
+            line-height: 1.45 !important;
         }
 
         /* Widget wrapper generated from key="city_search_selectbox" */
         .st-key-city_search_selectbox {
             position: relative !important;
             max-width: 100% !important;
-            margin-top: 1.25rem !important;
+            margin-top: 0.75rem !important;
             margin-bottom: 1.25rem !important;
         }
 
         /* Actual visible selectbox surface */
         .st-key-city_search_selectbox div[data-baseweb="select"] > div {
-            min-height: 44px !important;
-            height: 44px !important;
-            border-radius: 999px !important;
+            min-height: 48px !important;
+            border-radius: 16px !important;
             padding-left: 3rem !important;
 
             background:
                 url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='18' height='18' viewBox='0 0 24 24' fill='none' stroke='%231f254f' stroke-width='2.6' stroke-linecap='round' stroke-linejoin='round'%3E%3Ccircle cx='11' cy='11' r='7'%3E%3C/circle%3E%3Cline x1='16.5' y1='16.5' x2='21' y2='21'%3E%3C/line%3E%3C/svg%3E") 1.05rem center / 18px 18px no-repeat,
                 linear-gradient(
                     90deg,
-                    transparent 0%,
-                    rgba(255, 255, 255, 0.85) 18%,
-                    rgba(255, 255, 255, 0.28) 38%,
-                    transparent 58%
-                ) 3rem 0.35rem / calc(100% - 5.8rem) 10px no-repeat,
-                linear-gradient(
-                    180deg,
                     rgba(255, 255, 255, 0.88) 0%,
-                    rgba(238, 241, 255, 0.58) 45%,
-                    rgba(178, 185, 235, 0.42) 100%
+                    rgba(242, 245, 255, 0.66) 48%,
+                    rgba(205, 214, 250, 0.46) 100%
                 ) !important;
 
             border: 1px solid rgba(255, 255, 255, 0.95) !important;
 
             box-shadow:
                 inset 0 1px 0 rgba(255, 255, 255, 1),
-                inset 0 -16px 28px rgba(85, 95, 175, 0.24),
-                0 18px 42px rgba(35, 40, 100, 0.24),
+                inset 0 -14px 24px rgba(85, 95, 175, 0.18),
+                0 16px 34px rgba(35, 40, 100, 0.18),
                 0 0 0 1px rgba(90, 105, 190, 0.16) !important;
 
-            backdrop-filter: blur(16px) !important;
-            -webkit-backdrop-filter: blur(16px) !important;
+            backdrop-filter: blur(14px) !important;
+            -webkit-backdrop-filter: blur(14px) !important;
         }
 
         /* Force BaseWeb inner layers transparent */
@@ -216,9 +227,9 @@ def render_globe_styles() -> None:
         .st-key-city_search_selectbox div[data-baseweb="select"] > div:hover {
             box-shadow:
                 inset 0 1px 0 rgba(255, 255, 255, 1),
-                inset 0 -16px 28px rgba(85, 95, 175, 0.28),
-                0 22px 52px rgba(35, 40, 100, 0.30),
-                0 0 0 3px rgba(120, 140, 255, 0.20) !important;
+                inset 0 -14px 24px rgba(85, 95, 175, 0.24),
+                0 20px 44px rgba(35, 40, 100, 0.23),
+                0 0 0 3px rgba(92, 92, 255, 0.14) !important;
         }
 
         /* Dropdown arrow */
@@ -437,6 +448,93 @@ def render_globe_styles() -> None:
         .comparison-difference-header {
             font-size: 0.92rem !important;
             line-height: 1.15 !important;
+        }
+
+        .comparison-section-heading {
+            margin-top: 2rem !important;
+            margin-bottom: 0.45rem !important;
+            padding-left: 1.15rem !important;
+        }
+
+        .comparison-section-heading .comparison-eyebrow {
+            margin-bottom: 0.25rem !important;
+            color: rgba(70, 75, 150, 0.74) !important;
+            font-size: 0.70rem !important;
+            font-weight: 900 !important;
+            letter-spacing: 0.18rem !important;
+        }
+
+        .comparison-section-heading h3 {
+            margin: 0 !important;
+            color: #1f254f !important;
+            font-size: 1.45rem !important;
+            font-weight: 900 !important;
+            letter-spacing: -0.025em !important;
+            line-height: 1.05 !important;
+        }
+
+        .comparison-section-heading p {
+            margin: 0.45rem 0 0 0 !important;
+            max-width: 56rem !important;
+            color: rgba(31, 37, 79, 0.68) !important;
+            font-size: 0.95rem !important;
+            font-weight: 620 !important;
+            line-height: 1.45 !important;
+        }
+
+        .st-key-globe_city_comparison {
+            position: relative !important;
+            margin-top: 0.75rem !important;
+            margin-bottom: 1.15rem !important;
+        }
+
+        .st-key-globe_city_comparison div[data-baseweb="select"] > div {
+            min-height: 48px !important;
+            border-radius: 16px !important;
+            background:
+                linear-gradient(
+                    90deg,
+                    rgba(255, 255, 255, 0.88) 0%,
+                    rgba(242, 245, 255, 0.66) 48%,
+                    rgba(205, 214, 250, 0.46) 100%
+                ) !important;
+            border: 1px solid rgba(255, 255, 255, 0.96) !important;
+            box-shadow:
+                inset 0 1px 0 rgba(255, 255, 255, 1),
+                inset 0 -14px 24px rgba(85, 95, 175, 0.18),
+                0 16px 34px rgba(35, 40, 100, 0.18),
+                0 0 0 1px rgba(90, 105, 190, 0.16) !important;
+            backdrop-filter: blur(14px) !important;
+            -webkit-backdrop-filter: blur(14px) !important;
+        }
+
+        .st-key-globe_city_comparison div[data-baseweb="select"] > div:hover {
+            box-shadow:
+                inset 0 1px 0 rgba(255, 255, 255, 1),
+                inset 0 -14px 24px rgba(85, 95, 175, 0.24),
+                0 20px 44px rgba(35, 40, 100, 0.23),
+                0 0 0 3px rgba(92, 92, 255, 0.14) !important;
+        }
+
+        .st-key-globe_city_comparison div[data-baseweb="select"],
+        .st-key-globe_city_comparison div[data-baseweb="select"] > div > div,
+        .st-key-globe_city_comparison div[data-baseweb="select"] input {
+            background-color: transparent !important;
+        }
+
+        .st-key-globe_city_comparison div[data-baseweb="tag"] {
+            border-radius: 999px !important;
+            background: rgba(92, 92, 255, 0.14) !important;
+            border: 1px solid rgba(92, 92, 255, 0.22) !important;
+            color: #1f254f !important;
+            font-weight: 760 !important;
+        }
+
+        .st-key-globe_city_comparison div[data-baseweb="select"] div,
+        .st-key-globe_city_comparison div[data-baseweb="select"] span,
+        .st-key-globe_city_comparison div[data-baseweb="select"] input {
+            color: #1f254f !important;
+            font-weight: 720 !important;
         }
 
         /* ========================= */

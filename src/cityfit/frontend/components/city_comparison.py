@@ -237,7 +237,19 @@ def render_comparison_table(
 
 
 def render_city_comparison(globe_df: pd.DataFrame, all_df: pd.DataFrame) -> None:
-    st.subheader("Compare Two Cities")
+    st.markdown(
+        """
+        <div class="comparison-section-heading">
+            <div class="comparison-eyebrow">SIDE BY SIDE</div>
+            <h3>Compare Two Cities</h3>
+            <p>
+                Choose two cities from the current globe view. CityFit will highlight them
+                on the map and compare each metric against the first city you select.
+            </p>
+        </div>
+        """,
+        unsafe_allow_html=True,
+    )
 
     city_options = get_city_options(globe_df)
     previous_selection = tuple(
@@ -249,8 +261,10 @@ def render_city_comparison(globe_df: pd.DataFrame, all_df: pd.DataFrame) -> None
         options=city_options,
         default=[],
         max_selections=2,
+        placeholder="Select two cities to compare...",
         key=COMPARISON_WIDGET_KEY,
         on_change=sync_comparison_trace_selection,
+        label_visibility="collapsed",
     )
 
     current_selection = tuple(selected_city_labels)
