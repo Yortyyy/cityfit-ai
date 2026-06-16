@@ -63,6 +63,26 @@ def get_global_rank_movement_range(all_df: pd.DataFrame, padding: int) -> list[f
     ]
 
 
+def build_dashboard_column_config(
+    column_labels: dict[str, str],
+    columns: list[str],
+) -> dict:
+    wide_text_columns = {
+        "city": 110,
+        "country": 120,
+        "region": 115,
+    }
+
+    return {
+        column: st.column_config.Column(
+            column_labels[column],
+            width=wide_text_columns.get(column),
+        )
+        for column in columns
+        if column in column_labels
+    }
+
+
 def render_dashboard_page(base_payload: dict, all_df: pd.DataFrame) -> None:
     render_chat_styles()
 
@@ -161,11 +181,10 @@ def render_dashboard_page(base_payload: dict, all_df: pd.DataFrame) -> None:
         top_recommendations_df[top_recommendation_cols],
         width="stretch",
         hide_index=True,
-        column_config={
-            column: st.column_config.Column(label)
-            for column, label in column_labels.items()
-            if column in top_recommendation_cols
-        },
+        column_config=build_dashboard_column_config(
+            column_labels,
+            top_recommendation_cols,
+        ),
     )
 
     display_bar_n = 10
@@ -229,11 +248,10 @@ def render_dashboard_page(base_payload: dict, all_df: pd.DataFrame) -> None:
         rank_movers,
         width="stretch",
         hide_index=True,
-        column_config={
-            column: st.column_config.Column(label)
-            for column, label in column_labels.items()
-            if column in display_cols
-        },
+        column_config=build_dashboard_column_config(
+            column_labels,
+            display_cols,
+        ),
     )
 
     st.subheader("Biggest Ranking Changes")
