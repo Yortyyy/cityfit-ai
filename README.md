@@ -37,7 +37,25 @@ The project is designed to demonstrate applied AI engineering patterns:
 
 The current version:
 
-- Retrieves methodology and limitation context from a local RAG knowledge base
+- Loads a 300+ city quality-of-life dataset with country, region, latitude, and longitude metadata
+- Validates the expected city metrics schema before scoring or serving recommendations
+- Calculates a personalized CityFit Score from quality-of-life, affordability, housing, safety, healthcare, climate, traffic, pollution, and purchasing-power metrics
+- Converts user-facing 0–10 Streamlit priority sliders into backend 0–2 priority multipliers
+- Builds a neutral baseline CityFit ranking where all lifestyle priorities are set to default importance
+- Compares personalized CityFit ranking against the neutral baseline CityFit ranking
+- Calculates rank movement as baseline CityFit rank minus personalized CityFit rank
+- Supports region and country scoped recommendations
+- Displays an interactive globe with searchable and clickable city selection
+- Shows city profile pages with score summaries, metric breakdowns, flags, explanations, and similar-city links
+- Supports side-by-side city comparison with rank movement and metric differences
+- Serves recommendations through a FastAPI backend
+- Uses a shared recommendation service so the API and agent apply the same scoring and filtering logic
+- Supports a chat-style CityFit Agent interface
+- Uses a local RAG knowledge base to ground agent responses in CityFit methodology, scoring assumptions, data limitations, relocation risks, and responsible-AI guidance
+- Retrieves context from local markdown documents using Chroma vector search
+- Returns governance metadata, retrieved sources, tools used, and limitations with agent responses
+- Runs inside Docker with separate services for FastAPI, Streamlit, MLflow, and optional Ollama
+- Includes pytest coverage for scoring, ranking, API behavior, city comparison logic, RAG retrieval, and agent response structure
 
 ## Architecture
 
