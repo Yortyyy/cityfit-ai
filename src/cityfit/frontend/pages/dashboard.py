@@ -62,8 +62,6 @@ def build_dashboard_column_config(
 
 
 def render_dashboard_page(base_payload: dict, all_df: pd.DataFrame) -> None:
-    render_chat_styles()
-
     st.title("📊 CityFit Dashboard")
     st.write(
         "Compare a default CityFit ranking against your personalized CityFit ranking. "
