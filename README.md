@@ -19,18 +19,7 @@ The project is designed to demonstrate applied AI engineering patterns:
 
 The current version:
 
-- Loads a 300+ city Numbeo-derived educational dataset
-- Validates the expected city schema, including country and region metadata
-- Calculates a personalized CityFit Score from quality-of-life, cost, safety, healthcare, climate, traffic, and pollution metrics
-- Supports region and country scoped recommendations
-- Compares CityFit ranking against Numbeo's baseline Quality of Life ranking
-- Serves recommendations through a FastAPI backend
-- Displays rankings and explanations in a Streamlit frontend
-- Supports a chat-style CityFit Agent interface
 - Retrieves methodology and limitation context from a local RAG knowledge base
-- Returns governance metadata, sources, tools used, and limitations
-- Runs inside Docker
-- Uses a shared recommendation service so the API and agent apply the same scoring and filtering logic
 
 ## Architecture
 
@@ -83,11 +72,26 @@ The shared service handles:
 - loading raw city metrics
 - validating required schema fields
 - calculating CityFit scores
-- adding CityFit and Numbeo baseline ranks
+- adding CityFit baseline and personalized ranks
 - applying optional region and country filters
 - adding human-readable city explanations where needed
 
 This avoids separate API and agent ranking logic drifting out of sync.
+
+## Scoring Methodology
+
+CityFit starts with quality-of-life metrics and transforms them into priority-specific feature scores. The personalized CityFit Score combines a source quality-of-life baseline with a weighted lifestyle adjustment based on the user's selected priorities.
+
+The Streamlit UI uses user-friendly 0–10 priority sliders. These are normalized before being sent to the API:
+
+* `0` means the priority is ignored
+* `5` means default importance
+* `10` means double importance
+
+Internally, the API receives these as 0–2 priority multipliers.
+
+CityFit also calculates a neutral baseline ranking where every priority is set to default importance. Personalized rank movement compares the user's personalized ranking against this neutral CityFit baseline.
+
 
 ## Run with Docker
 
@@ -265,6 +269,9 @@ The test suite covers:
 - RAG retrieval
 - agent response structure and governance metadata
 - API/agent consistency for filtered recommendations
+- deterministic CityFit ranking behavior
+- baseline CityFit vs personalized CityFit rank movement
+- frontend city comparison color behavior
 
 ## Data Notice
 
@@ -284,11 +291,11 @@ This project does not redistribute a full Numbeo dataset or use automated scrapi
 
 Planned improvements:
 
+- Add a dedicated in-app methodology page
+- Expand city detail pages with richer lifestyle summaries
 - Add hosted LLM providers such as OpenAI, Anthropic, Gemini, or Bedrock
 - Add response-mode evaluation for template vs Ollama outputs
-- Expand the city dataset
 - Add more knowledge-base documents
-- Add richer city detail pages and comparison views
 - Add model/provider evaluation harness
 - Add optional AWS storage or deployment proof of concept
 - Add screenshots and UI polish
