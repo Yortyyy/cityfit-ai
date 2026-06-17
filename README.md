@@ -15,6 +15,24 @@ The project is designed to demonstrate applied AI engineering patterns:
 - Pytest test coverage
 - GitHub Actions CI
 
+## Demo Preview
+
+### Interactive Globe
+
+![CityFit interactive globe](docs/images/globe_page.png)
+
+### City Profile
+
+![CityFit city profile](docs/images/city_profile.png)
+
+### City Comparison
+
+![CityFit city comparison](docs/images/city_comparison.png)
+
+### CityFit Agent
+
+![CityFit agent response](docs/images/agent_response.png)
+
 ## Current MVP
 
 The current version:
