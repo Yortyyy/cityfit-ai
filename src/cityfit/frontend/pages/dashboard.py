@@ -3,10 +3,7 @@ import plotly.express as px
 import requests
 import streamlit as st
 
-from cityfit.frontend.api import (
-    get_recommendations_from_api,
-    query_agent_from_api
-)
+from cityfit.frontend.api import get_recommendations_from_api
 
 def build_rank_comparison_df(
     personalized_recommendations: list[dict],
@@ -201,8 +198,6 @@ def render_dashboard_page(base_payload: dict, all_df: pd.DataFrame) -> None:
     st.plotly_chart(fig, width="stretch")
 
     st.subheader("Rank Movement")
-
-    # TODO: If priorities are all 10 - default - don't display rank movement/changes
 
     positive_movers_df = recommendations_df[
         recommendations_df["rank_movement"] > 0
