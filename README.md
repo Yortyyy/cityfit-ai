@@ -1,6 +1,6 @@
-# CityFit AI
+# CityFit
 
-CityFit AI is a city recommendation and GenAI decision-support platform that ranks cities using Numbeo-style quality-of-life metrics, a personalized CityFit Score, and a RAG-powered agent workflow.
+CityFit is a city recommendation and GenAI decision-support platform that ranks cities using Numbeo-style quality-of-life metrics, a personalized CityFit Score, and a RAG-powered agent workflow.
 
 The project is designed to demonstrate applied AI engineering patterns:
 
