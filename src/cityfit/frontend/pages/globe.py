@@ -24,6 +24,7 @@ from cityfit.frontend.components.globe_navigation import (
     set_active_city,
     set_focused_city,
 )
+from cityfit.frontend.components.hero import render_hero
 from cityfit.frontend.components.methodology import render_methodology_card
 from cityfit.frontend.styles.loader import load_css
 
@@ -42,17 +43,7 @@ def render_globe_page(payload: dict, all_df: pd.DataFrame) -> None:
         "similar_cities.css",
     )
 
-    st.markdown(
-        """
-        <div class="hero-title">
-            <div class="eyebrow">CITYFIT</div>
-            <h1><span class="hero-bold">Hello</span>, this is our <span class="hero-bold">World</span>.</h1>
-            <p>Find out where <span class="hero-bold">you</span> fit in.</p>
-        </div>
-        """,
-        unsafe_allow_html=True,
-    )
-
+    render_hero()
     render_methodology_card()
     apply_similar_city_query_navigation()
 
