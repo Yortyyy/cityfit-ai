@@ -120,9 +120,9 @@ CityFit starts with quality-of-life metrics and transforms them into priority-sp
 
 The Streamlit UI uses user-friendly 0–10 priority sliders. These are normalized before being sent to the API:
 
-* `0` means the priority is ignored
-* `5` means default importance
-* `10` means double importance
+- `0` means the priority is ignored
+- `5` means default importance
+- `10` means double importance
 
 Internally, the API receives these as 0–2 priority multipliers.
 

@@ -60,3 +60,32 @@
 
     box-shadow: none;
 }
+
+.methodology-title-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.38rem;
+
+    color: #4056B8 !important;
+    text-decoration: none !important;
+    font-weight: 850;
+
+    transition:
+        transform 0.16s ease,
+        color 0.16s ease,
+        opacity 0.16s ease;
+}
+
+.methodology-title-link:hover {
+    color: #2F3F96 !important;
+    transform: translateX(2px) translateY(-1px);
+    opacity: 0.95;
+}
+
+.methodology-title-arrow {
+    display: inline-block;
+    font-size: 0.78rem;
+    font-weight: 900;
+    line-height: 1;
+    transform: translateY(-2px);
+}
