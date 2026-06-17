@@ -8,28 +8,6 @@ from cityfit.frontend.api import (
     query_agent_from_api
 )
 
-def render_chat_styles() -> None:
-    # Chat emoji align with headers
-    st.markdown(
-        """
-        <style>
-        div[data-testid="stChatMessage"] {
-            align-items: flex-start;
-        }
-
-        div[data-testid="stChatMessage"] div[data-testid="stAvatar"] {
-            margin-top: 0.55rem;
-        }
-
-        div[data-testid="stChatMessage"] h2 {
-            margin-top: 0;
-            padding-top: 0;
-            line-height: 1;
-        }
-        </style>
-        """,
-        unsafe_allow_html=True,
-    )
 def build_rank_comparison_df(
     personalized_recommendations: list[dict],
 ) -> pd.DataFrame:
