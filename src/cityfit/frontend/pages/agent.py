@@ -4,12 +4,12 @@ import streamlit as st
 from cityfit.frontend.api import query_agent_from_api
 from cityfit.frontend.styles.loader import load_css
 
-
-from cityfit.frontend.styles.loader import load_css
-    
-
 def render_agent_page(recommendation_payload: dict) -> None:
-    load_css("agent.css")
+    load_css(
+        "agent.css",
+        "base.css",
+        "sidebar.css"
+    )
     
     st.title("🌎 Ask CityFit AI")
     st.write(

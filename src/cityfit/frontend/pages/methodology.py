@@ -1,7 +1,13 @@
 import streamlit as st
 
+from cityfit.frontend.styles.loader import load_css
 
 def render_methodology_page() -> None:
+    load_css(
+        "base.css",
+        "sidebar.css",
+    )
+    
     st.markdown(
         """
         <div class="hero-title">

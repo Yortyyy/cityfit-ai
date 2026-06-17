@@ -4,6 +4,7 @@ import requests
 import streamlit as st
 
 from cityfit.frontend.api import get_recommendations_from_api
+from cityfit.frontend.styles.loader import load_css
 
 def build_rank_comparison_df(
     personalized_recommendations: list[dict],
@@ -59,6 +60,11 @@ def build_dashboard_column_config(
 
 
 def render_dashboard_page(base_payload: dict, all_df: pd.DataFrame) -> None:
+    load_css(
+        "base.css",
+        "sidebar.css",
+    )
+    
     st.title("📊 CityFit Dashboard")
     st.write(
         "Compare a default CityFit ranking against your personalized CityFit ranking. "
