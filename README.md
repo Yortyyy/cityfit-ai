@@ -19,19 +19,19 @@ The project is designed to demonstrate applied AI engineering patterns:
 
 ### Interactive Globe
 
-![CityFit interactive globe](docs/images/globe_page.png)
+![CityFit interactive globe](docs/images/globe_page.PNG)
 
 ### City Profile
 
-![CityFit city profile](docs/images/city_profile.png)
+![CityFit city profile](docs/images/city_profile.PNG)
 
 ### City Comparison
 
-![CityFit city comparison](docs/images/city_comparison.png)
+![CityFit city comparison](docs/images/city_comparison.PNG)
 
 ### CityFit Agent
 
-![CityFit agent response](docs/images/agent_response.png)
+![CityFit agent response](docs/images/agent_response.PNG)
 
 ## Current MVP
 
