@@ -25,12 +25,22 @@ from cityfit.frontend.components.globe_navigation import (
     set_focused_city,
 )
 from cityfit.frontend.components.methodology import render_methodology_card
-from cityfit.frontend.components.styles import render_globe_styles
+from cityfit.frontend.styles.loader import load_css
 
 
 
 def render_globe_page(payload: dict, all_df: pd.DataFrame) -> None:
-    render_globe_styles()
+    load_css(
+        "base.css",
+        "sidebar.css",
+        "methodology.css",
+        "search.css",
+        "hero.css",
+        "city_profile.css",
+        "metric_table.css",
+        "comparison.css",
+        "similar_cities.css",
+    )
 
     st.markdown(
         """

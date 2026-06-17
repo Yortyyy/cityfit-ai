@@ -1,0 +1,260 @@
+.comparison-table {
+    table-layout: fixed !important;
+}
+
+.comparison-metric-col {
+    width: 22% !important;
+}
+
+.comparison-city-col {
+    width: 31% !important;
+}
+
+.comparison-difference-col {
+    width: 16% !important;
+}
+
+.comparison-city-header {
+    display: inline-flex !important;
+    align-items: center !important;
+    gap: 0.55rem !important;
+}
+
+.comparison-flag-img {
+    width: 30px !important;
+    height: 20px !important;
+    object-fit: cover !important;
+    border-radius: 3px !important;
+    box-shadow: 0 2px 5px rgba(20, 30, 60, 0.20) !important;
+    flex: 0 0 30px !important;
+}
+
+.comparison-difference-header {
+    font-size: 0.92rem !important;
+    line-height: 1.15 !important;
+}
+
+.comparison-section-heading {
+    margin-top: 2rem !important;
+    margin-bottom: 0.45rem !important;
+    padding-left: 0.8rem !important;
+}
+
+.comparison-section-heading .comparison-eyebrow {
+    margin-bottom: 0.25rem !important;
+    color: rgba(70, 75, 150, 0.74) !important;
+    font-size: 0.70rem !important;
+    font-weight: 900 !important;
+    letter-spacing: 0.18rem !important;
+}
+
+.comparison-section-heading h3 {
+    margin: 0 !important;
+    color: #1f254f !important;
+    font-size: 1.45rem !important;
+    font-weight: 900 !important;
+    letter-spacing: -0.025em !important;
+    line-height: 1.05 !important;
+}
+
+.comparison-section-heading p {
+    margin: 0.45rem 0 0 0 !important;
+    max-width: 56rem !important;
+    color: rgba(31, 37, 79, 0.68) !important;
+    font-size: 0.95rem !important;
+    font-weight: 620 !important;
+    line-height: 1.45 !important;
+}
+
+.st-key-globe_city_comparison {
+    position: relative !important;
+    margin-top: 0.75rem !important;
+    margin-bottom: 1.15rem !important;
+}
+
+.st-key-globe_city_comparison div[data-baseweb="select"] > div {
+    min-height: 48px !important;
+    border-radius: 16px !important;
+    background:
+        linear-gradient(
+            90deg,
+            rgba(255, 255, 255, 0.88) 0%,
+            rgba(242, 245, 255, 0.66) 48%,
+            rgba(205, 214, 250, 0.46) 100%
+        ) !important;
+    border: 1px solid rgba(255, 255, 255, 0.96) !important;
+    box-shadow:
+        inset 0 1px 0 rgba(255, 255, 255, 1),
+        inset 0 -14px 24px rgba(85, 95, 175, 0.18),
+        0 16px 34px rgba(35, 40, 100, 0.18),
+        0 0 0 1px rgba(90, 105, 190, 0.16) !important;
+    backdrop-filter: blur(14px) !important;
+    -webkit-backdrop-filter: blur(14px) !important;
+}
+
+.st-key-globe_city_comparison div[data-baseweb="select"] > div:hover {
+    box-shadow:
+        inset 0 1px 0 rgba(255, 255, 255, 1),
+        inset 0 -14px 24px rgba(85, 95, 175, 0.24),
+        0 20px 44px rgba(35, 40, 100, 0.23),
+        0 0 0 3px rgba(92, 92, 255, 0.14) !important;
+}
+
+.st-key-globe_city_comparison div[data-baseweb="select"],
+.st-key-globe_city_comparison div[data-baseweb="select"] > div > div,
+.st-key-globe_city_comparison div[data-baseweb="select"] input {
+    background-color: transparent !important;
+}
+
+.st-key-globe_city_comparison [data-baseweb="tag"] {
+    overflow: hidden !important;
+    border-radius: 14px !important;
+    background:
+        linear-gradient(
+            90deg,
+            rgba(255, 255, 255, 0.42) 0%,
+            rgba(225, 232, 255, 0.30) 100%
+        ) !important;
+    border: 1px solid rgba(255, 255, 255, 0.62) !important;
+    color: #1f254f !important;
+    min-height: 1.95rem !important;
+    margin-top: 0.1rem !important;
+    margin-bottom: 0.1rem !important;
+    padding: 0.2rem 0.24rem 0.2rem 0.76rem !important;
+    font-weight: 820 !important;
+    letter-spacing: -0.01em !important;
+    box-shadow:
+        inset 0 1px 0 rgba(255, 255, 255, 0.62),
+        0 5px 12px rgba(35, 40, 100, 0.10) !important;
+    backdrop-filter: blur(12px) saturate(1.2) !important;
+    -webkit-backdrop-filter: blur(12px) saturate(1.2) !important;
+}
+
+.st-key-globe_city_comparison [data-baseweb="tag"],
+.st-key-globe_city_comparison [data-baseweb="tag"] * {
+    border-radius: 14px !important;
+}
+
+.st-key-globe_city_comparison [data-baseweb="tag"] > div,
+.st-key-globe_city_comparison [data-baseweb="tag"] > span {
+    background-color: transparent !important;
+    background-image: none !important;
+}
+
+.st-key-globe_city_comparison [data-baseweb="tag"] span {
+    color: #1f254f !important;
+    line-height: 1.05 !important;
+    background: transparent !important;
+}
+
+.st-key-globe_city_comparison [data-baseweb="tag"] button,
+.st-key-globe_city_comparison [data-baseweb="tag"] div[role="button"],
+.st-key-globe_city_comparison [data-baseweb="tag"] [aria-label*="emove"],
+.st-key-globe_city_comparison [data-baseweb="tag"] [title*="emove"] {
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    width: 1.12rem !important;
+    height: 1.12rem !important;
+    min-width: 1.12rem !important;
+    border-radius: 10px !important;
+    margin-left: 0.32rem !important;
+    border: 1px solid rgba(255, 255, 255, 0.38) !important;
+    background: rgba(255, 255, 255, 0.22) !important;
+    color: rgba(31, 37, 79, 0.58) !important;
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.40) !important;
+}
+
+.st-key-globe_city_comparison [data-baseweb="tag"] button:hover,
+.st-key-globe_city_comparison [data-baseweb="tag"] div[role="button"]:hover,
+.st-key-globe_city_comparison [data-baseweb="tag"] [aria-label*="emove"]:hover,
+.st-key-globe_city_comparison [data-baseweb="tag"] [title*="emove"]:hover {
+    background: rgba(255, 255, 255, 0.44) !important;
+    color: rgba(31, 37, 79, 0.74) !important;
+}
+
+.st-key-globe_city_comparison [data-baseweb="tag"] svg,
+.st-key-globe_city_comparison [data-baseweb="tag"] button svg,
+.st-key-globe_city_comparison [data-baseweb="tag"] [role="button"] svg,
+.st-key-globe_city_comparison [data-baseweb="tag"] [aria-label*="emove"] svg {
+    width: 0.66rem !important;
+    height: 0.66rem !important;
+    color: currentColor !important;
+    fill: currentColor !important;
+    stroke: currentColor !important;
+}
+
+.st-key-globe_city_comparison [data-baseweb="tag"] :is(button, div, span):has(svg) {
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    width: 1.12rem !important;
+    height: 1.12rem !important;
+    min-width: 1.12rem !important;
+    margin-left: 0.32rem !important;
+    border-radius: 10px !important;
+    background: rgba(255, 255, 255, 0.24) !important;
+    color: rgba(31, 37, 79, 0.58) !important;
+}
+
+.st-key-globe_city_comparison [data-baseweb="tag"] :is(button, div, span):has(svg):hover {
+    background: rgba(255, 255, 255, 0.46) !important;
+    color: rgba(31, 37, 79, 0.76) !important;
+}
+
+.st-key-globe_city_comparison [data-baseweb="tag"] svg path {
+    fill: currentColor !important;
+    stroke: currentColor !important;
+}
+
+.st-key-globe_city_comparison [data-baseweb="tag"] button svg,
+.st-key-globe_city_comparison [data-baseweb="tag"] div[role="button"] svg {
+    transform: scale(0.78) !important;
+    opacity: 0.72 !important;
+}
+
+.st-key-globe_city_comparison div[data-baseweb="select"] div,
+.st-key-globe_city_comparison div[data-baseweb="select"] span,
+.st-key-globe_city_comparison div[data-baseweb="select"] input {
+    color: #1f254f !important;
+    font-weight: 720 !important;
+}
+
+.st-key-globe_city_comparison div[data-baseweb="select"] input {
+    min-height: 1.4rem !important;
+    line-height: 1.4rem !important;
+    padding-top: 0 !important;
+    padding-bottom: 0 !important;
+    transform: translateY(2px) !important;
+}
+
+.st-key-globe_city_comparison_swap {
+    margin-top: -0.65rem !important;
+    margin-bottom: 0.15rem !important;
+}
+
+.st-key-globe_city_comparison_swap button {
+    min-height: 2.35rem !important;
+    border-radius: 999px !important;
+    border: 1px solid rgba(92, 92, 255, 0.24) !important;
+    background:
+        linear-gradient(
+            90deg,
+            rgba(232, 237, 255, 0.90) 0%,
+            rgba(246, 248, 255, 0.82) 100%
+        ) !important;
+    color: #1f254f !important;
+    font-size: 0.9rem !important;
+    font-weight: 820 !important;
+    box-shadow:
+        inset 0 1px 0 rgba(255, 255, 255, 0.88),
+        0 7px 16px rgba(35, 40, 100, 0.10) !important;
+}
+
+.st-key-globe_city_comparison_swap button:hover {
+    border-color: rgba(92, 92, 255, 0.42) !important;
+    box-shadow:
+        inset 0 1px 0 rgba(255, 255, 255, 0.95),
+        0 10px 22px rgba(35, 40, 100, 0.15),
+        0 0 0 3px rgba(92, 92, 255, 0.12) !important;
+}

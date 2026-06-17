@@ -1,0 +1,162 @@
+.city-profile-section-heading {
+    margin-top: 1.85rem !important;
+    margin-bottom: 0.5rem !important;
+    padding-left: 0.8rem !important;
+}
+
+.city-profile-section-heading .city-profile-eyebrow {
+    margin-bottom: 0.25rem !important;
+    color: rgba(70, 75, 150, 0.74) !important;
+    font-size: 0.70rem !important;
+    font-weight: 900 !important;
+    letter-spacing: 0.18rem !important;
+    text-transform: uppercase !important;
+}
+
+.city-profile-section-heading h2 {
+    margin: 0 !important;
+    color: #1f254f !important;
+    font-size: 1.85rem !important;
+    font-weight: 950 !important;
+    letter-spacing: -0.04em !important;
+    line-height: 1.05 !important;
+}
+
+.city-profile-hero-card {
+    display: flex !important;
+    align-items: center !important;
+    justify-content: space-between !important;
+    gap: 1rem !important;
+    margin-top: 0.6rem !important;
+    margin-bottom: 1rem !important;
+    padding: 0.76rem 1rem !important;
+    border-radius: 18px !important;
+    border: 1px solid rgba(255, 255, 255, 0.64) !important;
+    background:
+        linear-gradient(
+            90deg,
+            rgba(245, 247, 255, 0.88) 0%,
+            rgba(226, 232, 255, 0.62) 55%,
+            rgba(239, 242, 255, 0.74) 100%
+        ) !important;
+    box-shadow:
+        inset 0 1px 0 rgba(255, 255, 255, 0.82),
+        0 10px 24px rgba(40, 40, 95, 0.12) !important;
+    backdrop-filter: blur(8px) !important;
+}
+
+.city-profile-title-text {
+    font-size: 30px;
+    font-weight: 700;
+    color: #08285a;
+    line-height: 1.15;
+    letter-spacing: -0.04em;
+}
+
+.city-profile-title-row {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 14px;
+    margin: 0;
+    min-width: 0;
+}
+
+.city-profile-flag-box {
+    width: 50px;
+    height: 32px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    flex: 0 0 50px;
+}
+
+.city-profile-flag-img {
+    width: 50px !important;
+    height: 32px !important;
+
+    display: block !important;
+    object-fit: cover !important;
+
+    border-radius: 4px;
+    box-shadow: 0 3px 8px rgba(20, 30, 60, 0.18);
+}
+
+.city-profile-summary-row {
+    display: flex;
+    justify-content: flex-end;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    max-width: 46%;
+}
+
+.city-profile-summary-badge {
+    min-width: 6.8rem;
+    padding: 0.4rem 0.65rem;
+    border-radius: 13px;
+    border: 1px solid rgba(55, 65, 130, 0.14);
+    background:
+        linear-gradient(
+            180deg,
+            rgba(255, 255, 255, 0.64) 0%,
+            rgba(232, 237, 255, 0.56) 100%
+        );
+    box-shadow:
+        inset 0 1px 0 rgba(255, 255, 255, 0.78),
+        0 5px 12px rgba(35, 40, 100, 0.08);
+}
+
+.city-profile-summary-badge span {
+    display: block;
+    margin-bottom: 0.12rem;
+    color: rgba(31, 37, 79, 0.62);
+    font-size: 0.66rem;
+    font-weight: 850;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+}
+
+.city-profile-summary-badge strong {
+    display: block;
+    color: #1f254f;
+    font-size: 1.18rem;
+    font-weight: 950;
+    line-height: 1.1;
+    letter-spacing: -0.035em;
+}
+
+@media (max-width: 760px) {
+    .city-profile-hero-card {
+        align-items: stretch !important;
+        flex-direction: column !important;
+    }
+
+    .city-profile-summary-row {
+        justify-content: flex-start;
+        max-width: none;
+    }
+}
+
+.city-profile-summary-spacer {
+    height: 0.65rem;
+}
+
+.city-profile-subsection-heading {
+    margin: 0.7rem 0 0.45rem 0.8rem !important;
+    color: #1f254f !important;
+    font-size: 1.42rem !important;
+    font-weight: 850 !important;
+    letter-spacing: -0.025em !important;
+    line-height: 1.15 !important;
+}
+
+.city-profile-summary-copy {
+    margin-left: 0.8rem;
+    max-width: 58rem;
+    color: #1f254f;
+    font-size: 1rem;
+    font-weight: 500;
+    line-height: 1.55;
+}

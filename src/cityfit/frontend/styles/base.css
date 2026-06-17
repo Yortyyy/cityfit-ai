@@ -1,0 +1,38 @@
+.stApp {
+    background:
+        radial-gradient(circle at 20% 10%, rgba(255,255,255,0.85), transparent 28%),
+        radial-gradient(circle at 80% 30%, rgba(90,90,180,0.28), transparent 30%),
+        linear-gradient(135deg, #eef0fa 0%, #c8c6eb 45%, #9ea4d9 100%);
+}
+
+.block-container {
+    padding-top: 3rem;
+}
+
+.stApp::before {
+    content: "";
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    background-image:
+        linear-gradient(rgba(255,255,255,0.08) 50%, rgba(0,0,0,0.035) 50%);
+    background-size: 100% 4px;
+    mix-blend-mode: soft-light;
+    opacity: 0.35;
+    z-index: 999999;
+}
+
+.hero-title,
+[data-testid="stMarkdownContainer"],
+[data-testid="stMetric"],
+[data-testid="stMetric"] * {
+    color: #1f254f !important;
+}
+
+[data-testid="stMetricLabel"] {
+    color: rgba(31, 37, 79, 0.72) !important;
+}
+
+[data-testid="stMetricValue"] {
+    color: #1f254f !important;
+}

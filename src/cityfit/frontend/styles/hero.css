@@ -1,0 +1,42 @@
+.hero-title {
+    margin-top: 0.25rem;
+    margin-bottom: 0.65rem;
+}
+
+.hero-title .eyebrow {
+    font-size: 0.72rem;
+    letter-spacing: 0.22rem;
+    color: rgba(30, 40, 80, 0.58);
+    font-weight: 800;
+    margin-bottom: 0.15rem;
+}
+
+.hero-title h1 {
+    font-size: 3.25rem;
+    margin-top: 0;
+    margin-bottom: 0.15rem;
+    color: #1f254f;
+    font-weight: 760;
+    line-height: 1.02;
+    letter-spacing: -0.045em;
+
+    font-style: italic;
+    transform: skewX(1deg);
+    transform-origin: left center;
+
+    text-shadow: 2px 2px 0 rgba(255,255,255,0.68);
+}
+
+.hero-title p {
+    margin-top: 0.15rem;
+    margin-bottom: 0;
+    color: rgba(31, 37, 79, 0.78);
+    font-size: 1.35rem;
+    font-weight: 500;
+    line-height: 1.2;
+    letter-spacing: -0.015em;
+}
+
+.hero-bold {
+    font-weight: 950;
+}
