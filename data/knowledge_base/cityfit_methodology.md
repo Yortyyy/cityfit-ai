@@ -2,13 +2,11 @@
 
 CityFit AI is a city recommendation system that compares cities using quality-of-life, affordability, safety, healthcare, climate, pollution, traffic, and purchasing-power metrics.
 
-The project uses Numbeo-style city metrics as a baseline and then applies a personalized CityFit Score based on user priorities.
+The project uses Numbeo-style city metrics then creates a fitted baseline to priorities set equal to one another and then applies a personalized CityFit Score based on user changed priority scalings.
 
 ## Baseline Ranking
 
-The baseline ranking comes from the Numbeo Quality of Life Index. This index is treated as an external benchmark, not as the final recommendation.
-
-CityFit does not claim that Numbeo's ranking is incorrect. Instead, CityFit adjusts recommendations based on individual user preferences.
+The baseline ranking comes from the CityFit priority set equal to 5 out of 10 for all priorities. This index is not treated as the final recommendation.
 
 ## Personalized CityFit Score
 
@@ -16,7 +14,7 @@ The CityFit Score combines positive factors and penalty factors.
 
 Positive factors include:
 
-- Numbeo Quality of Life Index
+- CityFit Score
 - Purchasing Power Index
 - Safety Index
 - Healthcare Index
@@ -46,7 +44,7 @@ The same city can rank differently depending on the user's profile.
 
 ## Rank Difference
 
-CityFit compares the personalized CityFit ranking against the baseline Numbeo Quality of Life ranking.
+CityFit compares the personalized CityFit ranking against the baseline Cityfit ranking.
 
 A positive rank difference means the city ranks higher under CityFit personalization than it does under the baseline ranking.
 

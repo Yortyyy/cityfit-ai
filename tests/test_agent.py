@@ -21,6 +21,21 @@ def test_agent_response_includes_sources_and_metadata():
     assert "tools_used" in response["metadata"]
     assert "limitations" in response["metadata"]
     assert "retrieve_context" in response["metadata"]["tools_used"]
+    
+
+def test_methodology_question_uses_methodology_response():
+    profile = UserProfile(top_n=5)
+
+    response = build_agent_answer(
+        question="What is CityFit's methodology?",
+        profile=profile,
+        response_mode="template",
+    )
+
+    assert "retrieve_context" in response["metadata"]["tools_used"]
+    assert "rank_city_recommendations" not in response["metadata"]["tools_used"]
+    assert "CityFit" in response["answer"]
+    assert "methodology" in response["answer"].lower() or "scoring" in response["answer"].lower()
 
 
 def test_agent_response_compares_requested_cities():
