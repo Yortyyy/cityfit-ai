@@ -28,7 +28,7 @@ def normalize_priority(value: int) -> float:
 
 st.sidebar.title("🌎 CityFit")
 
-page_options = ["Globe", "Dashboard", "Methodology", "Ask CityFit AI"]
+page_options = ["Globe", "Ask CityFit AI", "Dashboard", "Methodology"]
 
 query_page = st.query_params.get("page", "Globe")
 

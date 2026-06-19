@@ -4,55 +4,37 @@ import streamlit as st
 from cityfit.frontend.api import query_agent_from_api
 from cityfit.frontend.styles.loader import load_css
 
+
 def render_agent_page(recommendation_payload: dict) -> None:
     load_css(
         "agent.css",
         "base.css",
-        "sidebar.css"
+        "sidebar.css",
     )
-    
+
     st.title("🌎 Ask CityFit AI")
     st.write(
         "Ask about city rankings, tradeoffs, methodology, or limitations."
     )
 
     show_dev_details = st.sidebar.checkbox("Show developer details", value=False)
-    # top_n = st.sidebar.slider("Agent recommendation count", 5, 306, 15)
 
-    if "messages" not in st.session_state:
-        st.session_state.messages = []
+    if "agent_messages" not in st.session_state:
+        st.session_state.agent_messages = []
 
-    for message in st.session_state.messages:
+    if "pending_question" not in st.session_state:
+        st.session_state.pending_question = None
+
+    for message in st.session_state.agent_messages:
         avatar = "🧑" if message["role"] == "user" else "🌎"
+
         with st.chat_message(message["role"], avatar=avatar):
             st.markdown(message["content"])
 
-    question = st.chat_input(
-        "Ask about city rankings, tradeoffs, methodology, or limitations..."
-    )
+            if message["role"] == "assistant" and show_dev_details:
+                agent_response = message.get("metadata_response")
 
-    if question:
-        st.session_state.messages.append({"role": "user", "content": question})
-
-        agent_payload = {
-            **recommendation_payload,
-            "question": question,
-            # "top_n": top_n,
-            "top_k_context": 4,
-        }
-
-        try:
-            agent_response = query_agent_from_api(agent_payload)
-            assistant_response = agent_response["answer"]
-
-            st.session_state.messages.append(
-                {"role": "assistant", "content": assistant_response}
-            )
-
-            with st.chat_message("assistant", avatar="🌎"):
-                st.markdown(assistant_response)
-
-                if show_dev_details:
+                if agent_response:
                     with st.expander("Sources"):
                         st.write(", ".join(agent_response["sources"]))
 
@@ -66,10 +48,52 @@ def render_agent_page(recommendation_payload: dict) -> None:
                             )
                             st.write(chunk["text"])
 
-        except requests.RequestException as exc:
-            st.error(f"Could not reach CityFit Agent API: {exc}")
+    question = st.chat_input(
+        "Ask about city rankings, tradeoffs, methodology, or limitations..."
+    )
 
-    if st.session_state.messages:
+    if question:
+        st.session_state.agent_messages.append(
+            {"role": "user", "content": question}
+        )
+        st.session_state.pending_question = question
+        st.rerun()
+
+    if st.session_state.pending_question:
+        question_to_answer = st.session_state.pending_question
+        st.session_state.pending_question = None
+
+        agent_payload = {
+            **recommendation_payload,
+            "question": question_to_answer,
+            "top_k_context": 4,
+        }
+
+        try:
+            agent_response = query_agent_from_api(agent_payload)
+            assistant_response = agent_response["answer"]
+
+            st.session_state.agent_messages.append(
+                {
+                    "role": "assistant",
+                    "content": assistant_response,
+                    "metadata_response": agent_response,
+                }
+            )
+
+            st.rerun()
+
+        except requests.RequestException as exc:
+            st.session_state.agent_messages.append(
+                {
+                    "role": "assistant",
+                    "content": f"Could not reach CityFit Agent API: {exc}",
+                }
+            )
+            st.rerun()
+
+    if st.session_state.agent_messages:
         if st.button("Clear chat"):
-            st.session_state.messages = []
+            st.session_state.agent_messages = []
+            st.session_state.pending_question = None
             st.rerun()

@@ -12,6 +12,28 @@ from cityfit.rag.retriever import retrieve_context
 
 DATA_VERSION = "numbeo_2026_sample_v1"
 
+METHODOLOGY_KEYWORDS = [
+    "methodology",
+    "how does cityfit work",
+    "how cityfit works",
+    "how is cityfit calculated",
+    "how are scores calculated",
+    "score",
+    "scoring",
+    "rank movement",
+    "baseline",
+    "weights",
+    "limitations",
+    "data source",
+    "quality of life",
+    "responsible ai",
+]
+
+
+def _is_methodology_question(question: str) -> bool:
+    question_lower = question.lower()
+    return any(keyword in question_lower for keyword in METHODOLOGY_KEYWORDS)
+
 
 def _build_llm_prompt(
     question: str,
@@ -80,10 +102,15 @@ def build_agent_answer(
 
     tools_used = ["retrieve_context"]
 
-    if requested_cities:
+    if _is_methodology_question(question):
+        city_results = []
+        answer = _build_methodology_answer(retrieved_chunks)
+
+    elif requested_cities:
         city_results = compare_cities(requested_cities, profile)
         tools_used.append("compare_cities")
         answer = _build_comparison_answer(question, city_results)
+
     else:
         city_results = rank_city_recommendations(profile, top_n=profile.top_n)
         tools_used.append("rank_city_recommendations")
@@ -134,6 +161,51 @@ def build_agent_answer(
             ],
         },
     }
+    
+def _build_methodology_answer(retrieved_chunks: list) -> str:
+    lines = [
+        "## Summary",
+        "",
+        (
+            "CityFit ranks cities by combining a quality-of-life baseline with a "
+            "personalized adjustment based on the user's selected lifestyle priorities."
+        ),
+        "",
+        "## How CityFit scoring works",
+        "",
+        (
+            "CityFit uses city-level metrics such as affordability, housing, safety, "
+            "healthcare, climate, pollution, traffic, and purchasing power. These metrics "
+            "are transformed into priority-specific feature scores, then weighted according "
+            "to the user's selected priorities."
+        ),
+        "",
+        "The personalized priority score is normalized by total priority weight so scores remain comparable.",
+        "",
+        "## Baseline vs personalized ranking",
+        "",
+        (
+            "CityFit calculates a neutral baseline ranking where every priority is set to "
+            "default importance. It then calculates a personalized ranking using the user's "
+            "selected priorities."
+        ),
+        "",
+        "`rank_difference = baseline_cityfit_rank - personalized_cityfit_rank`",
+        "",
+        (
+            "A positive rank difference means a city moved up for the personalized profile. "
+            "A negative value means it moved down compared with the neutral CityFit baseline."
+        ),
+        "",
+        "## Limitations",
+        "",
+        (
+            "CityFit uses a small educational dataset and heuristic scoring logic. Results "
+            "should be treated as decision support, not final relocation advice."
+        ),
+    ]
+
+    return "\n".join(lines)
 
 
 def _build_comparison_answer(question: str, city_results: list[dict]) -> str:
