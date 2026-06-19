@@ -1,31 +1,41 @@
 import streamlit as st
 
 
+PROMPT_CARDS = [
+    {
+        "key": "agent_prompt_methodology",
+        "title": "What is CityFit's methodology?",
+        "prompt": "What is CityFit's methodology?",
+        "description": "Understand how CityFit scores and ranks cities.",
+    },
+    {
+        "key": "agent_prompt_rank_movement",
+        "title": "How does CityFit calculate rank movement?",
+        "prompt": "How does CityFit calculate rank movement?",
+        "description": "See how personalized ranks compare with baseline CityFit.",
+    },
+    {
+        "key": "agent_prompt_compare_cities",
+        "title": "Compare Multiple Cities.",
+        "prompt": "Compare the top recommended cities for me.",
+        "description": "View multiple city metrics using the current priority profile.",
+    },
+]
+
+
 def render_agent_prompt_cards() -> None:
-    st.markdown("#### Try asking")
-
-    prompt_cards = [
-        {
-            "label": "What is CityFit's methodology?",
-            "prompt": "What is CityFit's methodology?",
-        },
-        {
-            "label": "How does CityFit calculate rank movement?",
-            "prompt": "How does CityFit calculate rank movement?",
-        },
-        {
-            "label": "Compare cities...",
-            "prompt": "Compare Tampa and Rome.",
-        },
-    ]
-
     cols = st.columns(3)
 
-    for index, card in enumerate(prompt_cards):
-        with cols[index % 3]:
+    for index, card in enumerate(PROMPT_CARDS):
+        label = (
+            f"**{card['title']}**\n\n"
+            f"{card['description']}\n\n"
+        )
+
+        with cols[index]:
             if st.button(
-                card["label"],
-                key=f"agent_prompt_card_{index}",
+                label,
+                key=card["key"],
                 use_container_width=True,
             ):
                 st.session_state.agent_messages.append(

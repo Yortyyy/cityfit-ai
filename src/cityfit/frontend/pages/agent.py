@@ -6,28 +6,66 @@ from cityfit.frontend.components.agent_prompt_cards import render_agent_prompt_c
 from cityfit.frontend.styles.loader import load_css
 
 
+def submit_centered_agent_question() -> None:
+    question = st.session_state.get("agent_centered_question", "").strip()
+
+    if not question:
+        return
+
+    st.session_state.agent_messages.append(
+        {"role": "user", "content": question}
+    )
+    st.session_state.pending_question = question
+    st.session_state.agent_centered_question = ""
+
+
+def render_centered_agent_input() -> None:
+    with st.container(key="agent_centered_input"):
+        st.text_input(
+            "Ask CityFit AI",
+            placeholder="Ask about rankings, tradeoffs, methodology, or limitations...",
+            label_visibility="collapsed",
+            key="agent_centered_question",
+            on_change=submit_centered_agent_question,
+        )
+
+        if st.button(
+            "↑",
+            key="agent_centered_send_button",
+        ):
+            submit_centered_agent_question()
+            st.rerun()
+
 def render_agent_page(recommendation_payload: dict) -> None:
     load_css(
-        "agent.css",
         "base.css",
         "sidebar.css",
-    )
-
-    st.title("🌎 Ask CityFit AI")
-    st.write(
-        "Ask about city rankings, tradeoffs, methodology, or limitations."
+        "agent.css",
     )
 
     show_dev_details = st.sidebar.checkbox("Show developer details", value=False)
 
     if "agent_messages" not in st.session_state:
         st.session_state.agent_messages = []
-       
-    if not st.session_state.agent_messages:
-        render_agent_prompt_cards()
 
     if "pending_question" not in st.session_state:
         st.session_state.pending_question = None
+
+    if not st.session_state.agent_messages:
+        st.markdown('<div class="agent-empty-spacer"></div>', unsafe_allow_html=True)
+        
+        with st.container(key="agent_empty_state"):
+            st.markdown(
+                """
+                <div class="agent-empty-question">
+                    How can CityFit help you today?
+                </div>
+                """,
+                unsafe_allow_html=True,
+            )
+            
+            render_centered_agent_input()
+            render_agent_prompt_cards()
 
     for message in st.session_state.agent_messages:
         avatar = "🧑" if message["role"] == "user" else "🌎"
@@ -52,9 +90,12 @@ def render_agent_page(recommendation_payload: dict) -> None:
                             )
                             st.write(chunk["text"])
 
-    question = st.chat_input(
-        "Ask about city rankings, tradeoffs, methodology, or limitations..."
-    )
+    question = None
+
+    if st.session_state.agent_messages:
+        question = st.chat_input(
+            "Ask about city rankings, tradeoffs, methodology, or limitations..."
+        )
 
     if question:
         st.session_state.agent_messages.append(
@@ -62,6 +103,7 @@ def render_agent_page(recommendation_payload: dict) -> None:
         )
         st.session_state.pending_question = question
         st.rerun()
+
 
     if st.session_state.pending_question:
         question_to_answer = st.session_state.pending_question
