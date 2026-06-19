@@ -2,6 +2,7 @@ import requests
 import streamlit as st
 
 from cityfit.frontend.api import query_agent_from_api
+from cityfit.frontend.components.agent_prompt_cards import render_agent_prompt_cards
 from cityfit.frontend.styles.loader import load_css
 
 
@@ -21,6 +22,9 @@ def render_agent_page(recommendation_payload: dict) -> None:
 
     if "agent_messages" not in st.session_state:
         st.session_state.agent_messages = []
+       
+    if not st.session_state.agent_messages:
+        render_agent_prompt_cards()
 
     if "pending_question" not in st.session_state:
         st.session_state.pending_question = None
