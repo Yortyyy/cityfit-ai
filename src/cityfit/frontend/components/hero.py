@@ -6,7 +6,7 @@ def render_hero():
         """
         <div class="hero-title">
             <div class="eyebrow">CITYFIT</div>
-            <h1><span class="hero-bold">Hello</span>, this is our <span class="hero-bold">World</span>.</h1>
+            <h1><span class="hero-bold">Hello</span>, welcome to our <span class="hero-bold">World</span>.</h1>
             <p>Find out where <span class="hero-bold">you</span> fit in.</p>
         </div>
         """,
