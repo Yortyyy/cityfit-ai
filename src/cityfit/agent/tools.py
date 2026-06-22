@@ -5,6 +5,10 @@ import pandas as pd
 from cityfit.api.schemas import UserProfile
 from cityfit.data.load_data import load_city_metrics
 from cityfit.data.validation import validate_city_metrics
+from cityfit.features.explanations import (
+    explain_city_rank,
+    get_city_strengths_and_tradeoffs,
+)
 from cityfit.features.filters import filter_by_country, filter_by_region
 from cityfit.recommendations.service import add_city_explanations, get_ranked_cities
 
@@ -80,3 +84,30 @@ def get_available_cities(profile: UserProfile | None = None) -> list[str]:
         raw_df = filter_by_country(raw_df, profile.country)
 
     return sorted(raw_df["city"].dropna().unique().tolist())
+
+def explain_city_fit(city_name: str, profile: UserProfile) -> dict | None:
+    ranked_df = get_ranked_cities(profile)
+
+    city_matches = ranked_df[
+        ranked_df["city"].str.lower() == city_name.lower()
+    ]
+
+    if city_matches.empty:
+        return None
+
+    row = city_matches.iloc[0]
+
+    strengths_and_tradeoffs = get_city_strengths_and_tradeoffs(row)
+
+    return {
+        "city": row["city"],
+        "country": row["country"],
+        "cityfit_rank": int(row["cityfit_rank"]),
+        "cityfit_score": float(row["cityfit_score"]),
+        "baseline_cityfit_rank": int(row["baseline_cityfit_rank"]),
+        "baseline_cityfit_score": float(row["baseline_cityfit_score"]),
+        "rank_difference": int(row["rank_difference"]),
+        "explanation": explain_city_rank(row),
+        "strengths": strengths_and_tradeoffs["strengths"],
+        "tradeoffs": strengths_and_tradeoffs["tradeoffs"],
+    }

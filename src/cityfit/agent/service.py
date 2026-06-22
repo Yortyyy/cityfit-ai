@@ -1,6 +1,7 @@
 from cityfit.agent.prompts import AGENT_PROMPT_VERSION
 from cityfit.agent.tools import (
     compare_cities,
+    explain_city_fit,
     extract_city_names,
     get_available_cities,
     rank_city_recommendations,
@@ -29,10 +30,43 @@ METHODOLOGY_KEYWORDS = [
     "responsible ai",
 ]
 
+WHY_CITY_KEYWORDS = [
+    "why",
+    "explain",
+    "ranked",
+    "rank",
+    "score",
+    "good fit",
+    "bad fit",
+    "hurts",
+    "hurt",
+    "helps",
+    "help",
+    "strengths",
+    "weaknesses",
+    "moved up",
+    "moved down",
+]
+
 
 def _is_methodology_question(question: str) -> bool:
     question_lower = question.lower()
     return any(keyword in question_lower for keyword in METHODOLOGY_KEYWORDS)
+
+
+def _format_bullets(items: list[str], fallback: str) -> str:
+    if not items:
+        return f"- {fallback}"
+
+    return "\n".join(f"- {item.capitalize()}" for item in items)
+
+
+def _is_why_city_question(question: str, requested_cities: list[str]) -> bool:
+    if not requested_cities:
+        return False
+
+    question_lower = question.lower()
+    return any(keyword in question_lower for keyword in WHY_CITY_KEYWORDS)
 
 
 def _build_llm_prompt(
@@ -101,9 +135,24 @@ def build_agent_answer(
     requested_cities = extract_city_names(question, available_cities)
 
     tools_used = ["retrieve_context"]
+    
+    city_results = []
 
-    if _is_methodology_question(question):
-        city_results = []
+    if _is_why_city_question(question, requested_cities):
+        city_explanation = explain_city_fit(
+            requested_cities[0],
+            profile,
+        )
+
+        if city_explanation:
+            tools_used.append("explain_city_fit")
+            answer = _build_city_explanation_answer(city_explanation)
+        else:
+            answer = (
+                f"I could not find {requested_cities[0]} in the current CityFit dataset."
+            )
+
+    elif _is_methodology_question(question):
         answer = _build_methodology_answer(retrieved_chunks)
 
     elif requested_cities:
@@ -362,3 +411,88 @@ def _clean_city_results(city_results: list[dict]) -> list[dict]:
         )
 
     return cleaned
+
+
+def _format_rank_movement(
+    city: str,
+    rank_difference: int | float | None,
+) -> tuple[str, str]:
+    if rank_difference is None:
+        return (
+            "No rank movement data",
+            (
+                f"{city}'s personalized rank could not be compared with the "
+                "neutral CityFit baseline because rank movement data is unavailable."
+            ),
+        )
+
+    if rank_difference > 0:
+        return (
+            f"⬆️ Up {int(rank_difference)} spots",
+            (
+                f"{city} ranks better for your selected priorities than it does "
+                "under the neutral CityFit baseline."
+            ),
+        )
+
+    if rank_difference < 0:
+        return (
+            f"⬇️ Down {abs(int(rank_difference))} spots",
+            (
+                f"{city} ranks lower for your selected priorities than it does "
+                "under the neutral CityFit baseline."
+            ),
+        )
+
+    return (
+        "➖ No movement",
+        (
+            f"{city}'s personalized rank is about the same as its neutral "
+            "CityFit baseline."
+        ),
+    )
+
+
+def _build_city_explanation_answer(city_explanation: dict) -> str:
+    city = city_explanation["city"]
+    country = city_explanation["country"]
+
+    rank_difference = city_explanation.get("rank_difference", 0)
+
+    movement_label, quick_take = _format_rank_movement(city, rank_difference)
+
+    strengths_text = _format_bullets(
+        city_explanation.get("strengths", []),
+        "No standout strengths were identified from the available metrics.",
+    )
+
+    tradeoffs_text = _format_bullets(
+        city_explanation.get("tradeoffs", []),
+        "No major tradeoffs stand out from the available metrics.",
+    )
+
+    return f"""
+## {city}, {country}
+
+**Quick take:** {quick_take}
+
+| CityFit view | Result |
+|---|---:|
+| Personalized rank | #{city_explanation["cityfit_rank"]} |
+| Personalized score | {city_explanation["cityfit_score"]:.1f} |
+| Neutral baseline rank | #{city_explanation["baseline_cityfit_rank"]} |
+| Neutral baseline score | {city_explanation["baseline_cityfit_score"]:.1f} |
+| Rank movement | {movement_label} |
+
+### Strengths
+
+{strengths_text}
+
+### Tradeoffs
+
+{tradeoffs_text}
+
+### Explanation
+
+{city_explanation["explanation"]}
+""".strip()

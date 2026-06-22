@@ -66,3 +66,40 @@ def test_agent_respects_region_filter_for_recommendations():
 
     assert len(response["city_results"]) > 0
     assert all(city["region"] == "Europe" for city in response["city_results"])
+    
+def test_agent_explains_city_fit_question_without_ranking_recommendations():
+    profile = UserProfile(top_n=10)
+
+    response = build_agent_answer(
+        question="What are Tampa's strengths and weaknesses?",
+        profile=profile,
+        response_mode="template",
+    )
+
+    assert "explain_city_fit" in response["metadata"]["tools_used"]
+    assert "rank_city_recommendations" not in response["metadata"]["tools_used"]
+    assert "compare_cities" not in response["metadata"]["tools_used"]
+
+    assert "Tampa" in response["answer"]
+    assert "Quick take" in response["answer"]
+    assert "Strengths" in response["answer"]
+    assert "Tradeoffs" in response["answer"]
+    assert "Explanation" in response["answer"]
+    assert "Personalized rank" in response["answer"]
+    assert "Neutral baseline rank" in response["answer"]
+    
+def test_agent_methodology_question_still_uses_methodology_answer():
+    profile = UserProfile(top_n=10)
+
+    response = build_agent_answer(
+        question="How does CityFit calculate scores?",
+        profile=profile,
+        response_mode="template",
+    )
+
+    assert "retrieve_context" in response["metadata"]["tools_used"]
+    assert "explain_city_fit" not in response["metadata"]["tools_used"]
+    assert "rank_city_recommendations" not in response["metadata"]["tools_used"]
+
+    assert "How CityFit scoring works" in response["answer"]
+    assert "Baseline vs personalized ranking" in response["answer"]
