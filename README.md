@@ -128,7 +128,6 @@ Internally, the API receives these as 0–2 priority multipliers.
 
 CityFit also calculates a neutral baseline ranking where every priority is set to default importance. Personalized rank movement compares the user's personalized ranking against this neutral CityFit baseline.
 
-
 ## Run with Docker
 
 Build the containers:
