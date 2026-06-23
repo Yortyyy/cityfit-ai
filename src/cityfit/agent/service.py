@@ -10,6 +10,26 @@ from cityfit.api.schemas import UserProfile
 from cityfit.llm.provider import get_llm_provider
 from cityfit.rag.retriever import retrieve_context
 
+"""
+CityFit agent routing order:
+
+1. City explanation questions
+   Example: "Why is Tampa ranked where it is?"
+   Tool: explain_city_fit
+
+2. Methodology questions
+   Example: "How does CityFit calculate scores?"
+   Tool: retrieve_context
+
+3. City comparison questions
+   Example: "Compare Tampa and Rome."
+   Tool: compare_cities
+
+4. General recommendation questions
+   Example: "What cities are best for my profile?"
+   Tool: rank_city_recommendations
+"""
+
 
 DATA_VERSION = "numbeo_2026_sample_v1"
 
@@ -212,45 +232,72 @@ def build_agent_answer(
     }
     
 def _build_methodology_answer(retrieved_chunks: list) -> str:
+    metrics = [
+        "Purchasing power",
+        "Cost of living",
+        "Safety",
+        "Healthcare",
+        "Housing affordability",
+        "Traffic",
+        "Climate",
+        "Pollution",
+    ]
+
+    metric_lines = [f"- {metric}" for metric in metrics]
+
     lines = [
         "## Summary",
         "",
         (
-            "CityFit ranks cities by combining a quality-of-life baseline with a "
-            "personalized adjustment based on the user's selected lifestyle priorities."
+            "CityFit ranks cities by combining source quality-of-life city data "
+            "with a personalized scoring layer based on the user's selected priorities."
         ),
         "",
         "## How CityFit scoring works",
         "",
         (
-            "CityFit uses city-level metrics such as affordability, housing, safety, "
-            "healthcare, climate, pollution, traffic, and purchasing power. These metrics "
-            "are transformed into priority-specific feature scores, then weighted according "
-            "to the user's selected priorities."
+            "CityFit starts with a default scoring baseline where each priority is treated "
+            "as moderately important. When a user changes their priorities, CityFit recalculates "
+            "each city's score using the same city metrics but different priority weights."
         ),
         "",
-        "The personalized priority score is normalized by total priority weight so scores remain comparable.",
+        "The current CityFit score uses these factors:",
         "",
-        "## Baseline vs personalized ranking",
+        *metric_lines,
         "",
         (
-            "CityFit calculates a neutral baseline ranking where every priority is set to "
-            "default importance. It then calculates a personalized ranking using the user's "
-            "selected priorities."
+            "The priority adjustment is normalized by total priority weight so that default "
+            "and personalized scores remain comparable."
         ),
         "",
-        "`rank_difference = baseline_cityfit_rank - personalized_cityfit_rank`",
+        "## Standard vs Personalized Ranking",
         "",
         (
-            "A positive rank difference means a city moved up for the personalized profile. "
-            "A negative value means it moved down compared with the neutral CityFit baseline."
+            "The dashboard compares a default CityFit baseline against the user's personalized "
+            "CityFit ranking."
+        ),
+        "",
+        "`rank_movement = baseline_cityfit_rank - personalized_cityfit_rank`",
+        "",
+        (
+            "A positive rank movement means a city moved up after personalization. "
+            "A negative rank movement means it moved down compared with the default CityFit baseline."
+        ),
+        "",
+        "## Future Lifestyle Fit layer",
+        "",
+        (
+            "Future versions of CityFit can add a separate Lifestyle Fit layer for subjective "
+            "day-to-day preferences such as walkability, transit access, outdoor access, nightlife, "
+            "culture, food scene, airport access, career opportunity, social scene, and pace of life."
         ),
         "",
         "## Limitations",
         "",
         (
-            "CityFit uses a small educational dataset and heuristic scoring logic. Results "
-            "should be treated as decision support, not final relocation advice."
+            "CityFit is a decision-support tool. Rankings depend on the available city data, "
+            "the scoring assumptions, and the user's selected priorities. Results should be used "
+            "as a starting point for comparison, not as final relocation advice."
         ),
     ]
 
@@ -422,7 +469,7 @@ def _format_rank_movement(
             "No rank movement data",
             (
                 f"{city}'s personalized rank could not be compared with the "
-                "neutral CityFit baseline because rank movement data is unavailable."
+                "baseline CityFit rank because rank movement data is unavailable."
             ),
         )
 
@@ -431,7 +478,7 @@ def _format_rank_movement(
             f"⬆️ Up {int(rank_difference)} spots",
             (
                 f"{city} ranks better for your selected priorities than it does "
-                "under the neutral CityFit baseline."
+                "over the baseline CityFit rank."
             ),
         )
 
@@ -440,15 +487,15 @@ def _format_rank_movement(
             f"⬇️ Down {abs(int(rank_difference))} spots",
             (
                 f"{city} ranks lower for your selected priorities than it does "
-                "under the neutral CityFit baseline."
+                "under the baseline CityFit rank."
             ),
         )
 
     return (
         "➖ No movement",
         (
-            f"{city}'s personalized rank is about the same as its neutral "
-            "CityFit baseline."
+            f"{city}'s personalized rank is about the same as its baseline "
+            "CityFit rank."
         ),
     )
 
@@ -480,8 +527,8 @@ def _build_city_explanation_answer(city_explanation: dict) -> str:
 |---|---:|
 | Personalized rank | #{city_explanation["cityfit_rank"]} |
 | Personalized score | {city_explanation["cityfit_score"]:.1f} |
-| Neutral baseline rank | #{city_explanation["baseline_cityfit_rank"]} |
-| Neutral baseline score | {city_explanation["baseline_cityfit_score"]:.1f} |
+| Baseline rank | #{city_explanation["baseline_cityfit_rank"]} |
+| Baseline score | {city_explanation["baseline_cityfit_score"]:.1f} |
 | Rank movement | {movement_label} |
 
 ### Strengths
