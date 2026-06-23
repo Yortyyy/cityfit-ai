@@ -270,7 +270,7 @@ def _build_methodology_answer(retrieved_chunks: list) -> str:
             "and personalized scores remain comparable."
         ),
         "",
-        "## Standard vs Personalized Ranking",
+        "## Baseline vs Personalized Ranking",
         "",
         (
             "The dashboard compares a default CityFit baseline against the user's personalized "
