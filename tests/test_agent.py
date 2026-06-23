@@ -86,7 +86,7 @@ def test_agent_explains_city_fit_question_without_ranking_recommendations():
     assert "Tradeoffs" in response["answer"]
     assert "Explanation" in response["answer"]
     assert "Personalized rank" in response["answer"]
-    assert "Neutral baseline rank" in response["answer"]
+    assert "Baseline rank" in response["answer"]
     
 def test_agent_methodology_question_still_uses_methodology_answer():
     profile = UserProfile(top_n=10)
@@ -102,4 +102,4 @@ def test_agent_methodology_question_still_uses_methodology_answer():
     assert "rank_city_recommendations" not in response["metadata"]["tools_used"]
 
     assert "How CityFit scoring works" in response["answer"]
-    assert "Baseline vs personalized ranking" in response["answer"]
+    assert "Baseline vs Personalized Ranking" in response["answer"]

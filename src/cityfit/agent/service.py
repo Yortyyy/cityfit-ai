@@ -523,7 +523,7 @@ def _build_city_explanation_answer(city_explanation: dict) -> str:
 
 **Quick take:** {quick_take}
 
-| CityFit view | Result |
+| CityFit metric | Result |
 |---|---:|
 | Personalized rank | #{city_explanation["cityfit_rank"]} |
 | Personalized score | {city_explanation["cityfit_score"]:.1f} |
