@@ -188,7 +188,7 @@ data/reference/lifestyle_metrics.csv
 Example columns:
 
 ```csv
-city,country,region,latitude,longitude,daily_life_score,food_scene_score,nightlife_score,culture_score,outdoors_score,transit_score,airport_score,friendliness_score,pace_of_life,lifestyle_score,data_quality,method_version
+city,state,country,region,latitude,longitude,daily_life_score,food_scene_score,nightlife_score,culture_score,outdoors_score,transit_score,airport_score,friendliness_score,pace_of_life,lifestyle_score,data_quality,method_version
 Tampa,United States,North America,27.95,-82.45,,,,,,,,,,,medium,free_proxy_v1
 Rome,Italy,Europe,41.9028,12.4964,,,,,,,,,,,medium,free_proxy_v1
 Tokyo,Japan,Asia,35.6762,139.6503,,,,,,,,,,,medium,free_proxy_v1
