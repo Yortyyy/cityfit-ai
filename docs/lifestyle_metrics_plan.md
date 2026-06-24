@@ -190,6 +190,16 @@ daily_life_score =
 
 The current method uses OpenStreetMap node counts within 8 km of each city coordinate. It intentionally counts availability near the city center, not sidewalk quality, opening hours, venue ratings, or neighborhood-level access. OpenStreetMap coverage varies by country and city, so the score should remain labeled as a Phase 1 proxy.
 
+Current food-scene scoring reuses the same OpenStreetMap amenity cache:
+
+```text
+food_scene_score =
+    restaurant, cafe, and fast-food availability
+    + food shop and market availability
+```
+
+Restaurants, cafes, and fast food carry most of the weight. Food shops and markets provide a smaller supporting signal. The score does not yet measure ratings, cuisine diversity, price range, reservation difficulty, critic coverage, or local reputation.
+
 ---
 
 ## Data Strategy
