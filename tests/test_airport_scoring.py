@@ -106,7 +106,7 @@ def test_add_airport_importance_metrics_keeps_missing_routes_unknown():
     assert pd.isna(airports.loc[0, "airline_count"])
 
 
-def test_prepare_airports_keeps_scheduled_medium_and_large_airports():
+def test_prepare_airports_keeps_medium_and_large_airports_before_importance_filter():
     airports_df = pd.DataFrame(
         [
             {
@@ -124,6 +124,14 @@ def test_prepare_airports_keeps_scheduled_medium_and_large_airports():
                 "scheduled_service": "no",
             },
             {
+                "name": "Medium IATA Unscheduled",
+                "type": "medium_airport",
+                "latitude_deg": 4,
+                "longitude_deg": 4,
+                "scheduled_service": "no",
+                "iata_code": "MID",
+            },
+            {
                 "name": "Small Scheduled",
                 "type": "small_airport",
                 "latitude_deg": 3,
@@ -135,7 +143,61 @@ def test_prepare_airports_keeps_scheduled_medium_and_large_airports():
 
     prepared = prepare_airports(airports_df)
 
-    assert prepared["name"].tolist() == ["Large Scheduled"]
+    assert prepared["name"].tolist() == [
+        "Large Scheduled",
+        "Medium Unscheduled",
+        "Medium IATA Unscheduled",
+    ]
+
+
+def test_airport_importance_filter_keeps_unscheduled_airports_with_route_evidence():
+    airports_df = pd.DataFrame(
+        [
+            {
+                "name": "Large Scheduled",
+                "type": "large_airport",
+                "latitude": 1,
+                "longitude": 1,
+                "scheduled_service": "yes",
+            },
+            {
+                "name": "Medium Unscheduled",
+                "type": "medium_airport",
+                "latitude": 2,
+                "longitude": 2,
+                "scheduled_service": "no",
+                "iata_code": "NOE",
+            },
+            {
+                "name": "Medium IATA Unscheduled",
+                "type": "medium_airport",
+                "latitude": 4,
+                "longitude": 4,
+                "scheduled_service": "no",
+                "iata_code": "MID",
+            },
+        ]
+    )
+    route_connectivity_df = pd.DataFrame(
+        [
+            {
+                "airport_code": "MID",
+                "route_count": 12,
+                "direct_destination_count": 8,
+                "airline_count": 3,
+            }
+        ]
+    )
+
+    airports = add_airport_importance_metrics(
+        airports_df,
+        route_connectivity_df=route_connectivity_df,
+    )
+
+    assert airports["name"].tolist() == [
+        "Large Scheduled",
+        "Medium IATA Unscheduled",
+    ]
 
 
 def test_add_airport_scores_does_not_penalize_missing_route_connectivity():
