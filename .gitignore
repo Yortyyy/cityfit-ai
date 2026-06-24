@@ -29,6 +29,8 @@ data/reference/ourairports_airports.csv
 data/reference/openflights_routes.dat
 data/reference/airport_passenger_volume.csv
 data/reference/osm_daily_life_counts.csv
+data/reference/osm_culture_counts.csv
+data/reference/osm_transit_counts.csv
 
 # Local vector database
 data/vector_store/

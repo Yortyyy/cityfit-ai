@@ -175,6 +175,8 @@ airport_score =
 
 The distance component comes from OurAirports medium and large scheduled airports. Route connectivity comes from OpenFlights direct-route counts, which are useful as a global proxy but should be treated as historical because OpenFlights route updates stopped in 2014. Passenger volume currently comes from the busiest-airports passenger traffic table where an airport can be matched by IATA or ICAO code, so coverage is strongest for major global hubs and missing for many smaller airports.
 
+Airports marked as not currently scheduled in OurAirports can still be included when they have route-connectivity or passenger-volume evidence. This prevents structurally important airports from being scored as nonexistent when service is suspended or the scheduled-service flag is stale.
+
 Current daily-life scoring is also a source-backed proxy rather than a true neighborhood convenience or walkability score:
 
 ```text
@@ -199,6 +201,32 @@ food_scene_score =
 ```
 
 Restaurants, cafes, and fast food carry most of the weight. Food shops and markets provide a smaller supporting signal. The score does not yet measure ratings, cuisine diversity, price range, reservation difficulty, critic coverage, or local reputation.
+
+Current culture scoring uses a separate OpenStreetMap culture cache:
+
+```text
+culture_score =
+    museum availability
+    + performing arts venue availability
+    + gallery and public artwork availability
+    + cinema availability
+    + historic site availability
+```
+
+The score measures mapped cultural-place availability within 8 km of the city coordinate. It does not yet measure venue quality, collection importance, event frequency, ticket access, language accessibility, or whether the city has a strong contemporary arts scene beyond what is mapped in OpenStreetMap.
+
+Current transit scoring uses a separate OpenStreetMap transit cache:
+
+```text
+transit_score =
+    bus stop availability
+    + rail and train station availability
+    + metro, subway, tram, and light rail availability
+    + ferry terminal and aerialway station availability
+    + major transit hub availability
+```
+
+This includes mapped buses, trains, metro/subway, trams/light rail/trolleys where represented in OSM transit infrastructure, ferry terminals, and aerialway stations such as cable cars or gondolas. It measures mapped access points within 8 km of the city coordinate. It does not yet measure route frequency, service span, reliability, fares, travel speed, crowding, network coverage by neighborhood, or GTFS schedule quality.
 
 ---
 
