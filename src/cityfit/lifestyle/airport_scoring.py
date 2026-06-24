@@ -237,9 +237,6 @@ def prepare_airports(airports_df: pd.DataFrame) -> pd.DataFrame:
         _clean_code
     )
 
-    if "scheduled_service" in airports.columns:
-        airports = airports[airports["scheduled_service"].fillna("no") == "yes"]
-
     return airports.reset_index(drop=True)
 
 
@@ -253,6 +250,10 @@ def add_airport_importance_metrics(
     airports["direct_destination_count"] = pd.NA
     airports["airline_count"] = pd.NA
     airports["annual_passengers"] = pd.NA
+
+    for code_column in ["iata_code", "gps_code"]:
+        if code_column not in airports.columns:
+            airports[code_column] = pd.NA
 
     if route_connectivity_df is not None and not route_connectivity_df.empty:
         connectivity = route_connectivity_df.copy()
@@ -346,6 +347,13 @@ def add_airport_importance_metrics(
     ]
     for column in numeric_columns:
         airports[column] = pd.to_numeric(airports[column], errors="coerce")
+
+    if "scheduled_service" in airports.columns:
+        airports = airports[
+            (airports["scheduled_service"].fillna("no") == "yes")
+            | (airports["direct_destination_count"] > 0)
+            | airports["annual_passengers"].notna()
+        ].copy()
 
     return airports
 
