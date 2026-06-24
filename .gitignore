@@ -31,6 +31,8 @@ data/reference/airport_passenger_volume.csv
 data/reference/osm_daily_life_counts.csv
 data/reference/osm_culture_counts.csv
 data/reference/osm_transit_counts.csv
+data/reference/osm_outdoors_counts.csv
+data/reference/osm_nightlife_counts.csv
 
 # Local vector database
 data/vector_store/

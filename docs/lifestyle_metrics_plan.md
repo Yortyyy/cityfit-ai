@@ -228,6 +228,19 @@ transit_score =
 
 This includes mapped buses, trains, metro/subway, trams/light rail/trolleys where represented in OSM transit infrastructure, ferry terminals, and aerialway stations such as cable cars or gondolas. It measures mapped access points within 8 km of the city coordinate. It does not yet measure route frequency, service span, reliability, fares, travel speed, crowding, network coverage by neighborhood, or GTFS schedule quality.
 
+Current outdoors scoring uses a separate OpenStreetMap outdoors cache:
+
+```text
+outdoors_score =
+    park, garden, and recreation-ground availability
+    + nature reserve and protected-area availability
+    + mapped trail and route-marker availability
+    + beach, marina, and water-recreation availability
+    + viewpoint and peak availability
+```
+
+The current method measures mapped outdoor access points within 8 km of the city coordinate. It does not yet measure park size, tree canopy, waterfront length, trail quality, mountain access beyond the city radius, safety, maintenance, crowding, beach quality, or climate. Outdoors scores are especially sensitive to OpenStreetMap tagging coverage because many outdoor amenities are mapped as large ways/relations rather than simple points.
+
 ---
 
 ## Data Strategy
