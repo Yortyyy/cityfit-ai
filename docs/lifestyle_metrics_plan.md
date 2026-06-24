@@ -164,6 +164,32 @@ The long-term goal is to blend both quantity and quality where possible.
 
 For Phase 1, quality-related columns can be left out of the public CSV or kept as internal nullable fields. The app should not present quality-adjusted scores until quality data is actually available.
 
+Current airport scoring uses a source-backed proxy rather than true airport quality:
+
+```text
+airport_score =
+    distance/proximity score
+    adjusted by route connectivity
+    adjusted by passenger volume when known
+```
+
+The distance component comes from OurAirports medium and large scheduled airports. Route connectivity comes from OpenFlights direct-route counts, which are useful as a global proxy but should be treated as historical because OpenFlights route updates stopped in 2014. Passenger volume currently comes from the busiest-airports passenger traffic table where an airport can be matched by IATA or ICAO code, so coverage is strongest for major global hubs and missing for many smaller airports.
+
+Current daily-life scoring is also a source-backed proxy rather than a true neighborhood convenience or walkability score:
+
+```text
+daily_life_score =
+    grocery and market availability
+    + pharmacy availability
+    + cafe and casual food availability
+    + fitness availability
+    + park and garden availability
+    + basic services availability
+    + clinic, doctor, and dentist availability
+```
+
+The current method uses OpenStreetMap node counts within 8 km of each city coordinate. It intentionally counts availability near the city center, not sidewalk quality, opening hours, venue ratings, or neighborhood-level access. OpenStreetMap coverage varies by country and city, so the score should remain labeled as a Phase 1 proxy.
+
 ---
 
 ## Data Strategy
