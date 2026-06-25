@@ -77,20 +77,20 @@ def _nightlife_query_blocks(latitude: float, longitude: float) -> list[str]:
 
     return [
         f"""(
-  nwr(around:{radius},{latitude},{longitude})["amenity"~"^(bar|pub)$"];
+  node(around:{radius},{latitude},{longitude})["amenity"~"^(bar|pub)$"];
 );
 out count;""",
         f"""(
-  nwr(around:{radius},{latitude},{longitude})["amenity"="nightclub"];
+  node(around:{radius},{latitude},{longitude})["amenity"="nightclub"];
 );
 out count;""",
         f"""(
-  nwr(around:{radius},{latitude},{longitude})["amenity"~"^(music_venue|theatre|arts_centre)$"];
-  nwr(around:{radius},{latitude},{longitude})["leisure"="dance"];
+  node(around:{radius},{latitude},{longitude})["amenity"~"^(music_venue|theatre|arts_centre)$"];
+  node(around:{radius},{latitude},{longitude})["leisure"="dance"];
 );
 out count;""",
         f"""(
-  nwr(around:{radius},{latitude},{longitude})["amenity"~"^(casino|biergarten|hookah_lounge|stripclub)$"];
+  node(around:{radius},{latitude},{longitude})["amenity"~"^(casino|biergarten|hookah_lounge|stripclub)$"];
 );
 out count;""",
     ]
@@ -239,16 +239,29 @@ def collect_nightlife_counts(
                 "Batch failed; falling back to one-city requests: "
                 f"{type(error).__name__}: {error}"
             )
-            batch_counts = [
-                fetch_nightlife_counts(
+            batch_counts = []
+
+            for city_row in batch_rows:
+                counts = fetch_nightlife_counts(
                     city=city_row.city,
                     country=city_row.country,
                     latitude=float(city_row.latitude),
                     longitude=float(city_row.longitude),
                     session=session,
                 )
-                for city_row in batch_rows
-            ]
+                batch_counts.append(counts)
+                collected_rows.append(counts)
+                save_cached_counts(pd.DataFrame(collected_rows), cache_path)
+
+            print(
+                f"{min(batch_start + len(batch_counts), len(city_rows))}/"
+                f"{len(city_rows)} nightlife rows cached"
+            )
+
+            if sleep_seconds > 0:
+                time.sleep(sleep_seconds)
+
+            continue
 
         collected_rows.extend(batch_counts)
         save_cached_counts(pd.DataFrame(collected_rows), cache_path)

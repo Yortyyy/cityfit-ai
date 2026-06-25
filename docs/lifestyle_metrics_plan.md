@@ -202,6 +202,18 @@ food_scene_score =
 
 Restaurants, cafes, and fast food carry most of the weight. Food shops and markets provide a smaller supporting signal. The score does not yet measure ratings, cuisine diversity, price range, reservation difficulty, critic coverage, or local reputation.
 
+Current nightlife scoring uses a separate OpenStreetMap nightlife cache:
+
+```text
+nightlife_score =
+    bar and pub availability
+    + nightclub availability
+    + music and live-venue availability
+    + late-entertainment availability
+```
+
+Bars and pubs carry the largest share because they are the most consistently mapped nightlife signal across countries. Nightclubs, music venues, and late-entertainment amenities add stronger social-energy signals where they are present. The score measures mapped nightlife POIs within 8 km of the city coordinate. It does not yet measure opening hours, venue quality, event frequency, crowd size, safety, local reputation, or whether a city's nightlife is concentrated in specific neighborhoods.
+
 Current culture scoring uses a separate OpenStreetMap culture cache:
 
 ```text
@@ -241,6 +253,31 @@ outdoors_score =
 
 The current method measures mapped outdoor access points within 8 km of the city coordinate. It does not yet measure park size, tree canopy, waterfront length, trail quality, mountain access beyond the city radius, safety, maintenance, crowding, beach quality, or climate. Outdoors scores are especially sensitive to OpenStreetMap tagging coverage because many outdoor amenities are mapped as large ways/relations rather than simple points.
 
+Current pace-of-life classification uses a culture/work-life proxy score and then converts it to a preference label:
+
+```text
+pace_intensity =
+    country or regional cultural pace baseline
+    + light commute-pressure adjustment
+    + light nightlife-activity adjustment
+
+pace_of_life =
+    slow | moderate | fast
+```
+
+Pace of life is not treated as a higher-is-better score. A faster city is not inherently better than a slower city; the label is meant to match user preference. Phase 1 prioritizes local cultural and work-life rhythm over density or amenity volume, so a dense city can still be labeled slow when the day-to-day rhythm is more relaxed. Existing CityFit traffic data and nightlife activity can nudge the label, but they should not overwhelm the cultural baseline. It does not yet include direct working-hours data, time-use surveys, local business closing times, pedestrian speed, or subjective resident sentiment.
+
+Friendliness scoring is deferred until CityFit has a legally usable source that directly measures newcomer integration and warmth to strangers:
+
+```text
+friendliness_score =
+    pending
+```
+
+The intended meaning is estimated ease of social integration for a newcomer, including warmth toward strangers, ease of making local friends, openness to outsiders, language/social accessibility, and whether everyday interactions feel welcoming. It should not be a general happiness score and should not be presented as a definitive statement about individual people.
+
+This metric should remain blank until the data source is both methodologically appropriate and legally reusable. Social-support datasets such as World Happiness Report or OECD community indicators may be useful supporting inputs, but they do not directly measure warmth to strangers or newcomer integration. Expat/newcomer surveys may be a closer fit, but their licensing and reuse rights must be verified before storing their rankings or derived scores in CityFit.
+
 ---
 
 ## Data Strategy
@@ -254,7 +291,7 @@ Possible sources:
 * OpenStreetMap for amenities, transit stops, parks, cultural venues, food venues, and nightlife venues
 * OurAirports for airport location and airport type
 * Existing CityFit data for practical indicators where relevant
-* Country-level survey data for friendliness proxy where available
+* Legally reusable survey data for friendliness/newcomer-integration proxy when available
 
 Phase 1 output:
 

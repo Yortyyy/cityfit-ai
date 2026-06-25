@@ -1,307 +1,307 @@
-city,state,country,latitude,longitude
-The Hague (Den Haag),,Netherlands,52.0667,4.3167
-Eindhoven,,Netherlands,51.4333,5.5
-Rotterdam,,Netherlands,51.9167,4.4833
-Stuttgart,,Germany,48.7667,9.1833
-Utrecht,,Netherlands,52.1,5.1167
-Luxembourg,,Luxembourg,49.6116,6.1319
-Stavanger,,Norway,58.9667,5.75
-Gothenburg,,Sweden,57.7089,11.9746
-Bergen,,Norway,60.3833,5.3333
-Copenhagen,,Denmark,55.6761,12.5683
-Gent,,Belgium,51.0333,3.7
-Nuremberg,,Germany,49.45,11.0833
-Amsterdam,,Netherlands,52.3833,4.9
-Groningen,,Netherlands,53.2167,6.5667
-Frankfurt,,Germany,50.1167,8.6833
-Munich,,Germany,48.1351,11.582
-Bern,,Switzerland,46.95,7.4667
-Zurich,,Switzerland,47.3667,8.5167
-Geneva,,Switzerland,46.2044,6.1432
-Trondheim,,Norway,63.4167,10.4167
-Basel,,Switzerland,47.55,7.6
-Lausanne,,Switzerland,46.5333,6.65
-Dusseldorf,,Germany,51.2167,6.7833
-Gold Coast,,Australia,-27.9833,153.3667
-Canberra,,Australia,-35.3333,149.1667
-Hobart,,Australia,-42.9167,147.3333
-Liverpool,,United Kingdom,53.3833,-3.0
-Vienna,,Austria,48.2082,16.3738
-Adelaide,,Australia,-34.9333,138.6
-Helsinki,,Finland,60.1667,24.9667
-Edinburgh,,United Kingdom,55.95,-3.2
-Perth,,Australia,-31.9333,115.8333
-Hamburg,,Germany,53.55,10.0
-Cork,,Ireland,51.9,-8.4667
-Reykjavik,,Iceland,64.15,-21.95
-Ottawa,,Canada,45.4167,-75.7
-Brisbane,,Australia,-27.5,153.0167
-Glasgow,,United Kingdom,55.85,-4.2667
-Christchurch,,New Zealand,-43.5833,172.6
-Newcastle upon Tyne,,United Kingdom,54.9783,-1.6178
-Tucson,AZ,United States,32.2167,-110.9667
-Graz,,Austria,47.0833,15.3667
-Villach,,Austria,46.6167,13.85
-Wellington,,New Zealand,-41.2833,174.7667
-Plzen,,Czech Republic,49.7384,13.3736
-Orlando,FL,United States,28.55,-81.3833
-Melbourne,,Australia,-37.8333,145.0
-Jacksonville,FL,United States,30.3333,-81.6667
-Pittsburgh,PA,United States,40.4333,-80.0
-Madison,WI,United States,43.0667,-89.3833
-Spokane,WA,United States,47.6667,-117.4333
-Boise,ID,United States,43.6167,-116.2
-Oklahoma City,OK,United States,35.4667,-97.5167
-Tampa,FL,United States,27.95,-82.45
-Richmond,VA,United States,37.5333,-77.4333
-Cincinnati,OH,United States,39.1,-84.5167
-Raleigh,NC,United States,35.7833,-78.6333
-Austin,TX,United States,30.2667,-97.75
-Tallinn,,Estonia,59.437,24.7536
-Tulsa,OK,United States,36.15,-96.0
-Charlotte,NC,United States,35.2167,-80.85
-Omaha,NE,United States,41.2667,-95.9333
-Columbus,OH,United States,39.9612,-82.9988
-Nanaimo,BC,Canada,49.1659,-123.9401
-Sacramento,CA,United States,38.5833,-121.5
-Kansas City,MO,United States,39.0997,-94.5786
-Reno,NV,United States,39.5167,-119.8167
-Edmonton,,Canada,53.55,-113.4667
-Cambridge,,United Kingdom,52.2053,0.1218
-Colorado Springs,CO,United States,38.8333,-104.8167
-Sydney,,Australia,-33.8833,151.2
-Seattle,WA,United States,47.6167,-122.3333
-Victoria,,Canada,48.4167,-123.3667
-Valencia,,Spain,39.4667,-0.3667
-Belfast,,United Kingdom,54.5973,-5.9301
-Fort Worth,TX,United States,32.75,-97.3333
-Buffalo,NY,United States,42.8833,-78.8667
-Oslo,,Norway,59.9167,10.7333
-Indianapolis,IN,United States,39.7667,-86.1667
-Boston,MA,United States,42.35,-71.05
-Vilnius,,Lithuania,54.6872,25.2797
-San Antonio,TX,United States,29.4333,-98.4833
-San Diego,CA,United States,32.7167,-117.15
-Muscat,,Oman,23.588,58.3829
-Vancouver,,Canada,49.2833,-123.1167
-Quebec City,,Canada,46.8139,-71.208
-Saint Louis,MO,United States,38.627,-90.1994
-Washington,DC,United States,38.9,-77.0167
-Rijeka,,Croatia,45.3271,14.4422
-Atlanta,GA,United States,33.75,-84.4
-Albuquerque,NM,United States,35.0833,-106.65
-Toulouse,,France,43.6167,1.45
-Leeds,,United Kingdom,53.8333,-1.5833
-Portland,OR,United States,45.5152,-122.6784
-Cologne,,Germany,50.9375,6.9603
-Minneapolis,MN,United States,44.9833,-93.2667
-Auckland,,New Zealand,-36.85,174.75
-Anchorage,AK,United States,61.2167,-149.8833
-Kaunas,,Lithuania,54.8985,23.9036
-Calgary,,Canada,51.05,-114.0833
-Porto,,Portugal,41.15,-8.6167
-Stockholm,,Sweden,59.3333,18.05
-San Jose,CA,United States,37.3333,-121.8833
-Madrid,,Spain,40.4,-3.6833
-Qingdao,Shandong,China,36.0671,120.3826
-Nashville,TN,United States,36.1667,-86.7833
-Manama,,Bahrain,26.2,50.6333
-Malaga,,Spain,36.7167,-4.4167
-Halifax,,Canada,44.6488,-63.5752
-Salt Lake City,UT,United States,40.75,-111.8833
-Zagreb,,Croatia,45.815,15.9819
-Dallas,TX,United States,32.7833,-96.8
-Tokyo,,Japan,35.6762,139.6503
-Dubai,,United Arab Emirates,25.2333,55.2833
-Ljubljana,,Slovenia,46.0667,14.5
-Milwaukee,WI,United States,43.0333,-87.9
-Berlin,,Germany,52.55,13.3667
-Cleveland,OH,United States,41.5,-81.7
-Split,,Croatia,43.5167,16.4667
-Houston,TX,United States,29.75,-95.3667
-Osaka,,Japan,34.6667,135.5
-Oakland,CA,United States,37.8,-122.2667
-Haifa,,Israel,32.8167,34.9833
-Kelowna,,Canada,49.8879,-119.496
-Bristol,,United Kingdom,51.45,-2.5833
-Birmingham,,United Kingdom,52.4833,-1.8833
-Brno,,Czech Republic,49.2167,16.6667
-Mississauga,,Canada,43.589,-79.6441
-Baltimore,MD,United States,39.2833,-76.6167
-Abu Dhabi,,United Arab Emirates,24.4667,54.4167
-Prague,,Czech Republic,50.0755,14.4378
-Hyderabad,,India,17.3667,78.4333
-Montreal,,Canada,45.5,-73.5833
-San Francisco,CA,United States,37.7833,-122.4167
-London,,Canada,42.9849,-81.2453
-Bursa,,Turkey,40.2,29.0667
-Trieste,,Italy,45.6495,13.7768
-Toronto,,Canada,43.65,-79.3833
-Jeddah (Jiddah),,Saudi Arabia,21.4858,39.1925
-Timisoara,,Romania,45.7489,21.2087
-Denver,CO,United States,39.75,-104.9833
-Antwerp,,Belgium,51.2194,4.4025
-Doha,,Qatar,25.25,51.6
-Philadelphia,PA,United States,39.95,-75.15
-Port Elizabeth,,South Africa,-33.9667,25.6
-Lyon,,France,45.75,4.85
-New Orleans,LA,United States,29.95,-90.0667
-Genoa,,Italy,44.4056,8.9463
-Seoul,,South Korea,37.5665,126.978
-Riga,,Latvia,56.9496,24.1052
-Tel Aviv-Yafo,,Israel,32.0833,34.7667
-Pune,,India,18.5204,73.8567
-Honolulu,HI,United States,21.3167,-157.8667
-Limassol,,Cyprus,34.6667,33.05
-Cluj-Napoca,,Romania,46.7712,23.6236
-Riyadh,,Saudi Arabia,24.7136,46.6753
-Poznan,,Poland,52.4064,16.9252
-Ad Dammam,,Saudi Arabia,26.4207,50.0888
-Las Vegas,NV,United States,36.1667,-115.15
-Manchester,,United Kingdom,53.4667,-2.2333
-Antalya,,Turkey,36.8969,30.7133
-Miami,FL,United States,25.7833,-80.2
-Brampton,,Canada,43.7315,-79.7624
-Brussels,,Belgium,50.8503,4.3517
-Queretaro (Santiago de Querétaro),,Mexico,20.5888,-100.3899
-Plovdiv,,Bulgaria,42.1333,24.75
-Bratislava,,Slovakia,48.1486,17.1077
-Phoenix,AZ,United States,33.45,-112.0667
-Chicago,IL,United States,41.8667,-87.6333
-Cape Town,,South Africa,-33.9249,18.4241
-Singapore,,Singapore,1.3521,103.8198
-Hamilton,,Canada,43.2333,-79.85
-Windhoek,,Namibia,-22.5609,17.0658
-Florence,,Italy,43.7696,11.2558
-Lisbon,,Portugal,38.7223,-9.1393
-Dublin,,Ireland,53.3333,-6.25
-Izmir,,Turkey,38.4167,27.1667
-Winnipeg,,Canada,49.8833,-97.15
-Gdansk,,Poland,54.352,18.6466
-Nicosia,,Cyprus,35.1856,33.3823
-Durban,,South Africa,-29.8833,31.0
-Warsaw,,Poland,52.2297,21.0122
-Wroclaw,,Poland,51.1079,17.0385
-Regina,,Canada,50.4167,-104.65
-Shenzhen,,China,22.5431,114.0579
-Lodz,,Poland,51.7592,19.456
-Cuenca,,Ecuador,-2.9,-79.0
-Taipei,,Taiwan,25.033,121.5654
-Rome,,Italy,41.9028,12.4964
-Barcelona,,Spain,41.3833,2.1833
-Brasilia,,Brazil,-15.7833,-47.9167
-Sharjah,,United Arab Emirates,25.3333,55.4333
-Krakow (Cracow),,Poland,50.0647,19.945
-Kaliningrad,,Russia,54.7104,20.4522
-Varna,,Bulgaria,43.2,27.95
-Bologna,,Italy,44.5,11.3333
-Nizhny Novgorod,,Russia,56.2965,43.9361
-Florianopolis,,Brazil,-27.5949,-48.5482
-Curitiba,,Brazil,-25.4167,-49.25
-Ankara,,Turkey,39.9333,32.8667
-Turin,,Italy,45.05,7.6667
-London,,United Kingdom,51.5167,-0.0833
-Paris,,France,48.8667,2.3333
-Pretoria,,South Africa,-25.75,28.2
-Mangalore,,India,12.9141,74.856
-Novi Sad,,Serbia,45.2671,19.8335
-San Juan,,Puerto Rico,18.4667,-66.1167
-Guangzhou,,China,23.1167,113.25
-Johannesburg,,South Africa,-26.1667,28.0333
-Sofia,,Bulgaria,42.6833,23.3167
-Detroit,MI,United States,42.3333,-83.05
-Budapest,,Hungary,47.5,19.0833
-Iasi,,Romania,47.15,27.6333
-Montevideo,,Uruguay,-34.8833,-56.1833
-Minsk,,Belarus,53.9006,27.559
-Islamabad,,Pakistan,33.7,73.1667
-Kuala Lumpur,,Malaysia,3.0167,101.7
-Chiang Mai,,Thailand,18.8,98.9833
-Bangalore,,India,12.9667,77.5833
-Banja Luka,,Bosnia And Herzegovina,44.7722,17.191
-Tashkent,,Uzbekistan,41.2995,69.2401
-Lviv,,Ukraine,49.8397,24.0297
-Chennai,,India,13.0827,80.2707
-Kuwait City,,Kuwait,29.3333,47.9833
-Bucharest,,Romania,44.4268,26.1025
-Campinas,,Brazil,-22.9056,-47.0608
-Coimbatore,,India,11.0168,76.9558
-New York,NY,United States,40.75,-74.0
-Thessaloniki,,Greece,40.6333,22.9667
-Jaipur,,India,26.8833,75.8333
-Ahmedabad,,India,23.0,72.6667
-Shanghai,,China,31.2333,121.4667
-Sarajevo,,Bosnia And Herzegovina,43.8563,18.4131
-Los Angeles,CA,United States,34.05,-118.2333
-Athens,,Greece,37.9838,23.7275
-Astana (Nur-Sultan),,Kazakhstan,51.1694,71.4491
-Noida,,India,28.5355,77.391
-Chisinau,,Moldova,47.0105,28.8638
-Hong Kong,,Hong Kong (China),22.3193,114.1694
-Istanbul,,Turkey,41.0167,28.9667
-Moscow,,Russia,55.7558,37.6173
-Krasnodar,,Russia,45.0393,38.9872
-Belo Horizonte,,Brazil,-19.9,-43.9
-Yerevan,,Armenia,40.1872,44.5152
-Belgrade,,Serbia,44.7866,20.4489
-Thiruvananthapuram,,India,8.5241,76.9366
-Milan,,Italy,45.4642,9.19
-Kharkiv,,Ukraine,49.9935,36.2304
-Saint Petersburg,,Russia,59.9311,30.3609
-Quito,,Ecuador,-0.2167,-78.5
-Kazan,,Russia,55.8304,49.0661
-Amman,,Jordan,31.95,35.9333
-San Jose,,Costa Rica,9.9333,-84.0833
-Gurgaon,,India,28.4595,77.0266
-Naples,,Italy,40.8518,14.2681
-Porto Alegre,,Brazil,-30.05,-51.2167
-Tbilisi,,Georgia,41.7151,44.8271
-Monterrey,,Mexico,25.6667,-100.3167
-Kiev (Kyiv),,Ukraine,50.4501,30.5234
-Guadalajara,,Mexico,20.6667,-103.3333
-Medellin,,Colombia,6.23083,-75.59056
-Beijing,,China,39.9333,116.4
-Panama City,,Panama,8.95,-79.5333
-Skopje,,North Macedonia,41.9981,21.4254
-Buenos Aires,,Argentina,-34.6,-58.45
-Baku,,Azerbaijan,40.4093,49.8671
-Rostov-on-Don (Rostov-na-donu),,Russia,47.2357,39.7015
-Odessa (Odesa),,Ukraine,46.4825,30.7233
-Santiago,,Chile,-33.4489,-70.6693
-Tunis,,Tunisia,36.8,10.2
-Kolkata,,India,22.5726,88.3639
-Bogota,,Colombia,4.6,-74.0833
-Dnipro,,Ukraine,48.4647,35.0462
-Pattaya,,Thailand,12.9236,100.8825
-Yekaterinburg,,Russia,56.8389,60.6057
-Sao Paulo,,Brazil,-23.5333,-46.6167
-Davao,,Philippines,7.0667,125.6
-Lahore,,Pakistan,31.5667,74.3667
-Almaty,,Kazakhstan,43.222,76.8512
-Casablanca,,Morocco,33.6,-7.6167
-Mexico City,,Mexico,19.4,-99.15
-Novosibirsk,,Russia,55.0084,82.9357
-Nairobi,,Kenya,-1.2833,36.8167
-Tirana,,Albania,41.3333,19.8333
-Lima,,Peru,-12.05,-77.05
-Santo Domingo,,Dominican Republic,18.4667,-69.9
-Delhi,,India,28.7041,77.1025
-Bangkok,,Thailand,13.75,100.5167
-Recife,,Brazil,-8.1,-34.8833
-Beirut,,Lebanon,33.8833,35.5
-Alexandria,,Egypt,31.2167,29.9167
-Mumbai,,India,19.076,72.8777
-Hanoi,,Vietnam,21.0333,105.85
-Kathmandu,,Nepal,27.7172,85.324
-Rio de Janeiro,,Brazil,-22.9,-43.2333
-Ho Chi Minh City,,Vietnam,10.75,106.6667
-Cairo,,Egypt,30.05,31.25
-Caracas,,Venezuela,10.5,-66.9167
-Jakarta,,Indonesia,-6.1667,106.8167
-Karachi,,Pakistan,24.8667,67.05
-Cebu,,Philippines,10.2833,123.9333
-Tehran,,Iran,35.6667,51.4333
-Colombo,,Sri Lanka,6.9333,79.85
-Dhaka,,Bangladesh,23.7167,90.4167
-Manila,,Philippines,14.6,120.9833
-Lagos,,Nigeria,6.4333,3.5333
+city,state,country,latitude,longitude,
+The Hague (Den Haag),,Netherlands,52.0667,4.3167,
+Eindhoven,,Netherlands,51.4333,5.5,
+Rotterdam,,Netherlands,51.9167,4.4833,
+Stuttgart,,Germany,48.7667,9.1833,
+Utrecht,,Netherlands,52.1,5.1167,
+Luxembourg,,Luxembourg,49.6116,6.1319,
+Stavanger,,Norway,58.9667,5.75,
+Gothenburg,,Sweden,57.7089,11.9746,
+Bergen,,Norway,60.3833,5.3333,
+Copenhagen,,Denmark,55.6761,12.5683,
+Gent,,Belgium,51.0333,3.7,
+Nuremberg,,Germany,49.45,11.0833,
+Amsterdam,,Netherlands,52.3833,4.9,
+Groningen,,Netherlands,53.2167,6.5667,
+Frankfurt,,Germany,50.1167,8.6833,
+Munich,,Germany,48.1351,11.582,
+Bern,,Switzerland,46.95,7.4667,
+Zurich,,Switzerland,47.3667,8.5167,
+Geneva,,Switzerland,46.2044,6.1432,
+Trondheim,,Norway,63.4167,10.4167,
+Basel,,Switzerland,47.55,7.6,
+Lausanne,,Switzerland,46.5333,6.65,
+Dusseldorf,,Germany,51.2167,6.7833,
+Gold Coast,,Australia,-27.9833,153.3667,
+Canberra,,Australia,-35.3333,149.1667,
+Hobart,,Australia,-42.9167,147.3333,
+Liverpool,,United Kingdom,53.3833,-3.0,
+Vienna,,Austria,48.2082,16.3738,
+Adelaide,,Australia,-34.9333,138.6,
+Helsinki,,Finland,60.1667,24.9667,
+Edinburgh,,United Kingdom,55.95,-3.2,
+Perth,,Australia,-31.9333,115.8333,
+Hamburg,,Germany,53.55,10.0,
+Cork,,Ireland,51.9,-8.4667,
+Reykjavik,,Iceland,64.15,-21.95,
+Ottawa,,Canada,45.4167,-75.7,
+Brisbane,,Australia,-27.5,153.0167,
+Glasgow,,United Kingdom,55.85,-4.2667,
+Christchurch,,New Zealand,-43.5833,172.6,
+Newcastle upon Tyne,,United Kingdom,54.9783,-1.6178,
+Tucson,AZ,United States,32.2167,-110.9667,
+Graz,,Austria,47.0833,15.3667,
+Villach,,Austria,46.6167,13.85,
+Wellington,,New Zealand,-41.2833,174.7667,
+Plzen,,Czech Republic,49.7384,13.3736,
+Orlando,FL,United States,28.55,-81.3833,
+Melbourne,,Australia,-37.8333,145.0,
+Jacksonville,FL,United States,30.3333,-81.6667,
+Pittsburgh,PA,United States,40.4333,-80.0,
+Madison,WI,United States,43.0667,-89.3833,
+Spokane,WA,United States,47.6667,-117.4333,
+Boise,ID,United States,43.6167,-116.2,
+Oklahoma City,OK,United States,35.4667,-97.5167,
+Tampa,FL,United States,27.95,-82.45,
+Richmond,VA,United States,37.5333,-77.4333,
+Cincinnati,OH,United States,39.1,-84.5167,
+Raleigh,NC,United States,35.7833,-78.6333,
+Austin,TX,United States,30.2667,-97.75,
+Tallinn,,Estonia,59.437,24.7536,
+Tulsa,OK,United States,36.15,-96.0,
+Charlotte,NC,United States,35.2167,-80.85,
+Omaha,NE,United States,41.2667,-95.9333,
+Columbus,OH,United States,39.9612,-82.9988,
+Nanaimo,BC,Canada,49.1659,-123.9401,
+Sacramento,CA,United States,38.5833,-121.5,
+Kansas City,MO,United States,39.0997,-94.5786,
+Reno,NV,United States,39.5167,-119.8167,
+Edmonton,,Canada,53.55,-113.4667,
+Cambridge,,United Kingdom,52.2053,0.1218,
+Colorado Springs,CO,United States,38.8333,-104.8167,
+Sydney,,Australia,-33.8833,151.2,
+Seattle,WA,United States,47.6167,-122.3333,
+Victoria,,Canada,48.4167,-123.3667,
+Valencia,,Spain,39.4667,-0.3667,
+Belfast,,United Kingdom,54.5973,-5.9301,
+Fort Worth,TX,United States,32.75,-97.3333,
+Buffalo,NY,United States,42.8833,-78.8667,
+Oslo,,Norway,59.9167,10.7333,
+Indianapolis,IN,United States,39.7667,-86.1667,
+Boston,MA,United States,42.35,-71.05,
+Vilnius,,Lithuania,54.6872,25.2797,
+San Antonio,TX,United States,29.4333,-98.4833,
+San Diego,CA,United States,32.7167,-117.15,
+Muscat,,Oman,23.588,58.3829,
+Vancouver,,Canada,49.2833,-123.1167,
+Quebec City,,Canada,46.8139,-71.208,
+Saint Louis,MO,United States,38.627,-90.1994,
+Washington,DC,United States,38.9,-77.0167,
+Rijeka,,Croatia,45.3271,14.4422,
+Atlanta,GA,United States,33.75,-84.4,
+Albuquerque,NM,United States,35.0833,-106.65,
+Toulouse,,France,43.6167,1.45,
+Leeds,,United Kingdom,53.8333,-1.5833,
+Portland,OR,United States,45.5152,-122.6784,
+Cologne,,Germany,50.9375,6.9603,
+Minneapolis,MN,United States,44.9833,-93.2667,
+Auckland,,New Zealand,-36.85,174.75,
+Anchorage,AK,United States,61.2167,-149.8833,
+Kaunas,,Lithuania,54.8985,23.9036,
+Calgary,,Canada,51.05,-114.0833,
+Porto,,Portugal,41.15,-8.6167,
+Stockholm,,Sweden,59.3333,18.05,
+San Jose,CA,United States,37.3333,-121.8833,
+Madrid,,Spain,40.4,-3.6833,
+Qingdao,Shandong,China,36.0671,120.3826,
+Nashville,TN,United States,36.1667,-86.7833,
+Manama,,Bahrain,26.2,50.6333,
+Malaga,,Spain,36.7167,-4.4167,
+Halifax,,Canada,44.6488,-63.5752,
+Salt Lake City,UT,United States,40.75,-111.8833,
+Zagreb,,Croatia,45.815,15.9819,
+Dallas,TX,United States,32.7833,-96.8,
+Tokyo,,Japan,35.6762,139.6503,
+Dubai,,United Arab Emirates,25.2333,55.2833,
+Ljubljana,,Slovenia,46.0667,14.5,
+Milwaukee,WI,United States,43.0333,-87.9,
+Berlin,,Germany,52.55,13.3667,
+Cleveland,OH,United States,41.5,-81.7,
+Split,,Croatia,43.5167,16.4667,
+Houston,TX,United States,29.75,-95.3667,
+Osaka,,Japan,34.6667,135.5,
+Oakland,CA,United States,37.8,-122.2667,
+Haifa,,Israel,32.8167,34.9833,
+Kelowna,,Canada,49.8879,-119.496,
+Bristol,,United Kingdom,51.45,-2.5833,
+Birmingham,,United Kingdom,52.4833,-1.8833,
+Brno,,Czech Republic,49.2167,16.6667,
+Mississauga,,Canada,43.589,-79.6441,
+Baltimore,MD,United States,39.2833,-76.6167,
+Abu Dhabi,,United Arab Emirates,24.4667,54.4167,
+Prague,,Czech Republic,50.0755,14.4378,
+Hyderabad,,India,17.3667,78.4333,
+Montreal,,Canada,45.5,-73.5833,
+San Francisco,CA,United States,37.7833,-122.4167,
+London,,Canada,42.9849,-81.2453,
+Bursa,,Turkey,40.2,29.0667,
+Trieste,,Italy,45.6495,13.7768,
+Toronto,,Canada,43.65,-79.3833,
+Jeddah (Jiddah),,Saudi Arabia,21.4858,39.1925,
+Timisoara,,Romania,45.7489,21.2087,
+Denver,CO,United States,39.75,-104.9833,
+Antwerp,,Belgium,51.2194,4.4025,
+Doha,,Qatar,25.25,51.6,
+Philadelphia,PA,United States,39.95,-75.15,
+Port Elizabeth,,South Africa,-33.9667,25.6,
+Lyon,,France,45.75,4.85,
+New Orleans,LA,United States,29.95,-90.0667,
+Genoa,,Italy,44.4056,8.9463,
+Seoul,,South Korea,37.5665,126.978,
+Riga,,Latvia,56.9496,24.1052,
+Tel Aviv-Yafo,,Israel,32.0833,34.7667,
+Pune,,India,18.5204,73.8567,
+Honolulu,HI,United States,21.3167,-157.8667,
+Limassol,,Cyprus,34.6667,33.05,
+Cluj-Napoca,,Romania,46.7712,23.6236,
+Riyadh,,Saudi Arabia,24.7136,46.6753,
+Poznan,,Poland,52.4064,16.9252,
+Ad Dammam,,Saudi Arabia,26.4207,50.0888,
+Las Vegas,NV,United States,36.1667,-115.15,
+Manchester,,United Kingdom,53.4667,-2.2333,
+Antalya,,Turkey,36.8969,30.7133,
+Miami,FL,United States,25.7833,-80.2,
+Brampton,,Canada,43.7315,-79.7624,
+Brussels,,Belgium,50.8503,4.3517,
+Queretaro (Santiago de Querétaro),,Mexico,20.5888,-100.3899,
+Plovdiv,,Bulgaria,42.1333,24.75,
+Bratislava,,Slovakia,48.1486,17.1077,
+Phoenix,AZ,United States,33.45,-112.0667,
+Chicago,IL,United States,41.8667,-87.6333,
+Cape Town,,South Africa,-33.9249,18.4241,
+Singapore,,Singapore,1.3521,103.8198,
+Hamilton,,Canada,43.2333,-79.85,
+Windhoek,,Namibia,-22.5609,17.0658,
+Florence,,Italy,43.7696,11.2558,
+Lisbon,,Portugal,38.7223,-9.1393,
+Dublin,,Ireland,53.3333,-6.25,
+Izmir,,Turkey,38.4167,27.1667,
+Winnipeg,,Canada,49.8833,-97.15,
+Gdansk,,Poland,54.352,18.6466,
+Nicosia,,Cyprus,35.1856,33.3823,
+Durban,,South Africa,-29.8833,31.0,
+Warsaw,,Poland,52.2297,21.0122,
+Wroclaw,,Poland,51.1079,17.0385,
+Regina,,Canada,50.4167,-104.65,
+Shenzhen,,China,22.5431,114.0579,
+Lodz,,Poland,51.7592,19.456,
+Cuenca,,Ecuador,-2.9,-79.0,
+Taipei,,Taiwan,25.033,121.5654,
+Rome,,Italy,41.9028,12.4964,
+Barcelona,,Spain,41.3833,2.1833,
+Brasilia,,Brazil,-15.7833,-47.9167,
+Sharjah,,United Arab Emirates,25.3333,55.4333,
+Krakow (Cracow),,Poland,50.0647,19.945,
+Kaliningrad,,Russia,54.7104,20.4522,
+Varna,,Bulgaria,43.2,27.95,
+Bologna,,Italy,44.5,11.3333,
+Nizhny Novgorod,,Russia,56.2965,43.9361,
+Florianopolis,,Brazil,-27.5949,-48.5482,
+Curitiba,,Brazil,-25.4167,-49.25,
+Ankara,,Turkey,39.9333,32.8667,
+Turin,,Italy,45.05,7.6667,
+London,,United Kingdom,51.5167,-0.0833,
+Paris,,France,48.8667,2.3333,
+Pretoria,,South Africa,-25.75,28.2,
+Mangalore,,India,12.9141,74.856,
+Novi Sad,,Serbia,45.2671,19.8335,
+San Juan,,Puerto Rico,18.4667,-66.1167,
+Guangzhou,,China,23.1167,113.25,
+Johannesburg,,South Africa,-26.1667,28.0333,
+Sofia,,Bulgaria,42.6833,23.3167,
+Detroit,MI,United States,42.3333,-83.05,
+Budapest,,Hungary,47.5,19.0833,
+Iasi,,Romania,47.15,27.6333,
+Montevideo,,Uruguay,-34.8833,-56.1833,
+Minsk,,Belarus,53.9006,27.559,
+Islamabad,,Pakistan,33.7,73.1667,
+Kuala Lumpur,,Malaysia,3.0167,101.7,
+Chiang Mai,,Thailand,18.8,98.9833,
+Bangalore,,India,12.9667,77.5833,
+Banja Luka,,Bosnia And Herzegovina,44.7722,17.191,
+Tashkent,,Uzbekistan,41.2995,69.2401,
+Lviv,,Ukraine,49.8397,24.0297,
+Chennai,,India,13.0827,80.2707,
+Kuwait City,,Kuwait,29.3333,47.9833,
+Bucharest,,Romania,44.4268,26.1025,
+Campinas,,Brazil,-22.9056,-47.0608,
+Coimbatore,,India,11.0168,76.9558,
+New York,NY,United States,40.75,-74.0,
+Thessaloniki,,Greece,40.6333,22.9667,
+Jaipur,,India,26.8833,75.8333,
+Ahmedabad,,India,23.0,72.6667,
+Shanghai,,China,31.2333,121.4667,
+Sarajevo,,Bosnia And Herzegovina,43.8563,18.4131,
+Los Angeles,CA,United States,34.05,-118.2333,
+Athens,,Greece,37.9838,23.7275,
+Astana (Nur-Sultan),,Kazakhstan,51.1694,71.4491,
+Noida,,India,28.5355,77.391,
+Chisinau,,Moldova,47.0105,28.8638,
+Hong Kong,,Hong Kong (China),22.3193,114.1694,
+Istanbul,,Turkey,41.0167,28.9667,
+Moscow,,Russia,55.7558,37.6173,
+Krasnodar,,Russia,45.0393,38.9872,
+Belo Horizonte,,Brazil,-19.9,-43.9,
+Yerevan,,Armenia,40.1872,44.5152,
+Belgrade,,Serbia,44.7866,20.4489,
+Thiruvananthapuram,,India,8.5241,76.9366,
+Milan,,Italy,45.4642,9.19,
+Kharkiv,,Ukraine,49.9935,36.2304,
+Saint Petersburg,,Russia,59.9311,30.3609,
+Quito,,Ecuador,-0.2167,-78.5,
+Kazan,,Russia,55.8304,49.0661,
+Amman,,Jordan,31.95,35.9333,
+San Jose,,Costa Rica,9.9333,-84.0833,
+Gurgaon,,India,28.4595,77.0266,
+Naples,,Italy,40.8518,14.2681,
+Porto Alegre,,Brazil,-30.05,-51.2167,
+Tbilisi,,Georgia,41.7151,44.8271,
+Monterrey,,Mexico,25.6667,-100.3167,
+Kiev (Kyiv),,Ukraine,50.4501,30.5234,
+Guadalajara,,Mexico,20.6667,-103.3333,
+Medellin,,Colombia,6.23083,-75.59056,
+Beijing,,China,39.9333,116.4,
+Panama City,,Panama,8.95,-79.5333,
+Skopje,,North Macedonia,41.9981,21.4254,
+Buenos Aires,,Argentina,-34.6,-58.45,
+Baku,,Azerbaijan,40.4093,49.8671,
+Rostov-on-Don (Rostov-na-donu),,Russia,47.2357,39.7015,
+Odessa (Odesa),,Ukraine,46.4825,30.7233,
+Santiago,,Chile,-33.4489,-70.6693,
+Tunis,,Tunisia,36.8,10.2,
+Kolkata,,India,22.5726,88.3639,
+Bogota,,Colombia,4.6,-74.0833,
+Dnipro,,Ukraine,48.4647,35.0462,
+Pattaya,,Thailand,12.9236,100.8825,
+Yekaterinburg,,Russia,56.8389,60.6057,
+Sao Paulo,,Brazil,-23.5333,-46.6167,
+Davao,,Philippines,7.0667,125.6,
+Lahore,,Pakistan,31.5667,74.3667,
+Almaty,,Kazakhstan,43.222,76.8512,
+Casablanca,,Morocco,33.6,-7.6167,
+Mexico City,,Mexico,19.4,-99.15,
+Novosibirsk,,Russia,55.0084,82.9357,
+Nairobi,,Kenya,-1.2833,36.8167,
+Tirana,,Albania,41.3333,19.8333,
+Lima,,Peru,-12.05,-77.05,
+Santo Domingo,,Dominican Republic,18.4667,-69.9,
+Delhi,,India,28.7041,77.1025,
+Bangkok,,Thailand,13.75,100.5167,
+Recife,,Brazil,-8.1,-34.8833,
+Beirut,,Lebanon,33.8833,35.5,
+Alexandria,,Egypt,31.2167,29.9167,
+Mumbai,,India,19.076,72.8777,
+Hanoi,,Vietnam,21.0333,105.85,
+Kathmandu,,Nepal,27.7172,85.324,
+Rio de Janeiro,,Brazil,-22.9,-43.2333,
+Ho Chi Minh City,,Vietnam,10.75,106.6667,
+Cairo,,Egypt,30.05,31.25,
+Caracas,,Venezuela,10.5,-66.9167,
+Jakarta,,Indonesia,-6.1667,106.8167,
+Karachi,,Pakistan,24.8667,67.05,
+Cebu,,Philippines,10.2833,123.9333,
+Tehran,,Iran,35.6667,51.4333,
+Colombo,,Sri Lanka,6.9333,79.85,
+Dhaka,,Bangladesh,23.7167,90.4167,
+Manila,,Philippines,14.6,120.9833,
+Lagos,,Nigeria,6.4333,3.5333,
