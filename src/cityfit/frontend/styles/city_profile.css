@@ -152,6 +152,10 @@
     line-height: 1.15 !important;
 }
 
+.city-profile-priority-heading {
+    margin-top: 1.9rem !important;
+}
+
 .city-profile-summary-copy {
     margin-left: 0.8rem;
     max-width: 58rem;

@@ -11,7 +11,8 @@
 .metric-table-card table,
 .metric-table {
     width: 100% !important;
-    border-collapse: collapse !important;
+    border-collapse: separate !important;
+    border-spacing: 0 !important;
     background: transparent !important;
     color: #1f254f !important;
 }
@@ -73,4 +74,9 @@
 .metric-table tbody tr:hover td.metric-value-cell {
     color: var(--metric-color) !important;
     background: rgba(255, 255, 255, 0.35) !important;
+}
+
+.metric-table-card tbody tr:last-child td,
+.metric-table tbody tr:last-child td {
+    border-bottom: 0 !important;
 }

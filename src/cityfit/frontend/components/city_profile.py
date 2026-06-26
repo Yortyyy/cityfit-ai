@@ -25,35 +25,65 @@ def get_metric_color(
     return px.colors.sample_colorscale("RdYlGn", normalized)[0]
 
 def build_city_metric_table(city: pd.Series, all_df: pd.DataFrame) -> pd.DataFrame:
-    metric_labels = {
-        "cityfit_score": "CityFit Score",
-        "practical_score": "Practical Fit",
-        "lifestyle_fit_score": "Lifestyle Fit",
-        "lifestyle_score": "Lifestyle Score",
-        "baseline_lifestyle_score": "Baseline Lifestyle Fit",
-        "daily_life_score": "Daily Life",
-        "food_scene_score": "Food Scene",
-        "culture_score": "Culture",
-        "outdoors_score": "Outdoors",
-        "transit_score": "Transit",
-        "airport_score": "Airport Access",
-        "nightlife_score": "Nightlife",
-        "purchasing_power_index": "Purchasing Power",
-        "cost_of_living_index": "Cost of Living",
-        "safety_index": "Safety",
-        "healthcare_index": "Healthcare",
-        "property_price_to_income_ratio": "Housing price to income",
-        "traffic_commute_index": "Traffic Commute",
-        "climate_index": "Climate",
-        "pollution_index": "Pollution",
-    }
+    return build_metric_rows(
+        city=city,
+        all_df=all_df,
+        metric_labels={
+            "cityfit_rank": "CityFit Rank",
+            "cityfit_score": "CityFit Score",
+            "practical_score": "Practical Fit",
+            "lifestyle_fit_score": "Lifestyle Fit",
+        },
+        lower_is_better_metrics={"cityfit_rank"},
+    )
 
-    lower_is_better_metrics = {
-        "cost_of_living_index",
-        "property_price_to_income_ratio",
-        "traffic_commute_index",
-        "pollution_index",
-    }
+
+def build_practical_metric_table(city: pd.Series, all_df: pd.DataFrame) -> pd.DataFrame:
+    return build_metric_rows(
+        city=city,
+        all_df=all_df,
+        metric_labels={
+            "purchasing_power_index": "Purchasing Power",
+            "cost_of_living_index": "Low Cost of Living",
+            "safety_index": "Safety",
+            "healthcare_index": "Healthcare",
+            "property_price_to_income_ratio": "Housing Affordability",
+            "traffic_commute_index": "Low Traffic",
+            "climate_index": "Climate",
+            "pollution_index": "Low Pollution",
+        },
+        lower_is_better_metrics={
+            "cost_of_living_index",
+            "property_price_to_income_ratio",
+            "traffic_commute_index",
+            "pollution_index",
+        },
+    )
+
+
+def build_lifestyle_metric_table(city: pd.Series, all_df: pd.DataFrame) -> pd.DataFrame:
+    return build_metric_rows(
+        city=city,
+        all_df=all_df,
+        metric_labels={
+            "daily_life_score": "Daily Life",
+            "food_scene_score": "Food Scene",
+            "culture_score": "Culture",
+            "outdoors_score": "Outdoors",
+            "transit_score": "Transit",
+            "airport_score": "Airport Access",
+            "nightlife_score": "Nightlife",
+        },
+    )
+
+
+def build_metric_rows(
+    city: pd.Series,
+    all_df: pd.DataFrame,
+    metric_labels: dict[str, str],
+    lower_is_better_metrics: set[str] | None = None,
+) -> pd.DataFrame:
+    lower_is_better_metrics = lower_is_better_metrics or set()
 
     rows = []
 
@@ -71,7 +101,11 @@ def build_city_metric_table(city: pd.Series, all_df: pd.DataFrame) -> pd.DataFra
         rows.append(
             {
                 "Metric": label,
-                "Value": round(value, 1),
+                "Value": (
+                    f"#{int(value)}"
+                    if column == "cityfit_rank"
+                    else round(value, 1)
+                ),
                 "Color": get_metric_color(
                     value=value,
                     min_value=min_value,
@@ -150,14 +184,6 @@ def render_city_profile(
 
     flag_url = get_country_flag_url(country, size=160)
     cityfit_score = round(float(city_row["cityfit_score"]), 1)
-    lifestyle_score = (
-        round(float(city_row["lifestyle_fit_score"]), 1)
-        if (
-            "lifestyle_fit_score" in city_row.index
-            and pd.notna(city_row["lifestyle_fit_score"])
-        )
-        else None
-    )
     cityfit_rank = int(city_row["cityfit_rank"])
     region = city_row["region"]
     city_name_display = escape(str(city_name))
@@ -203,9 +229,24 @@ def render_city_profile(
         "<h4 class='city-profile-subsection-heading'>Metric Breakdown</h4>",
         unsafe_allow_html=True,
     )
-    metric_df = build_city_metric_table(city_row, all_df)
 
-    render_metric_table(metric_df)
+    render_metric_table(build_city_metric_table(city_row, all_df))
+
+    practical_column, lifestyle_column = st.columns(2)
+
+    with practical_column:
+        st.markdown(
+            "<h4 class='city-profile-subsection-heading city-profile-priority-heading'>Practical Priorities</h4>",
+            unsafe_allow_html=True,
+        )
+        render_metric_table(build_practical_metric_table(city_row, all_df))
+
+    with lifestyle_column:
+        st.markdown(
+            "<h4 class='city-profile-subsection-heading city-profile-priority-heading'>Lifestyle Priorities</h4>",
+            unsafe_allow_html=True,
+        )
+        render_metric_table(build_lifestyle_metric_table(city_row, all_df))
 
     if "explanation" in city_row.index and pd.notna(city_row["explanation"]):
         st.markdown(

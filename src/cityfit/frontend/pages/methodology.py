@@ -60,16 +60,14 @@ def render_methodology_page() -> None:
     st.code(
         """
     practical_priority_score =
-        weighted_average(
             0.15 * purchasing_power_score,
             0.10 * affordability_score,
-            0.20 * safety_score,
+            0.15 * safety_score,
             0.10 * healthcare_score,
             0.15 * housing_affordability_score,
             0.10 * low_traffic_score,
             0.15 * climate_score,
             0.10 * low_pollution_score
-        )
         """.strip()
     )
 

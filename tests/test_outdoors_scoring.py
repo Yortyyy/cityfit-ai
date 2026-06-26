@@ -20,7 +20,7 @@ def test_calculate_outdoors_score_weights_multiple_outdoors_categories():
             "park_green_count": 80,
             "nature_reserve_count": 50,
             "trail_route_count": 250,
-            "beach_water_count": 30,
+            "water_access_count": 1000,
             "viewpoint_peak_count": 100,
         }
     )
@@ -43,7 +43,7 @@ def test_add_outdoors_scores_merges_counts_onto_cities():
                 "park_green_count": 80,
                 "nature_reserve_count": 50,
                 "trail_route_count": 250,
-                "beach_water_count": 30,
+                "water_access_count": 1000,
                 "viewpoint_peak_count": 100,
             },
             {
@@ -52,7 +52,7 @@ def test_add_outdoors_scores_merges_counts_onto_cities():
                 "park_green_count": 1,
                 "nature_reserve_count": 0,
                 "trail_route_count": 0,
-                "beach_water_count": 0,
+                "water_access_count": 0,
                 "viewpoint_peak_count": 0,
             },
         ]
@@ -62,3 +62,28 @@ def test_add_outdoors_scores_merges_counts_onto_cities():
 
     assert scored_df.loc[0, "outdoors_score"] == 100.0
     assert scored_df.loc[1, "outdoors_score"] < 10.0
+
+
+def test_add_outdoors_scores_accepts_legacy_beach_water_count():
+    cities_df = pd.DataFrame(
+        [
+            {"city": "Legacy Beach City", "country": "Example"},
+        ]
+    )
+    outdoors_counts_df = pd.DataFrame(
+        [
+            {
+                "city": "Legacy Beach City",
+                "country": "Example",
+                "park_green_count": 80,
+                "nature_reserve_count": 50,
+                "trail_route_count": 250,
+                "beach_water_count": 1000,
+                "viewpoint_peak_count": 100,
+            },
+        ]
+    )
+
+    scored_df = add_outdoors_scores(cities_df, outdoors_counts_df)
+
+    assert scored_df.loc[0, "outdoors_score"] == 100.0

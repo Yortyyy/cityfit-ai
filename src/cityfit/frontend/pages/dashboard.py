@@ -96,6 +96,8 @@ def render_dashboard_page(base_payload: dict, all_df: pd.DataFrame) -> None:
     top_n = st.slider("Number of cities to show", 5, 306, 15)
 
     recommendation_payload = personalized_payload
+    
+    # TODO: Display all lifestyle columns
 
     display_cols = [
         "city",
@@ -108,12 +110,11 @@ def render_dashboard_page(base_payload: dict, all_df: pd.DataFrame) -> None:
         "personalized_cityfit_score",
         "practical_score",
         "lifestyle_fit_score",
-        "baseline_lifestyle_score",
-        "lifestyle_score",
         "purchasing_power_index",
         "cost_of_living_index",
         "safety_index",
         "healthcare_index",
+        "property_price_to_income_ratio",
         "traffic_commute_index",
         "climate_index",
         "pollution_index",
@@ -129,12 +130,11 @@ def render_dashboard_page(base_payload: dict, all_df: pd.DataFrame) -> None:
         "rank_movement",
         "practical_score",
         "lifestyle_fit_score",
-        "lifestyle_score",
-        "baseline_lifestyle_score",
         "purchasing_power_index",
         "cost_of_living_index",
         "safety_index",
         "healthcare_index",
+        "property_price_to_income_ratio",
         "traffic_commute_index",
         "pollution_index",
         "climate_index",
@@ -151,12 +151,11 @@ def render_dashboard_page(base_payload: dict, all_df: pd.DataFrame) -> None:
         "personalized_cityfit_score": "Personalized CityFit Score",
         "practical_score": "Practical Fit",
         "lifestyle_fit_score": "Lifestyle Fit",
-        "lifestyle_score": "Lifestyle Score",
-        "baseline_lifestyle_score": "Baseline Lifestyle Fit",
         "purchasing_power_index": "Purchasing Power Index",
         "cost_of_living_index": "Cost of Living Index",
         "safety_index": "Safety Index",
         "healthcare_index": "Healthcare Index",
+        "property_price_to_income_ratio": "Housing Affordability",
         "traffic_commute_index": "Traffic Index",
         "pollution_index": "Pollution Index",
         "climate_index": "Climate Index",

@@ -56,6 +56,7 @@ class CityRecommendation(BaseModel):
     purchasing_power_index: float
     safety_index: float
     healthcare_index: float
+    property_price_to_income_ratio: float
     traffic_commute_index: float
     climate_index: float
     pollution_index: float

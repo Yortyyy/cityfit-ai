@@ -269,11 +269,11 @@ outdoors_score =
     park, garden, and recreation-ground availability
     + nature reserve and protected-area availability
     + mapped trail and route-marker availability
-    + beach, marina, and water-recreation availability
+    + waterfront, beach, river, lake, canal, coastline, marina, and pier access
     + viewpoint and peak availability
 ```
 
-The current method measures mapped outdoor access points within 8 km of the city coordinate. It does not yet measure park size, tree canopy, waterfront length, trail quality, mountain access beyond the city radius, safety, maintenance, crowding, beach quality, or climate. Outdoors scores are especially sensitive to OpenStreetMap tagging coverage because many outdoor amenities are mapped as large ways/relations rather than simple points.
+The current method measures mapped outdoor access points within 8 km of the city coordinate. It includes broader water access in the outdoors score rather than creating a separate water metric. It does not yet measure park size, tree canopy, waterfront length, trail quality, mountain access beyond the city radius, safety, maintenance, crowding, beach quality, or climate. Outdoors scores are especially sensitive to OpenStreetMap tagging coverage because many outdoor amenities are mapped as large ways/relations rather than simple points.
 
 Current pace-of-life classification uses a culture/work-life proxy score and then converts it to a preference label:
 

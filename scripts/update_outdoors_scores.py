@@ -8,6 +8,7 @@ import pandas as pd
 import requests
 
 from cityfit.lifestyle.outdoors_scoring import (
+    LEGACY_OUTDOORS_COMPONENTS,
     OUTDOORS_COMPONENTS,
     add_outdoors_scores,
 )
@@ -21,7 +22,10 @@ LIFESTYLE_METRICS_PATH = Path("data/reference/lifestyle_metrics.csv")
 OUTDOORS_COUNTS_CACHE_PATH = Path("data/reference/osm_outdoors_counts.csv")
 QUERY_RADIUS_METERS = 8_000
 
-DIAGNOSTIC_COLUMNS = list(OUTDOORS_COMPONENTS.keys())
+DIAGNOSTIC_COLUMNS = [
+    *OUTDOORS_COMPONENTS.keys(),
+    *LEGACY_OUTDOORS_COMPONENTS.keys(),
+]
 
 
 def _count_from_overpass_element(element: dict) -> int:
@@ -95,6 +99,12 @@ out count;""",
   node(around:{radius},{latitude},{longitude})["natural"="beach"];
   node(around:{radius},{latitude},{longitude})["leisure"~"^(beach_resort|marina)$"];
   node(around:{radius},{latitude},{longitude})["tourism"="beach"];
+  nwr(around:{radius},{latitude},{longitude})["leisure"="marina"];
+  nwr(around:{radius},{latitude},{longitude})["man_made"~"^(pier|breakwater)$"];
+  nwr(around:{radius},{latitude},{longitude})["harbour"];
+  nwr(around:{radius},{latitude},{longitude})["waterway"~"^(river|canal)$"]["name"];
+  nwr(around:{radius},{latitude},{longitude})["natural"="water"]["name"];
+  nwr(around:{radius},{latitude},{longitude})["water"]["name"];
 );
 out count;""",
         f"""(
@@ -215,10 +225,27 @@ def collect_outdoors_counts(
     limit: int | None = None,
     sleep_seconds: float = 1.0,
     batch_size: int = 5,
+    refresh: bool = False,
 ) -> pd.DataFrame:
-    cached_counts = load_cached_counts(cache_path)
+    cached_counts = pd.DataFrame() if refresh else load_cached_counts(cache_path)
+    required_count_columns = set(OUTDOORS_COMPONENTS)
+
+    if cached_counts.empty:
+        complete_cached_counts = pd.DataFrame()
+    else:
+        missing_cache_columns = required_count_columns - set(cached_counts.columns)
+
+        if missing_cache_columns:
+            complete_cached_counts = pd.DataFrame()
+        else:
+            complete_cached_counts = cached_counts.dropna(
+                subset=list(required_count_columns)
+            )
+
     collected_rows = (
-        cached_counts.to_dict(orient="records") if not cached_counts.empty else []
+        complete_cached_counts.to_dict(orient="records")
+        if not complete_cached_counts.empty
+        else []
     )
     completed_keys = {
         (row["city"], row["country"])
@@ -279,6 +306,7 @@ def update_lifestyle_outdoors_scores(
     limit: int | None = None,
     sleep_seconds: float = 1.0,
     batch_size: int = 5,
+    refresh: bool = False,
 ) -> pd.DataFrame:
     lifestyle_df = pd.read_csv(lifestyle_path)
     counts_df = collect_outdoors_counts(
@@ -287,6 +315,7 @@ def update_lifestyle_outdoors_scores(
         limit=limit,
         sleep_seconds=sleep_seconds,
         batch_size=batch_size,
+        refresh=refresh,
     )
     scored_df = add_outdoors_scores(lifestyle_df, counts_df)
 
@@ -328,6 +357,11 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--limit", type=int, default=None)
     parser.add_argument("--sleep-seconds", type=float, default=1.0)
     parser.add_argument("--batch-size", type=int, default=5)
+    parser.add_argument(
+        "--refresh",
+        action="store_true",
+        help="Ignore the existing outdoors count cache and refetch every row.",
+    )
 
     return parser.parse_args()
 
@@ -338,6 +372,7 @@ def main() -> None:
         limit=args.limit,
         sleep_seconds=args.sleep_seconds,
         batch_size=args.batch_size,
+        refresh=args.refresh,
     )
     cached_count = load_cached_counts().drop_duplicates(
         subset=["city", "country"]

@@ -7,24 +7,28 @@ import pandas as pd
 OUTDOORS_COMPONENTS = {
     "park_green_count": {
         "full_score_count": 80,
-        "weight": 0.35,
+        "weight": 0.30,
     },
     "nature_reserve_count": {
         "full_score_count": 50,
-        "weight": 0.22,
+        "weight": 0.20,
     },
     "trail_route_count": {
         "full_score_count": 250,
-        "weight": 0.18,
+        "weight": 0.17,
     },
-    "beach_water_count": {
-        "full_score_count": 30,
-        "weight": 0.12,
+    "water_access_count": {
+        "full_score_count": 1000,
+        "weight": 0.20,
     },
     "viewpoint_peak_count": {
         "full_score_count": 100,
         "weight": 0.13,
     },
+}
+
+LEGACY_OUTDOORS_COMPONENTS = {
+    "beach_water_count": "water_access_count",
 }
 
 
@@ -63,6 +67,12 @@ def add_outdoors_scores(
     outdoors_counts_df: pd.DataFrame,
 ) -> pd.DataFrame:
     required_city_columns = {"city", "country"}
+    outdoors_counts_df = outdoors_counts_df.copy()
+
+    for legacy_column, current_column in LEGACY_OUTDOORS_COMPONENTS.items():
+        if current_column not in outdoors_counts_df and legacy_column in outdoors_counts_df:
+            outdoors_counts_df[current_column] = outdoors_counts_df[legacy_column]
+
     required_count_columns = {"city", "country", *OUTDOORS_COMPONENTS.keys()}
 
     missing_city_columns = required_city_columns - set(cities_df.columns)

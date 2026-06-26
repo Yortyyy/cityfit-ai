@@ -6,7 +6,7 @@ def build_weights(profile: UserProfile) -> dict:
 
     return {
         "purchasing_power": 0.15 * profile.priority_purchasing_power,
-        "safety": 0.20 * profile.priority_safety,
+        "safety": 0.15 * profile.priority_safety,
         "healthcare": 0.10 * profile.priority_healthcare,
         "climate": 0.15 * profile.priority_climate,
         "affordability": 0.10 * profile.priority_low_cost,
