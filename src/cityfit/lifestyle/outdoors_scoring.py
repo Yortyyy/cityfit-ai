@@ -3,6 +3,8 @@ from __future__ import annotations
 import numpy as np
 import pandas as pd
 
+from cityfit.lifestyle.land_area import get_land_area_km2, normalize_count_for_land_area
+
 
 OUTDOORS_COMPONENTS = {
     "park_green_count": {
@@ -42,13 +44,14 @@ def score_outdoors_count(count: int | float, full_score_count: int | float) -> f
 def calculate_outdoors_score(row: pd.Series) -> float:
     weighted_score = 0.0
     total_weight = 0.0
+    land_area_km2 = get_land_area_km2(row)
 
     for column, settings in OUTDOORS_COMPONENTS.items():
         if column not in row or pd.isna(row[column]):
             continue
 
         component_score = score_outdoors_count(
-            row[column],
+            normalize_count_for_land_area(row[column], land_area_km2),
             settings["full_score_count"],
         )
         weight = settings["weight"]
@@ -74,6 +77,15 @@ def add_outdoors_scores(
             outdoors_counts_df[current_column] = outdoors_counts_df[legacy_column]
 
     required_count_columns = {"city", "country", *OUTDOORS_COMPONENTS.keys()}
+    optional_merge_columns = []
+
+    if "land_area_km2" not in cities_df.columns:
+        optional_merge_columns.append("land_area_km2")
+
+    merge_columns = [
+        column for column in [*required_count_columns, *optional_merge_columns]
+        if column in outdoors_counts_df.columns
+    ]
 
     missing_city_columns = required_city_columns - set(cities_df.columns)
     missing_count_columns = required_count_columns - set(outdoors_counts_df.columns)
@@ -89,7 +101,7 @@ def add_outdoors_scores(
         )
 
     scored_df = cities_df.merge(
-        outdoors_counts_df[list(required_count_columns)],
+        outdoors_counts_df[merge_columns],
         on=["city", "country"],
         how="left",
     )

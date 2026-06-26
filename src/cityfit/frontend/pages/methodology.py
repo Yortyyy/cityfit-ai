@@ -98,6 +98,14 @@ def render_methodology_page() -> None:
         """
     )
 
+    st.write(
+        """
+        OSM-based lifestyle categories use density-adjusted counts when usable
+        land-area data is available. This helps coastal, lake, river, and island
+        cities avoid being penalized because part of the 8 km scoring radius is water.
+        """
+    )
+
     st.code(
         """
     lifestyle_score =

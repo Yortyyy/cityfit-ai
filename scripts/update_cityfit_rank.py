@@ -81,11 +81,11 @@ def main() -> None:
                 "cityfit_score",
                 "practical_score",
                 "lifestyle_fit_score",
-                "lifestyle_score",
                 "cost_of_living_index",
                 "purchasing_power_index",
                 "safety_index",
                 "healthcare_index",
+                "property_price_to_income_ratio",
             ]
         ].to_string(index=False)
     )

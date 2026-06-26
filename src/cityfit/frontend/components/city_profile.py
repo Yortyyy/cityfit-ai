@@ -7,6 +7,9 @@ import streamlit as st
 from cityfit.frontend.components.similar_cities import render_similar_cities_by_metrics
 from cityfit.utils.countries import get_country_flag_url
 
+# TODO: log of metric color scale? Lagos has housing ratio of 102
+#       next one is 49.5...
+
 def get_metric_color(
     value: float,
     min_value: float,
@@ -44,13 +47,13 @@ def build_practical_metric_table(city: pd.Series, all_df: pd.DataFrame) -> pd.Da
         all_df=all_df,
         metric_labels={
             "purchasing_power_index": "Purchasing Power",
-            "cost_of_living_index": "Low Cost of Living",
+            "cost_of_living_index": "Cost of Living",
             "safety_index": "Safety",
             "healthcare_index": "Healthcare",
             "property_price_to_income_ratio": "Housing Affordability",
             "traffic_commute_index": "Low Traffic",
             "climate_index": "Climate",
-            "pollution_index": "Low Pollution",
+            "pollution_index": "Pollution",
         },
         lower_is_better_metrics={
             "cost_of_living_index",

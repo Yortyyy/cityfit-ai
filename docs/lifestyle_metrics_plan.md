@@ -37,7 +37,7 @@ Lifestyle Fit remains visible as its own score, but users can optionally blend i
 
 Phase 1 creates stable lifestyle score columns using free, source-backed proxy features.
 
-The first method version mainly uses amenity counts, infrastructure proximity, airport proximity, and existing CityFit indicators where appropriate. Future method versions may blend quantity and quality data without changing the public score columns.
+The first method version mainly uses amenity counts, infrastructure proximity, airport proximity, and existing CityFit indicators where appropriate. OSM amenity counts can be land-area normalized when `land_area_km2` is available, so coastal, lake, river, and island cities are not unfairly compared against a full 8 km circle that may include water. Future method versions may blend quantity and quality data without changing the public score columns.
 
 This means the app-facing columns should stay stable even if the calculation method improves later.
 
@@ -260,7 +260,7 @@ transit_score =
     + major transit hub availability
 ```
 
-This includes mapped buses, trains, metro/subway, trams/light rail/trolleys where represented in OSM transit infrastructure, ferry terminals, and aerialway stations such as cable cars or gondolas. It measures mapped access points within 8 km of the city coordinate. It does not yet measure route frequency, service span, reliability, fares, travel speed, crowding, network coverage by neighborhood, or GTFS schedule quality.
+This includes mapped buses, trains, metro/subway, trams/light rail/trolleys where represented in OSM transit infrastructure, ferry terminals, and aerialway stations such as cable cars or gondolas. It measures mapped access points within 8 km of the city coordinate, normalized by usable land area when `land_area_km2` is available. It does not yet measure route frequency, service span, reliability, fares, travel speed, crowding, network coverage by neighborhood, or GTFS schedule quality.
 
 Current outdoors scoring uses a separate OpenStreetMap outdoors cache:
 
@@ -273,7 +273,16 @@ outdoors_score =
     + viewpoint and peak availability
 ```
 
-The current method measures mapped outdoor access points within 8 km of the city coordinate. It includes broader water access in the outdoors score rather than creating a separate water metric. It does not yet measure park size, tree canopy, waterfront length, trail quality, mountain access beyond the city radius, safety, maintenance, crowding, beach quality, or climate. Outdoors scores are especially sensitive to OpenStreetMap tagging coverage because many outdoor amenities are mapped as large ways/relations rather than simple points.
+The current method measures mapped outdoor access points within 8 km of the city coordinate, normalized by usable land area when `land_area_km2` is available. It includes broader water access in the outdoors score rather than creating a separate water metric. It does not yet measure park size, tree canopy, waterfront length, trail quality, mountain access beyond the city radius, safety, maintenance, crowding, beach quality, or climate. Outdoors scores are especially sensitive to OpenStreetMap tagging coverage because many outdoor amenities are mapped as large ways/relations rather than simple points.
+
+OSM count-based categories use density-adjusted counts when land-area data exists:
+
+```text
+effective_count =
+    raw_count * full_8km_circle_area / land_area_km2
+```
+
+The density multiplier is capped so cities with very small land areas do not receive extreme scores. Airport scoring is not land-area normalized because it is based on distance and airport importance rather than local POI density.
 
 Current pace-of-life classification uses a culture/work-life proxy score and then converts it to a preference label:
 

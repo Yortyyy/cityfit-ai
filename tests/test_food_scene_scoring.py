@@ -61,3 +61,24 @@ def test_add_food_scene_scores_merges_counts_onto_cities():
 
     assert scored_df.loc[0, "food_scene_score"] == 100.0
     assert scored_df.loc[1, "food_scene_score"] < 15.0
+
+
+def test_food_scene_score_normalizes_counts_by_land_area():
+    full_land_city = pd.Series(
+        {
+            "cafe_count": 10,
+            "grocery_count": 10,
+            "land_area_km2": 200,
+        }
+    )
+    half_land_city = pd.Series(
+        {
+            "cafe_count": 10,
+            "grocery_count": 10,
+            "land_area_km2": 100,
+        }
+    )
+
+    assert calculate_food_scene_score(half_land_city) > calculate_food_scene_score(
+        full_land_city
+    )

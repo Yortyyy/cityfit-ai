@@ -87,3 +87,30 @@ def test_add_outdoors_scores_accepts_legacy_beach_water_count():
     scored_df = add_outdoors_scores(cities_df, outdoors_counts_df)
 
     assert scored_df.loc[0, "outdoors_score"] == 100.0
+
+
+def test_outdoors_score_normalizes_counts_by_land_area():
+    full_land_city = pd.Series(
+        {
+            "park_green_count": 10,
+            "nature_reserve_count": 10,
+            "trail_route_count": 10,
+            "water_access_count": 10,
+            "viewpoint_peak_count": 10,
+            "land_area_km2": 200,
+        }
+    )
+    half_land_city = pd.Series(
+        {
+            "park_green_count": 10,
+            "nature_reserve_count": 10,
+            "trail_route_count": 10,
+            "water_access_count": 10,
+            "viewpoint_peak_count": 10,
+            "land_area_km2": 100,
+        }
+    )
+
+    assert calculate_outdoors_score(half_land_city) > calculate_outdoors_score(
+        full_land_city
+    )

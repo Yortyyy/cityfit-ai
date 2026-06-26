@@ -33,6 +33,8 @@ data/reference/osm_culture_counts.csv
 data/reference/osm_transit_counts.csv
 data/reference/osm_outdoors_counts.csv
 data/reference/osm_nightlife_counts.csv
+data/reference/ne_10m_land.geojson
+data/reference/city_land_area_estimates.csv
 
 # Local vector database
 data/vector_store/

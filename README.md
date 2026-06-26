@@ -160,6 +160,8 @@ lifestyle_score =
     + 0.10 * nightlife_score
 ```
 
+OSM-based lifestyle categories use density-adjusted counts when `land_area_km2` is available. This helps coastal, lake, river, and island cities avoid being penalized because part of the 8 km scoring radius is water instead of usable land.
+
 The raw 0-100 Lifestyle Score is mapped onto the original CityFit scale before blending, where near 0 is a poor fit, around 100 is broadly livable, and 200+ is exceptional.
 
 ```text
