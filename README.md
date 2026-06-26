@@ -1,6 +1,6 @@
 # CityFit
 
-CityFit is a city recommendation and GenAI decision-support platform that ranks cities using Numbeo-style quality-of-life metrics, a personalized CityFit Score, and a RAG-powered agent workflow.
+CityFit is a city recommendation and GenAI decision-support platform that ranks cities using Numbeo-style quality-of-life metrics, a personalized CityFit Score, lifestyle metrics, and a RAG-powered agent workflow.
 
 The project is designed to demonstrate applied AI engineering patterns:
 
@@ -39,15 +39,17 @@ The current version:
 
 - Loads a 300+ city quality-of-life dataset with country, region, latitude, and longitude metadata
 - Validates the expected city metrics schema before scoring or serving recommendations
-- Calculates a personalized CityFit Score from quality-of-life, affordability, housing, safety, healthcare, climate, traffic, pollution, and purchasing-power metrics
-- Converts user-facing 0–10 Streamlit priority sliders into backend 0–2 priority multipliers
-- Builds a neutral baseline CityFit ranking where all lifestyle priorities are set to default importance
+- Calculates Practical Fit from quality-of-life, affordability, housing, safety, healthcare, climate, traffic, pollution, and purchasing-power metrics
+- Calculates Lifestyle Fit from daily life, food scene, culture, outdoors, transit, airport access, and nightlife scores
+- Blends Practical Fit and Lifestyle Fit into the CityFit Score through optional overall influence sliders
+- Converts user-facing 0-10 Streamlit priority sliders into backend 0-2 priority multipliers
+- Builds a neutral baseline CityFit ranking where all practical and lifestyle priorities are set to default importance
 - Compares personalized CityFit ranking against the neutral baseline CityFit ranking
 - Calculates rank movement as baseline CityFit rank minus personalized CityFit rank
 - Supports region and country scoped recommendations
 - Displays an interactive globe with searchable and clickable city selection
 - Shows city profile pages with score summaries, metric breakdowns, flags, explanations, and similar-city links
-- Supports side-by-side city comparison with rank movement and metric differences
+- Supports side-by-side city comparison with rank movement, practical metrics, and lifestyle metric differences
 - Serves recommendations through a FastAPI backend
 - Uses a shared recommendation service so the API and agent apply the same scoring and filtering logic
 - Supports a chat-style CityFit Agent interface
@@ -60,38 +62,29 @@ The current version:
 ## Architecture
 
 Raw city metrics CSV
-  ↓
-Local validation + feature engineering
-  ↓
-CityFit scoring logic
-  ↓
-Region/country filtering
-  ↓
-FastAPI recommendation endpoints
-  ↓
-Streamlit frontend
+  -> Local validation + feature engineering
+  -> Practical Fit scoring
+  -> Lifestyle metric merge and Lifestyle Fit scoring
+  -> Practical/Lifestyle score blending
+  -> Region/country filtering
+  -> FastAPI recommendation endpoints
+  -> Streamlit frontend
 
 GenAI/RAG flow:
 
 User question
-  ↓
-Streamlit chat UI
-  ↓
-FastAPI /agent/query
-  ↓
-Chroma retriever over markdown knowledge base
-  ↓
-CityFit agent tools:
+  -> Streamlit chat UI
+  -> FastAPI /agent/query
+  -> Chroma retriever over markdown knowledge base
+  -> CityFit agent tools:
     - rank_city_recommendations
     - compare_cities
     - get_city_metrics
     - shared region/country scoped recommendation service
-  ↓
-Response provider:
+  -> Response provider:
     - template provider for deterministic responses
     - optional Ollama provider for local LLM-generated responses
-  ↓
-Structured response:
+  -> Structured response:
     - answer
     - compared cities
     - city metrics
@@ -107,7 +100,10 @@ The shared service handles:
 
 - loading raw city metrics
 - validating required schema fields
-- calculating CityFit scores
+- calculating Practical Fit scores
+- merging lifestyle metrics
+- calculating personalized Lifestyle Fit scores
+- blending Practical Fit and Lifestyle Fit into CityFit Score
 - adding CityFit baseline and personalized ranks
 - applying optional region and country filters
 - adding human-readable city explanations where needed
@@ -116,15 +112,64 @@ This avoids separate API and agent ranking logic drifting out of sync.
 
 ## Scoring Methodology
 
-CityFit starts with quality-of-life metrics and transforms them into priority-specific feature scores. The personalized CityFit Score combines a source quality-of-life baseline with a weighted lifestyle adjustment based on the user's selected priorities.
+CityFit has two score layers: Practical Fit and Lifestyle Fit. The final CityFit Score blends those layers based on the user's overall category influence sliders.
 
-The Streamlit UI uses user-friendly 0–10 priority sliders. These are normalized before being sent to the API:
+The Streamlit UI uses user-friendly 0-10 priority sliders. These are normalized before being sent to the API:
 
 - `0` means the priority is ignored
 - `5` means default importance
 - `10` means double importance
 
-Internally, the API receives these as 0–2 priority multipliers.
+Internally, the API receives these as 0-2 priority multipliers.
+
+Practical Fit starts with Numbeo's quality-of-life index and a weighted practical priority score:
+
+```text
+practical_priority_score =
+    weighted_average(
+        0.15 * purchasing_power_score,
+        0.10 * affordability_score,
+        0.20 * safety_score,
+        0.10 * healthcare_score,
+        0.15 * housing_affordability_score,
+        0.10 * low_traffic_score,
+        0.15 * climate_score,
+        0.10 * low_pollution_score
+    )
+
+practical_score =
+    (
+        0.30 * numbeo_quality_of_life_index
+        + 0.70 * practical_priority_score
+    )
+    * 1.75
+```
+
+The remote-work checkbox reduces the low-traffic weight by half because commuting matters less for remote workers.
+
+Lifestyle Fit uses free proxy metrics for lifestyle priorities:
+
+```text
+lifestyle_score =
+    0.20 * daily_life_score
+    + 0.15 * food_scene_score
+    + 0.15 * culture_score
+    + 0.15 * outdoors_score
+    + 0.15 * transit_score
+    + 0.10 * airport_score
+    + 0.10 * nightlife_score
+```
+
+The raw 0-100 Lifestyle Score is mapped onto the original CityFit scale before blending, where near 0 is a poor fit, around 100 is broadly livable, and 200+ is exceptional.
+
+```text
+cityfit_score =
+    (
+        practical_fit_weight * practical_score
+        + lifestyle_fit_weight * lifestyle_fit_score
+    )
+    / total_fit_weight
+```
 
 CityFit also calculates a neutral baseline ranking where every priority is set to default importance. Personalized rank movement compares the user's personalized ranking against this neutral CityFit baseline.
 
@@ -136,7 +181,7 @@ Build the containers:
 
 Run the ranking pipeline:
 
-`docker compose run --rm cityfit python -m scripts.run_cityfit_ranking`
+`docker compose run --rm api python -m scripts.update_cityfit_rank`
 
 Run the FastAPI backend:
 
@@ -297,7 +342,9 @@ Run all tests:
 The test suite covers:
 
 - schema validation
-- CityFit scoring
+- Practical Fit scoring
+- Lifestyle Fit scoring
+- Practical/Lifestyle score blending
 - reusable recommendation filtering
 - FastAPI endpoints
 - region and country scoped recommendations
@@ -307,6 +354,7 @@ The test suite covers:
 - deterministic CityFit ranking behavior
 - baseline CityFit vs personalized CityFit rank movement
 - frontend city comparison color behavior
+- lifestyle metric loaders and scoring helpers
 
 ## Data Notice
 
@@ -318,6 +366,9 @@ This project does not redistribute a full Numbeo dataset or use automated scrapi
 
 - The current dataset is intended for educational/portfolio use and may not reflect every city or the latest real-world conditions.
 - CityFit scoring is heuristic and based on configurable weights.
+- Lifestyle metrics are proxy scores and do not yet include full quality, neighborhood-level, or paid review data.
+- Friendliness is intentionally blank until a legally usable newcomer-integration source is chosen.
+- Pace of life is categorical and is not currently blended as a higher-is-better score.
 - The ML model currently uses synthetic labels derived from the CityFit Score.
 - The agent supports deterministic template responses and optional local Ollama responses. Hosted LLM providers such as OpenAI, Anthropic, Gemini, or Bedrock are not yet implemented.
 - Recommendations are informational and should not be treated as financial, legal, immigration, medical, or relocation advice.
@@ -326,8 +377,10 @@ This project does not redistribute a full Numbeo dataset or use automated scrapi
 
 Planned improvements:
 
-- Add a dedicated in-app methodology page
 - Expand city detail pages with richer lifestyle summaries
+- Add quality adjustments for lifestyle categories where a usable source is available
+- Add a legally usable friendliness or newcomer-integration source
+- Add preference matching for pace of life
 - Add hosted LLM providers such as OpenAI, Anthropic, Gemini, or Bedrock
 - Add response-mode evaluation for template vs Ollama outputs
 - Add more knowledge-base documents

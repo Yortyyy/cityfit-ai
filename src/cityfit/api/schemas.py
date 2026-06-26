@@ -10,6 +10,15 @@ class UserProfile(BaseModel):
     priority_low_traffic: float = Field(default=0.7, ge=0.0, le=2.0)
     priority_climate: float = Field(default=0.8, ge=0.0, le=2.0)
     priority_low_pollution: float = Field(default=0.7, ge=0.0, le=2.0)
+    priority_daily_life: float = Field(default=1.0, ge=0.0, le=2.0)
+    priority_food_scene: float = Field(default=1.0, ge=0.0, le=2.0)
+    priority_culture: float = Field(default=1.0, ge=0.0, le=2.0)
+    priority_outdoors: float = Field(default=1.0, ge=0.0, le=2.0)
+    priority_transit: float = Field(default=1.0, ge=0.0, le=2.0)
+    priority_airport: float = Field(default=1.0, ge=0.0, le=2.0)
+    priority_nightlife: float = Field(default=1.0, ge=0.0, le=2.0)
+    priority_practical_fit: float = Field(default=1.0, ge=0.0, le=2.0)
+    priority_lifestyle_fit: float = Field(default=1.0, ge=0.0, le=2.0)
     remote_worker: bool = True
     top_n: int = Field(default=10, ge=1, le=500)
 
@@ -31,6 +40,18 @@ class CityRecommendation(BaseModel):
     numbeo_quality_of_life_index: float
     cityfit_score: float
     baseline_cityfit_score: float
+    practical_score: float | None = None
+    lifestyle_score: float | None = None
+    lifestyle_fit_score: float | None = None
+    baseline_lifestyle_score: float | None = None
+    daily_life_score: float | None = None
+    food_scene_score: float | None = None
+    culture_score: float | None = None
+    outdoors_score: float | None = None
+    transit_score: float | None = None
+    airport_score: float | None = None
+    nightlife_score: float | None = None
+    pace_of_life: str | None = None
     cost_of_living_index: float
     purchasing_power_index: float
     safety_index: float

@@ -4,9 +4,48 @@ from cityfit.api.schemas import UserProfile
 from cityfit.data.load_data import load_city_metrics
 from cityfit.data.validation import validate_city_metrics
 from cityfit.features.explanations import explain_city_rank
+from cityfit.features.fit_blending import calculate_blended_cityfit_score
 from cityfit.features.filters import filter_by_country, filter_by_region
 from cityfit.features.scoring import calculate_cityfit_score, rank_cities
 from cityfit.features.weights import build_weights
+from cityfit.lifestyle.lifestyle_scoring import add_lifestyle_scores
+from cityfit.lifestyle.merge_lifestyle_metrics import add_lifestyle_metrics
+
+
+def build_lifestyle_priority_multipliers(profile: UserProfile) -> dict[str, float]:
+    return {
+        "priority_daily_life": profile.priority_daily_life,
+        "priority_food_scene": profile.priority_food_scene,
+        "priority_culture": profile.priority_culture,
+        "priority_outdoors": profile.priority_outdoors,
+        "priority_transit": profile.priority_transit,
+        "priority_airport": profile.priority_airport,
+        "priority_nightlife": profile.priority_nightlife,
+    }
+
+
+def calculate_scored_cityfit_df(
+    raw_df: pd.DataFrame,
+    profile: UserProfile,
+) -> pd.DataFrame:
+    practical_df = calculate_cityfit_score(raw_df, build_weights(profile)).rename(
+        columns={"cityfit_score": "practical_score"}
+    )
+    lifestyle_df = add_lifestyle_metrics(practical_df)
+    lifestyle_df = lifestyle_df.rename(
+        columns={"lifestyle_score": "baseline_lifestyle_score"}
+    )
+    lifestyle_df = add_lifestyle_scores(
+        lifestyle_df,
+        priority_multipliers=build_lifestyle_priority_multipliers(profile),
+    )
+
+    return calculate_blended_cityfit_score(
+        lifestyle_df,
+        practical_fit_weight=profile.priority_practical_fit,
+        lifestyle_fit_weight=profile.priority_lifestyle_fit,
+    )
+
 
 def get_ranked_cities(profile: UserProfile):
     raw_df = load_city_metrics()
@@ -21,16 +60,20 @@ def get_ranked_cities(profile: UserProfile):
         priority_housing=1.0,
         priority_low_pollution=1.0,
         priority_low_traffic=1.0,
+        priority_daily_life=1.0,
+        priority_food_scene=1.0,
+        priority_culture=1.0,
+        priority_outdoors=1.0,
+        priority_transit=1.0,
+        priority_airport=1.0,
+        priority_nightlife=1.0,
+        priority_practical_fit=1.0,
+        priority_lifestyle_fit=1.0,
         remote_worker=False,
     )
 
-    baseline_df = rank_cities(
-        calculate_cityfit_score(raw_df, build_weights(baseline_profile))
-    )
-
-    personalized_df = rank_cities(
-        calculate_cityfit_score(raw_df, build_weights(profile))
-    )
+    baseline_df = rank_cities(calculate_scored_cityfit_df(raw_df, baseline_profile))
+    personalized_df = rank_cities(calculate_scored_cityfit_df(raw_df, profile))
 
     baseline_ranks = baseline_df[
         ["city", "country", "cityfit_rank", "cityfit_score"]

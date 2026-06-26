@@ -11,11 +11,11 @@ OUTPUT_PATH = Path("data/reference/lifestyle_metrics.csv")
 LIFESTYLE_COLUMNS = [
     "daily_life_score",
     "food_scene_score",
-    "nightlife_score",
     "culture_score",
     "outdoors_score",
     "transit_score",
     "airport_score",
+    "nightlife_score",
     "friendliness_score",
     "pace_of_life",
     "lifestyle_score",

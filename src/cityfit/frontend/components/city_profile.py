@@ -27,6 +27,17 @@ def get_metric_color(
 def build_city_metric_table(city: pd.Series, all_df: pd.DataFrame) -> pd.DataFrame:
     metric_labels = {
         "cityfit_score": "CityFit Score",
+        "practical_score": "Practical Fit",
+        "lifestyle_fit_score": "Lifestyle Fit",
+        "lifestyle_score": "Lifestyle Score",
+        "baseline_lifestyle_score": "Baseline Lifestyle Fit",
+        "daily_life_score": "Daily Life",
+        "food_scene_score": "Food Scene",
+        "culture_score": "Culture",
+        "outdoors_score": "Outdoors",
+        "transit_score": "Transit",
+        "airport_score": "Airport Access",
+        "nightlife_score": "Nightlife",
         "purchasing_power_index": "Purchasing Power",
         "cost_of_living_index": "Cost of Living",
         "safety_index": "Safety",
@@ -139,6 +150,14 @@ def render_city_profile(
 
     flag_url = get_country_flag_url(country, size=160)
     cityfit_score = round(float(city_row["cityfit_score"]), 1)
+    lifestyle_score = (
+        round(float(city_row["lifestyle_fit_score"]), 1)
+        if (
+            "lifestyle_fit_score" in city_row.index
+            and pd.notna(city_row["lifestyle_fit_score"])
+        )
+        else None
+    )
     cityfit_rank = int(city_row["cityfit_rank"])
     region = city_row["region"]
     city_name_display = escape(str(city_name))

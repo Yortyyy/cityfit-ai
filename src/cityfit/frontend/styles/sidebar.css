@@ -34,3 +34,26 @@ section[data-testid="stSidebar"] div[data-testid="stSelectbox"] svg {
     fill: rgba(245, 246, 255, 0.96) !important;
     color: rgba(245, 246, 255, 0.96) !important;
 }
+
+section[data-testid="stSidebar"] div[data-testid="stExpander"] details summary {
+    background: rgba(245, 246, 255, 0.88) !important;
+    border-radius: 8px 8px 0 0 !important;
+}
+
+section[data-testid="stSidebar"] div[data-testid="stExpander"] details summary p,
+section[data-testid="stSidebar"] div[data-testid="stExpander"] details summary span {
+    color: rgb(18, 30, 83) !important;
+    font-weight: 600 !important;
+}
+
+section[data-testid="stSidebar"] div[data-testid="stExpander"] details summary svg {
+    fill: rgb(18, 30, 83) !important;
+    color: rgb(18, 30, 83) !important;
+    stroke: rgb(18, 30, 83) !important;
+}
+
+section[data-testid="stSidebar"] .priority-section-rule {
+    height: 1px;
+    margin: 0.45rem 0 0.75rem;
+    background: rgba(245, 246, 255, 0.28);
+}

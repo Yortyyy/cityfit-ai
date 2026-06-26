@@ -4,9 +4,9 @@
 
 CityFit currently scores cities using practical quality-of-life metrics such as affordability, safety, healthcare, housing, climate, pollution, traffic, and purchasing power.
 
-The next expansion is to add a separate Lifestyle Fit layer that captures how well a city matches a user's preferred day-to-day lifestyle.
+The next expansion is to add a Lifestyle Fit layer that captures how well a city matches a user's preferred day-to-day lifestyle.
 
-The goal is not to replace the current CityFit Score. The goal is to make recommendations feel more personal and explainable.
+The goal is to make recommendations feel more personal and explainable while allowing users to view practical-only, lifestyle-only, or blended CityFit results.
 
 ---
 
@@ -22,14 +22,14 @@ CityFit should eventually have multiple score layers:
 2. **Lifestyle Fit**
 
    * Based on day-to-day lifestyle preferences.
-   * Covers daily-life convenience, food scene, nightlife, culture, outdoor access, transit, airport access, friendliness, and pace of life.
+   * Covers daily-life convenience, food scene, culture, outdoor access, transit, airport access, nightlife, friendliness, and pace of life.
 
 3. **Overall Fit**
 
-   * Optional future combined score.
+   * Current optional combined score.
    * Combines Practical Fit and Lifestyle Fit using user-selected importance.
 
-For now, Lifestyle Fit should be separate from the main CityFit Score.
+Lifestyle Fit remains visible as its own score, but users can optionally blend it into the main CityFit Score through the overall category-weight sliders in Practical Priorities and Lifestyle Priorities.
 
 ---
 
@@ -46,11 +46,11 @@ Example stable columns:
 ```text
 daily_life_score
 food_scene_score
-nightlife_score
 culture_score
 outdoors_score
 transit_score
 airport_score
+nightlife_score
 friendliness_score
 pace_of_life
 lifestyle_score
@@ -69,12 +69,12 @@ Phase 1 should avoid claiming to measure full walkability, sidewalk safety, rest
 | Metric         | Description                                                                                         | Higher Is Better? | Notes                                                                                        |
 | -------------- | --------------------------------------------------------------------------------------------------- | ----------------: | -------------------------------------------------------------------------------------------- |
 | Daily Life     | Access to useful everyday amenities such as groceries, cafes, pharmacies, gyms, parks, and services |               Yes | Phase 1 proxy for convenience, not full walkability                                          |
-| Public Transit | Availability and usefulness of public transit infrastructure                                        |               Yes | Phase 1 can use station/stop density; later versions may include GTFS frequency and coverage |
-| Outdoors       | Access to parks, beaches, trails, green space, mountains, and nature                                |               Yes | Needs careful proxy design because access is not only about POI counts                       |
-| Nightlife      | Availability of bars, clubs, late-night activity, and social energy                                 |  Preference-based | Higher is good only if the user values nightlife                                             |
-| Culture        | Access to museums, theatres, galleries, historic sites, music, and arts                             |               Yes | Phase 1 proxy can use cultural POI density                                                   |
 | Food Scene     | Access to restaurants, cafes, bakeries, markets, and food variety                                   |               Yes | Phase 1 measures availability; quality can be added later with ratings                       |
+| Culture        | Access to museums, theatres, galleries, historic sites, music, and arts                             |               Yes | Phase 1 proxy can use cultural POI density                                                   |
+| Outdoors       | Access to parks, beaches, trails, green space, mountains, and nature                                |               Yes | Needs careful proxy design because access is not only about POI counts                       |
+| Public Transit | Availability and usefulness of public transit infrastructure                                        |               Yes | Phase 1 can use station/stop density; later versions may include GTFS frequency and coverage |
 | Airport Access | Access to meaningful domestic or international air travel                                           |               Yes | Can use distance to medium/large airports and airport importance                             |
+| Nightlife      | Availability of bars, clubs, late-night activity, and social energy                                 |  Preference-based | Higher is good only if the user values nightlife                                             |
 | Friendliness   | Proxy estimate of how welcoming or socially open a place may feel                                   |               Yes | Hard to measure at city level; should include confidence/source-level labels                 |
 | Pace of Life   | Whether the city feels slow, moderate, or fast-paced                                                |           Depends | Should be preference-matched, not scored as simply high or low                               |
 
@@ -105,11 +105,11 @@ Phase 1 should use stable public score columns:
 ```text
 daily_life_score = 0 to 100
 food_scene_score = 0 to 100
-nightlife_score = 0 to 100
 culture_score = 0 to 100
 outdoors_score = 0 to 100
 transit_score = 0 to 100
 airport_score = 0 to 100
+nightlife_score = 0 to 100
 friendliness_score = 0 to 100
 ```
 
@@ -124,8 +124,30 @@ fast
 Initial Lifestyle Fit formula:
 
 ```text
-lifestyle_score = weighted average of selected lifestyle scores
+lifestyle_score =
+    0.20 * daily_life_score
+    + 0.15 * food_scene_score
+    + 0.15 * culture_score
+    + 0.15 * outdoors_score
+    + 0.15 * transit_score
+    + 0.10 * airport_score
+    + 0.10 * nightlife_score
 ```
+
+Users can personalize this score with Lifestyle Priority sliders. `friendliness_score` is excluded until it has a legally usable newcomer-integration source. `pace_of_life` is also excluded because it is a categorical preference label rather than a higher-is-better score.
+
+The app-level CityFit Score can then blend Practical Fit and Lifestyle Fit:
+
+```text
+cityfit_score =
+    (
+        practical_fit_weight * practical_score
+        + lifestyle_fit_weight * lifestyle_fit_score
+    )
+    / total_fit_weight
+```
+
+`practical_score` stays on the original CityFit scale, where near 0 is a poor fit, around 100 is broadly livable, and 200+ is exceptional. `lifestyle_fit_score` maps the 0 to 100 lifestyle metric average onto that same CityFit scale before blending.
 
 Phase 1 scores should mostly be source-backed proxy scores. For example:
 
@@ -302,7 +324,7 @@ data/reference/lifestyle_metrics.csv
 Example columns:
 
 ```csv
-city,state,country,region,latitude,longitude,daily_life_score,food_scene_score,nightlife_score,culture_score,outdoors_score,transit_score,airport_score,friendliness_score,pace_of_life,lifestyle_score,data_quality,method_version
+city,state,country,region,latitude,longitude,daily_life_score,food_scene_score,culture_score,outdoors_score,transit_score,airport_score,nightlife_score,friendliness_score,pace_of_life,lifestyle_score,data_quality,method_version
 Tampa,United States,North America,27.95,-82.45,,,,,,,,,,,medium,free_proxy_v1
 Rome,Italy,Europe,41.9028,12.4964,,,,,,,,,,,medium,free_proxy_v1
 Tokyo,Japan,Asia,35.6762,139.6503,,,,,,,,,,,medium,free_proxy_v1
