@@ -87,7 +87,7 @@ def test_build_city_comparison_table_colors_values_from_global_scale():
         second_city_label="Tokyo, Japan",
     )
 
-    cost_row = comparison[comparison["Metric"] == "Low Cost of Living"].iloc[0]
+    cost_row = comparison[comparison["Metric"] == "Cost of Living"].iloc[0]
 
     assert cost_row["First Color"] != cost_row["Second Color"]
 
