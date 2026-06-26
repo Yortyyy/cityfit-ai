@@ -155,7 +155,7 @@ def render_dashboard_page(base_payload: dict, all_df: pd.DataFrame) -> None:
         "cost_of_living_index": "Cost of Living Index",
         "safety_index": "Safety Index",
         "healthcare_index": "Healthcare Index",
-        "property_price_to_income_ratio": "Housing Affordability",
+        "property_price_to_income_ratio": "Housing to Income Ratio",
         "traffic_commute_index": "Traffic Index",
         "pollution_index": "Pollution Index",
         "climate_index": "Climate Index",

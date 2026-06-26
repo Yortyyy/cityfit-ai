@@ -7,8 +7,6 @@ import streamlit as st
 from cityfit.frontend.components.similar_cities import render_similar_cities_by_metrics
 from cityfit.utils.countries import get_country_flag_url
 
-# TODO: log of metric color scale? Lagos has housing ratio of 102
-#       next one is 49.5...
 
 def get_metric_color(
     value: float,
@@ -26,6 +24,55 @@ def get_metric_color(
         normalized = 1.0 - normalized
 
     return px.colors.sample_colorscale("RdYlGn", normalized)[0]
+
+
+def get_housing_to_income_color(value: float) -> str:
+    if pd.isna(value):
+        return "rgb(31, 37, 79)"
+
+    anchors = [
+        (1.0, 1.0),
+        (5.0, 0.78),
+        (10.0, 0.46),
+        (15.0, 0.12),
+        (30.0, 0.0),
+    ]
+
+    if value <= anchors[0][0]:
+        normalized = anchors[0][1]
+    elif value >= anchors[-1][0]:
+        normalized = anchors[-1][1]
+    else:
+        normalized = anchors[-1][1]
+        for (low_ratio, low_color), (high_ratio, high_color) in zip(
+            anchors,
+            anchors[1:],
+        ):
+            if low_ratio <= value <= high_ratio:
+                ratio_position = (value - low_ratio) / (high_ratio - low_ratio)
+                normalized = low_color + ratio_position * (high_color - low_color)
+                break
+
+    return px.colors.sample_colorscale("RdYlGn", normalized)[0]
+
+
+def get_metric_color_for_column(
+    column: str,
+    value: float,
+    min_value: float,
+    max_value: float,
+    lower_is_better: bool = False,
+) -> str:
+    if column == "property_price_to_income_ratio":
+        return get_housing_to_income_color(value)
+
+    return get_metric_color(
+        value=value,
+        min_value=min_value,
+        max_value=max_value,
+        lower_is_better=lower_is_better,
+    )
+
 
 def build_city_metric_table(city: pd.Series, all_df: pd.DataFrame) -> pd.DataFrame:
     return build_metric_rows(
@@ -50,8 +97,8 @@ def build_practical_metric_table(city: pd.Series, all_df: pd.DataFrame) -> pd.Da
             "cost_of_living_index": "Cost of Living",
             "safety_index": "Safety",
             "healthcare_index": "Healthcare",
-            "property_price_to_income_ratio": "Housing Affordability",
-            "traffic_commute_index": "Low Traffic",
+            "property_price_to_income_ratio": "Housing to Income Ratio",
+            "traffic_commute_index": "Traffic",
             "climate_index": "Climate",
             "pollution_index": "Pollution",
         },
@@ -109,7 +156,8 @@ def build_metric_rows(
                     if column == "cityfit_rank"
                     else round(value, 1)
                 ),
-                "Color": get_metric_color(
+                "Color": get_metric_color_for_column(
+                    column=column,
                     value=value,
                     min_value=min_value,
                     max_value=max_value,

@@ -147,6 +147,8 @@ practical_score =
 
 The remote-work checkbox reduces the low-traffic weight by half because commuting matters less for remote workers.
 
+In profile and comparison tables, Housing to Income Ratio is displayed as the original ratio, not the normalized scoring feature. Its table color uses fixed severity thresholds: near 1 is excellent, 5 is good, 10 is expensive, 15 is very difficult, and values above 15 are severe.
+
 Lifestyle Fit uses free proxy metrics for lifestyle priorities:
 
 ```text

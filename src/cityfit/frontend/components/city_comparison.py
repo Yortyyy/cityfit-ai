@@ -1,7 +1,10 @@
 import pandas as pd
 import streamlit as st
 
-from cityfit.frontend.components.city_profile import get_metric_color
+from cityfit.frontend.components.city_profile import (
+    get_metric_color,
+    get_metric_color_for_column,
+)
 from cityfit.utils.countries import get_country_flag_url
 
 
@@ -14,8 +17,8 @@ COMPARISON_METRICS = {
     "cost_of_living_index": ("Cost of Living", True),
     "safety_index": ("Safety", False),
     "healthcare_index": ("Healthcare", False),
-    "property_price_to_income_ratio": ("Housing Affordability", True),
-    "traffic_commute_index": ("Low Traffic", True),
+    "property_price_to_income_ratio": ("Housing to Income Ratio", True),
+    "traffic_commute_index": ("Traffic", True),
     "climate_index": ("Climate", False),
     "pollution_index": ("Pollution", True),
     "daily_life_score": ("Daily Life", False),
@@ -280,13 +283,15 @@ def build_city_comparison_table(
                     first_value=float(first_value),
                     second_value=float(second_value),
                 ),
-                "First Color": get_metric_color(
+                "First Color": get_metric_color_for_column(
+                    column=column,
                     value=float(first_value),
                     min_value=min_value,
                     max_value=max_value,
                     lower_is_better=lower_is_better,
                 ),
-                "Second Color": get_metric_color(
+                "Second Color": get_metric_color_for_column(
+                    column=column,
                     value=float(second_value),
                     min_value=min_value,
                     max_value=max_value,

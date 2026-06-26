@@ -26,7 +26,7 @@ def render_priority_sidebar() -> dict:
         priority_safety_ui = st.slider("Safety", 0, 10, 5)
         priority_healthcare_ui = st.slider("Healthcare", 0, 10, 5)
 
-        priority_housing_ui = st.slider("Housing Affordability", 0, 10, 5)
+        priority_housing_ui = st.slider("Housing to Income Ratio", 0, 10, 5)
 
         priority_low_traffic_ui = st.slider("Low Traffic", 0, 10, 5)
         priority_climate_ui = st.slider("Climate", 0, 10, 5)

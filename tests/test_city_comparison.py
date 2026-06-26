@@ -15,6 +15,7 @@ from cityfit.frontend.components.city_comparison import (
     sync_comparison_trace_selection,
 )
 from cityfit.frontend.components.city_profile import get_metric_color
+from cityfit.frontend.components.city_profile import get_metric_color_for_column
 
 
 def make_comparison_df() -> pd.DataFrame:
@@ -24,6 +25,8 @@ def make_comparison_df() -> pd.DataFrame:
             "country": ["United States", "Japan"],
             "cityfit_score": [133.3, 132.1],
             "cityfit_rank": [57, 69],
+            "practical_score": [130.0, 125.0],
+            "lifestyle_fit_score": [120.0, 135.0],
             "purchasing_power_index": [110.0, 95.0],
             "cost_of_living_index": [70.0, 60.0],
             "safety_index": [55.0, 80.0],
@@ -89,6 +92,30 @@ def test_build_city_comparison_table_colors_values_from_global_scale():
     assert cost_row["First Color"] != cost_row["Second Color"]
 
 
+def test_build_city_comparison_table_labels_and_colors_housing_ratio_by_severity():
+    comparison = build_city_comparison_table(
+        globe_df=make_comparison_df(),
+        all_df=make_comparison_df(),
+        first_city_label="Tampa, United States",
+        second_city_label="Tokyo, Japan",
+    )
+
+    housing_row = comparison[
+        comparison["Metric"] == "Housing to Income Ratio"
+    ].iloc[0]
+
+    assert housing_row["Tampa, United States"] == "5.0"
+    assert housing_row["Tokyo, Japan"] == "12.0"
+    assert housing_row["First Color"] == get_metric_color_for_column(
+        column="property_price_to_income_ratio",
+        value=5.0,
+        min_value=5.0,
+        max_value=12.0,
+        lower_is_better=True,
+    )
+    assert housing_row["First Color"] != housing_row["Second Color"]
+
+
 def test_build_city_comparison_table_colors_percent_difference_from_movement():
     global_scale_df = pd.concat(
         [
@@ -98,6 +125,8 @@ def test_build_city_comparison_table_colors_percent_difference_from_movement():
                     {
                         "cityfit_rank": 300,
                         "cityfit_score": 100.0,
+                        "practical_score": 100.0,
+                        "lifestyle_fit_score": 100.0,
                         "purchasing_power_index": 50.0,
                         "cost_of_living_index": 100.0,
                         "safety_index": 0.0,
@@ -110,6 +139,8 @@ def test_build_city_comparison_table_colors_percent_difference_from_movement():
                     {
                         "cityfit_rank": 1,
                         "cityfit_score": 200.0,
+                        "practical_score": 200.0,
+                        "lifestyle_fit_score": 200.0,
                         "purchasing_power_index": 200.0,
                         "cost_of_living_index": 0.0,
                         "safety_index": 100.0,
@@ -226,6 +257,8 @@ def test_build_city_comparison_table_colors_rank_difference_from_rank_movement()
                     {
                         "cityfit_rank": 300,
                         "cityfit_score": 100.0,
+                        "practical_score": 100.0,
+                        "lifestyle_fit_score": 100.0,
                         "purchasing_power_index": 50.0,
                         "cost_of_living_index": 100.0,
                         "safety_index": 20.0,

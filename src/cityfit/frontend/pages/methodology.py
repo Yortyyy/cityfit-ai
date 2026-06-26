@@ -78,6 +78,15 @@ def render_methodology_page() -> None:
         """
     )
 
+    st.write(
+        """
+        In profile and comparison tables, Housing to Income Ratio is shown as the
+        original ratio rather than a normalized score. Colors use fixed severity
+        thresholds: near 1 is excellent, 5 is good, 10 is expensive, 15 is very
+        difficult, and values above 15 are treated as severe.
+        """
+    )
+
     st.code(
         """
     practical_score =
