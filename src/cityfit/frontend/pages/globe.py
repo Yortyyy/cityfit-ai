@@ -6,6 +6,7 @@ from cityfit.frontend.api import get_recommendations_from_api
 from cityfit.frontend.components.city_comparison import (
     COMPARISON_TRACE_KEY,
     get_comparison_trace_labels,
+    has_active_comparison_selection,
     render_city_comparison,
 )
 from cityfit.frontend.components.city_profile import render_city_profile
@@ -153,7 +154,13 @@ def render_globe_page(payload: dict, all_df: pd.DataFrame) -> None:
     else:
         active_source = st.session_state.get("active_city_source")
 
-        if active_source == "globe" and not skip_globe_selection_once:
+        if (
+            active_source == "globe"
+            and not skip_globe_selection_once
+            and focused_city is not None
+            and focused_country is not None
+            and not has_active_comparison_selection()
+        ):
             restore_focused_city_as_active()
             bump_globe_chart_version()
             st.rerun()

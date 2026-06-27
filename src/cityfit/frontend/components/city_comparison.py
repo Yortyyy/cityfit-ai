@@ -338,6 +338,10 @@ def get_comparison_trace_labels() -> list[str]:
     return []
 
 
+def has_active_comparison_selection() -> bool:
+    return len(st.session_state.get(COMPARISON_WIDGET_KEY, [])) > 0
+
+
 def swap_comparison_city_order() -> None:
     selected_city_labels = st.session_state.get(COMPARISON_WIDGET_KEY, [])
 

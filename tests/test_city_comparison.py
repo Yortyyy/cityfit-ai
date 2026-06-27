@@ -8,6 +8,7 @@ from cityfit.frontend.components.city_comparison import (
     calculate_percent_difference,
     format_difference,
     get_comparison_trace_labels,
+    has_active_comparison_selection,
     get_percent_difference_color,
     get_rank_difference_color,
     render_city_header,
@@ -320,6 +321,25 @@ def test_get_comparison_trace_labels_ignores_stale_trace_selection():
     st.session_state[COMPARISON_TRACE_KEY] = ["Tampa, United States", "Tokyo, Japan"]
 
     assert get_comparison_trace_labels() == []
+
+
+def test_has_active_comparison_selection_tracks_partial_and_complete_selection():
+    import streamlit as st
+
+    st.session_state[COMPARISON_WIDGET_KEY] = []
+
+    assert not has_active_comparison_selection()
+
+    st.session_state[COMPARISON_WIDGET_KEY] = ["Tampa, United States"]
+
+    assert has_active_comparison_selection()
+
+    st.session_state[COMPARISON_WIDGET_KEY] = [
+        "Tampa, United States",
+        "Tokyo, Japan",
+    ]
+
+    assert has_active_comparison_selection()
 
 
 def test_sync_comparison_trace_selection_sets_trace_state_for_two_selected():
